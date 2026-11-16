@@ -3,7 +3,7 @@ node_modules/
 dist/
 .turbo/
 .astro/
-.wrangler/
+.vercel/
 coverage/
 playwright-report/
 test-results/

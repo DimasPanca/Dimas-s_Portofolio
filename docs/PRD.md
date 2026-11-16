@@ -1,7 +1,7 @@
 # Product Requirements Document — Dimas Panca Pamungkas Portfolio
 
 > **Codename:** `SYSTEMS ONLINE`
-> **Version:** 1.0 · **Date:** 2026-11-16 · **Owner / Author of record:** Dimas Panca Pamungkas
+> **Version:** 1.1 · **Date:** 2026-11-16 · **Owner / Author of record:** Dimas Panca Pamungkas
 > **Audience of this document:** the implementer (an AI agent or an engineer) who will generate the whole product from this file and the files it points to.
 > **Status:** Ready for implementation. Anything not stated here is a decision for the implementer *within the hard rules in §0.3*.
 
@@ -40,7 +40,7 @@ Dokumen ini adalah "otak" untuk membangun portofolio kamu dari nol, dengan tiga 
 2. **Semua referensi desain hanya dari bahan yang kamu berikan**: website `pacomepertant.com`, 5 video rekaman layar, dan 1 gambar (lihat §3). Tidak ada referensi lain.
 3. **Visual ramai tapi tetap ringan.** Efek WebGL, animasi, dan suara dibuat *lazy-loaded*, punya mode hemat otomatis, dan dikunci oleh anggaran performa (§8) yang dicek di CI.
 
-Fitur utama: layar pembuka ala "boot sistem" dengan pilihan **masuk dengan / tanpa suara**, hero berisi **foto kamu (`Dimas.png`)** dengan nama raksasa dan efek cahaya mengikuti kursor, bagian **Pencapaian** bergaya "Achievement Unlocked", linimasa pengalaman, karya, skill, kontak — dan **halaman Admin terpisah** (aplikasi tersendiri) tempat kamu menambah pencapaian/proyek baru tanpa menyentuh kode. Semua commit atas nama kamu; **tidak ada atribusi AI di mana pun** (aturan keras #1).
+Fitur utama: layar pembuka ala "boot sistem" dengan pilihan **masuk dengan / tanpa suara**, hero berisi **foto kamu (`Dimas.jpg`)** dengan nama raksasa dan efek cahaya mengikuti kursor, bagian **Pencapaian** bergaya "Achievement Unlocked", linimasa pengalaman, karya, skill, kontak — dan **halaman Admin terpisah** (aplikasi tersendiri) tempat kamu menambah pencapaian/proyek baru tanpa menyentuh kode. Semua commit atas nama kamu; **tidak ada atribusi AI di mana pun** (aturan keras #1). Hosting: **Vercel (gratis)** untuk web dan admin, database di Supabase.
 
 ### 0.2 Conventions
 
@@ -64,7 +64,7 @@ Fitur utama: layar pembuka ala "boot sistem" dengan pilihan **masuk dengan / tan
 | **HR-7** | **Admin isolation.** The admin app is a separate app and separate deployment. The public site ships **zero** admin code and **zero** secrets. |
 | **HR-8** | **Secrets.** No secrets in git. Only `.env.example`. Browser code may only use the Supabase *publishable/anon* key. |
 | **HR-9** | **Third-party media licensing.** Every audio/font/image/icon taken from the internet MUST be free for commercial use, and MUST be recorded in the license ledger (§7.5, `tools/audio/LEDGER.json`, `/credits` page). Prefer CC0 / no-attribution licenses. |
-| **HR-10** | **PII.** The phone number and any other private identifier in the CV are **not** committed to the public repo. They live only in the admin-managed `site_settings` (database). The seed file deliberately omits them. |
+| **HR-10** | **PII.** The phone number and any other private identifier from the CV are **not** committed to the public repo. Dimas chose to **show WhatsApp on the site** (Q-8): it is rendered as a `wa.me` link built from `site_settings.contact.whatsappNumber`, which is entered in the admin app or injected at seed time from the git-ignored env var `SEED_WHATSAPP_NUMBER` — never committed. The seed file deliberately omits it. |
 | **HR-11** | **Placeholders are visible to the owner.** Placeholder content is flagged in data, badged in admin, ribboned in preview builds, and listed by `pnpm content:lint`. Production builds warn (and fail when `STRICT_PLACEHOLDERS=1`). |
 | **HR-12** | **Language.** Site copy: Indonesian (default) + English. Code, comments, commit messages, docs: English. |
 
@@ -73,7 +73,22 @@ Fitur utama: layar pembuka ala "boot sistem" dengan pilihan **masuk dengan / tan
 1. §0 → §2 (rules + data) → §3 (references) → §4 (look & feel).
 2. §5–§7 (what to build, motion, sound) → §8 (budgets) → §9 (stack) → §10 (admin).
 3. §14–§15 (QA + delivery plan). Execute the milestones in §15.1 in order; each has acceptance criteria.
-4. Open `docs/seed/content.seed.json` and `design/source/Dimas.png` as inputs. Local-only reference media (not committed) is described in §3.5.
+4. Open `docs/seed/content.seed.json` and `design/source/Dimas.jpg` as inputs. Local-only reference media (not committed) is described in §3.5.
+
+### 0.5 Decisions log — Dimas's answers (2026-11-16)
+
+| ID | Decision (from Dimas) | Where it lands in this PRD |
+|---|---|---|
+| **D-1** | A new portrait was supplied: **1792 × 2400 px** studio photo (Q-1 answered). | §2.1, §4.7, §5.3 |
+| **D-2** | Hosting is **Vercel, free (Hobby)** on `*.vercel.app` domains (Q-2). Replaces the earlier Cloudflare Pages plan. Hobby is for **personal, non-commercial** use. | §1.5, §9.2, §9.4–§9.7, §15.4, Appx F/I |
+| **D-3** | Languages & frameworks to list: **Next.js, PHP, Laravel, Python, C++, JavaScript** (Q-4). | §2.7, §5.8 |
+| **D-4** | The Edge-AI/IoT oyster-mushroom system **is** the FAPERTA FAIR 2026 1st-place entry, won in **Thailand at Chiang Mai University** (Q-5; A-2 resolved). | §2.5, §2.6, §5.3 ticker, §5.5, §5.7 |
+| **D-5** | Availability text stays a **placeholder** (Q-7). | §5.3, A-5 |
+| **D-6** | **WhatsApp is shown** on the site (Q-8). The number is *not* committed to the public repo. | HR-10, §5.10, Appx F |
+| **D-7** | Socials: Email, **Instagram `@dimas_pancapamungkas`**, LinkedIn (+ GitHub from the CV). | §2.1, §5.10 |
+| **D-8** | Next.js is one of Dimas's *skills*, not a requirement for this site. The public site stays **Astro** (lighter); Vercel hosts its static output natively. | §9.2 |
+| **D-9** | Runtime target is **Node 24 LTS** (min 22.23.4): Astro 7 needs ≥ 22.23.4 and Vercel has retired Node 20. | §9.2 |
+
 
 ---
 
@@ -111,6 +126,7 @@ Interests stated in the CV: **software engineering, IoT, AI**. Hard skills state
 ### 1.5 Non-goals (v1.0)
 
 * No e-commerce, blog/CMS-for-articles, comments, user accounts for visitors, or pricing tables (no pricing data exists; R4's pricing is deliberately *not* adopted).
+* No ads, paid services or other commercial offerings: Vercel's free Hobby plan is restricted to **personal, non-commercial** use (a job-search portfolio qualifies).
 * No third-party tracking cookies, no consent banner (cookie-less analytics only).
 * No native mobile app (the admin is an installable PWA, §10).
 
@@ -120,7 +136,7 @@ Interests stated in the CV: **software engineering, IoT, AI**. Hard skills state
 |---|---|---|
 | Lighthouse (mobile, throttled) Performance / A11y / Best Practices / SEO | ≥ 90 / ≥ 100 / ≥ 100 / ≥ 100 | Lighthouse CI on every PR (§8.6) |
 | Lighthouse (desktop) Performance | ≥ 95 | LHCI |
-| LCP / CLS / INP (field, p75) | ≤ 2.0 s / ≤ 0.05 / ≤ 150 ms | Cloudflare Web Analytics (Web Vitals) |
+| LCP / CLS / INP (field, p75) | ≤ 2.0 s / ≤ 0.05 / ≤ 150 ms | Vercel Speed Insights (Web Vitals) |
 | Initial transfer (HTML+CSS+JS+fonts+LCP image), no audio | ≤ 450 KB | CI size gate |
 | Publish latency (admin "Publish" → visible on site) | ≤ 90 s p95 | publish_runs table |
 | "Add an achievement from my phone" task | ≤ 2 min | manual UAT |
@@ -130,7 +146,7 @@ Interests stated in the CV: **software engineering, IoT, AI**. Hard skills state
 
 ## 2. Source of truth — Dimas's data
 
-> **Provenance:** `CV_Dimas Panca Pamungkas.pdf` (2 pages) provided by Dimas on 2026-11-16, plus `Dimas.png` (portrait). The full machine-readable version is **`docs/seed/content.seed.json`** (EN verbatim from the CV, ID drafted and flagged `needs_review`). If this section and the seed ever disagree, **the seed wins**, then fix this section.
+> **Provenance:** `CV_Dimas Panca Pamungkas.pdf` (2 pages) provided by Dimas on 2026-11-16; the portrait `Dimas.jpg` (replaced 2026-11-16); and Dimas's written answers of 2026-11-16 (§0.5: languages/frameworks, Instagram handle, FAPERTA FAIR details). The full machine-readable version is **`docs/seed/content.seed.json`** (EN verbatim from the CV, ID drafted and flagged `needs_review`). If this section and the seed ever disagree, **the seed wins**, then fix this section.
 
 ### 2.1 Identity
 
@@ -138,11 +154,12 @@ Interests stated in the CV: **software engineering, IoT, AI**. Hard skills state
 |---|---|---|
 | Name | **Dimas Panca Pamungkas** | CV spelling is "Pamungkas" (note: some local folder names say "Pamungka" — ignore) |
 | Location | Serang, Banten, Indonesia | |
-| Email | `dimaspanca2005@gmail.com` | from CV |
+| Email | `dimaspanca2005@gmail.com` | from CV; Dimas typed it as `DimasPanca2005@gmail.com` — same address (case-insensitive); canonical form is lowercase |
 | LinkedIn | `https://www.linkedin.com/in/dimas-panca-pamungkas-66609a208/` | from CV |
 | GitHub | `https://github.com/DimasPanca` | from CV |
-| Phone / WhatsApp | *present in CV, intentionally NOT in this repo* | HR-10 → stored in `site_settings.whatsapp_number` via admin |
-| Portrait | `design/source/Dimas.png` — **355 × 474 px**, formal portrait (black suit, white shirt, black tie) on a **flat red background** | see §4.7 pipeline |
+| Instagram | `@dimas_pancapamungkas` → `https://www.instagram.com/dimas_pancapamungkas/` | provided by Dimas (2026-11-16); handles are lowercase |
+| WhatsApp | **shown on the site** as a `wa.me` link (D-6). The number is in the CV but is **not committed** to this public repo | HR-10 → `site_settings.contact.whatsappNumber` via admin, or `SEED_WHATSAPP_NUMBER` (git-ignored env) at seed time |
+| Portrait | `design/source/Dimas.jpg` — **1792 × 2400 px** studio portrait (replaced the earlier 355×474 red-background ID photo on 2026-11-16): Dimas seated on a high stool, black blazer over a dark-teal tee, black trousers and shoes, looking toward camera-left; grey seamless backdrop, dark floor. ⚠ The supplied file was named `Dimas.png` but is a **JPEG** (no EXIF/GPS/XMP found), so it is stored as `.jpg` | see §4.7 pipeline |
 
 ### 2.2 Summary (verbatim from CV, third person)
 
@@ -171,7 +188,7 @@ Bullets for each are in the seed (verbatim). Highlights worth surfacing: RedDoor
 
 | Slug | Placement | Event | Category / scope | Description (from CV) |
 |---|---|---|---|---|
-| `faperta-fair-2026-1st` | **1st Place Winner** | 10th International **FAPERTA FAIR** 2026 (Research, Technology, and Art) | competition · international | See A-2: likely the event for the oyster-mushroom Edge-AI/IoT proposal |
+| `faperta-fair-2026-1st` | **1st Place Winner** | 10th International **FAPERTA FAIR** 2026 (Research, Technology, and Art) — won in **Thailand, at Chiang Mai University** (per Dimas) | competition · international | Won with the Edge-AI + IoT oyster-mushroom system (§2.6) — link **confirmed** by Dimas (resolves A-2) |
 | `bmc-industrial-2026-1st` | **1st Place** | Industrial Competitions — **Business Model Canvas Competition** | business · (scope not stated) | Developed an innovative business model and commercialization strategy for a technology-driven solution; market analysis, value-proposition design, business validation; presented to judges |
 | `geteksi-v3-2026-3rd` | **3rd Place** | **GETEKSI Vol. 3** National Essay Competition | essay · national | Research-based innovation addressing real-world challenges through technology and strategic analysis |
 | `innovate-astra-2026-top4` | **Top 4 Finalist** | **IN:NOVATE** National Hackathon by **Astra** | hackathon · national | Multidisciplinary team; designed and developed a technology-based solution |
@@ -182,28 +199,29 @@ Bullets for each are in the seed (verbatim). Highlights worth surfacing: RedDoor
 | Slug | Title | Role | Year | Description (from CV) |
 |---|---|---|---|---|
 | `reddoorz-team-run` | **RedDoorz Team Run** | Project Manager | 2026 | Multiplayer co-op game delivered for **internal use** within RedDoorz; planning, sprints, cross-functional coordination (developers, designers, stakeholders), feature prioritization, QA/UAT, delivered production-ready |
-| `edge-ai-oyster-mushroom` | **Fully-automated, near-zero-waste oyster-mushroom cultivation system (Edge AI + IoT)** | Proposer; designed system architecture, wiring and hardware selection | 2026 | Stated in CV as a proposal/achievement; ESP32 listed in skills. Link to FAPERTA FAIR is an assumption (A-2) |
+| `edge-ai-oyster-mushroom` | **Fully-automated, near-zero-waste oyster-mushroom cultivation system (Edge AI + IoT)** | Proposer; designed system architecture, wiring and hardware selection | 2026 | Wording from the CV (a *proposal*). **This is the entry that won 1st place at FAPERTA FAIR 2026 (Chiang Mai University, Thailand)** — confirmed by Dimas; **featured** project |
 
 ### 2.7 Skills (only what the CV states)
 
 * **Hard:** full-stack web application development · AI-powered solutions · IoT systems · database design · REST API integration · prompt engineering · retrieval-augmented generation (RAG) · embedded systems with ESP32 · version control with Git · UI prototyping with Figma.
 * **Soft:** leadership · collaboration · project planning · effective communication · problem-solving · strategic decision-making · balancing multiple responsibilities · presentation/pitching (stated inside achievements).
-* The CV says "modern programming languages and frameworks" without naming them → **[PLACEHOLDER: concrete languages/frameworks list]** (see Q-4). **Never** show proficiency percentages/bars (no data exists).
+* **Languages & frameworks (provided by Dimas on 2026-11-16, not in the CV):** Next.js · PHP · Laravel · Python · C++ · JavaScript. Shown as technology tiles (§5.8) with **no proficiency levels** (none were given). **Never** show proficiency percentages/bars.
 
 ### 2.8 Assumptions & inconsistencies register
 
 | ID | Issue | Default applied | Resolve by |
 |---|---|---|---|
 | **A-1** | Degree line says "Bachelor of Informatic System", summary says "Informatics Engineering". | Use **"Informatics Engineering"** in prose; keep the degree line verbatim in the Education record. | Q-3 |
-| **A-2** | The oyster-mushroom Edge-AI/IoT item has no event named; FAPERTA FAIR (a faculty-of-agriculture fair) is the only unmatched 1st-place event. | Model them as **separate records**, link with `link_confirmed: false`; UI does **not** claim the link. | Q-5 |
+| **A-2** | **Resolved 2026-11-16:** Dimas confirmed the Edge-AI oyster-mushroom system is the FAPERTA FAIR 2026 winning entry, won in Thailand at Chiang Mai University. | Records linked (`linkConfirmed: true`); achievement `location` = *Chiang Mai University, Thailand* | closed |
 | **A-3** | CV contains two Google Drive proof links (not mapped to specific achievements). | Not copied to the repo; Dimas adds `proof_url` per achievement in admin. | Q-6 |
 | **A-4** | RedDoorz period is only "Jul 2026". | Display "Jul 2026"; `end` omitted. | — |
 | **A-5** | "Available for …" status not stated. | `[PLACEHOLDER: availability text]` e.g. "Open to internships & collaborations" shown in ticker/badge, editable in admin. | Q-7 |
 | **A-6** | No photo of competitions/events, no project screenshots/links. | Generated placeholder art + `is_placeholder`. | Dimas uploads in admin |
+| **A-7** | Dimas wrote the venue as "Chang Mai University"; the institution's official name is **Chiang Mai University** (Thailand). | Official spelling used | tell me if the venue wording should differ |
 
 ### 2.9 Placeholder register (everything *not* in the CV)
 
-Marked `is_placeholder: true` in seed/data: 3 extra projects (generic cards), 6 gallery tiles, availability text, CV PDF file, WhatsApp number, OG/social images, project screenshots/links, event photos, language/framework chips, testimonial block (not rendered in v1.0), Indonesian translations (`needs_review: true`, a *different* flag).
+Marked `is_placeholder: true` in seed/data: 3 extra projects (generic cards), 6 gallery tiles, availability text, CV PDF file, project screenshots/links, event photos, OG/social images, testimonial block (not rendered in v1.0), Indonesian translations (`needs_review: true`, a *different* flag). *(Languages/frameworks and the WhatsApp number are no longer placeholders — supplied by Dimas on 2026-11-16.)*
 
 ---
 
@@ -240,7 +258,7 @@ Black-on-white. Giant words **"… FULL STACK DEVELOPER …"** scrolling horizon
 ### 3.4 R3 — `WhatsApp Video 2026-11-16 at 3.45.31 PM.mp4` (landscape, 76 s — a static hero held for the whole clip)
 
 Light-grey background; a **cut-out portrait in a suit** standing on the bottom edge; behind it, giant **outline-only (stroke, no fill) text** sliding horizontally; a white blurred **floating pill navbar** (logo, links, dark CTA); tiny meta text on the left and vertical text on the right edge.
-→ **Adopt:** stroke-only marquee text layered with the portrait; floating blurred pill nav; formal-suit portrait works well on this layout (matches `Dimas.png`).
+→ **Adopt:** stroke-only marquee text layered with the portrait; floating blurred pill nav; formal-suit portrait works well on this layout (matches `Dimas.jpg`).
 
 ### 3.5 R4 — `WhatsApp Video 2026-11-16 at 3.45.31 PM (1).mp4` (portrait 576×1024, 29 s — a "Portfolio Website" template promo)
 
@@ -373,20 +391,34 @@ Loading: preload **Anton** and **Geist** only; `font-display: swap`; fallback fa
 * Icons: single inline **SVG sprite** (≤ 12 KB) of ~40 line icons (24 px grid, 1.75 stroke). Technology tiles use simple monochrome glyphs; **no icon fonts, no external icon CDNs**.
 * **Stickers** (R0 pattern, *our own artwork*): 12 glossy volt/ink/flare mini-objects — chip, ESP32-style board, node-graph "brain", trophy, rocket, gamepad (RedDoorz Team Run), people, bolt, code brackets, laptop, mushroom (the IoT project), star. Export WebP 192 px with alpha, **≤ 8 KB each**; created from simple 3D primitives (Blender) or gradient SVG → raster. Until final art exists, ship SVG gradient glyphs flagged `is_placeholder`.
 
-### 4.7 Portrait asset pipeline (`Dimas.png` → hero)
+### 4.7 Portrait asset pipeline (`Dimas.jpg` → hero)
 
-**Input:** `design/source/Dimas.png` — **355×474 px**, flat red background, formal suit. This is *low resolution* for a hero → the pipeline below is **mandatory** and a higher-resolution original is requested in Q-1.
+**Input:** `design/source/Dimas.jpg` — **1792 × 2400 px** (replaced 2026-11-16; resolves Q-1). Studio portrait: Dimas seated on a high stool, black blazer over a dark-teal tee, black trousers and leather shoes, a watch and a ring; he looks toward camera-left; smooth mid-grey seamless backdrop and a dark floor. The resolution is enough for a 1000–1400 px-tall hero at DPR 2 — **no AI upscaling is needed.** (The file was supplied as `Dimas.png` but is a JPEG; keep the `.jpg` name.)
 
-| Step | What | Tooling (offline, one-off, scripted in `tools/images/`) |
+**What the photo implies for the design**
+
+* **Gaze toward camera-left ⇒ place the portrait on the *right* half of the hero** so he looks *into* the page, toward the name and pitch (same composition logic as R1–R3, R5, R6).
+* Dark clothing on a mid-grey backdrop ⇒ the volt rim-light will read very well; matting is straightforward (no colour spill like the old red ID photo).
+* Seated full-body pose ⇒ use **three crops** from one source:
+
+| Crop | Framing | Used for |
 |---|---|---|
-| 1. Matte | Remove the red background → alpha. Flat-color background allows chroma-key refinement, but hair needs a proper matte. | `rembg` with a BiRefNet model (verify the model's license permits commercial use), or manual in Photopea/Photoshop. **Do not use** `@imgly/background-removal` (non-permissive license). |
-| 2. Despill / defringe | Kill red spill on hair, ears, shoulders: for pixels within 3 px of the alpha edge, desaturate reds and pull toward neutral dark. | script (sharp/numpy) |
-| 3. Upscale | 4× → ≥ 1400×1870 (before any other effect). | Real-ESRGAN (BSD-3-Clause) one-off, **or** replace with Dimas's original photo (Q-1) |
-| 4. Depth map | 8-bit grayscale 512×683 used by the parallax shader. | Depth-Anything-V2-Small (Apache-2.0) one-off, or hand-painted gradient (head nearest) |
-| 5. Export | `portrait-{480,720,960,1280,1600}.avif` (q≈60) + `.webp` (q≈78) with alpha; `portrait-depth-512.webp`; LQIP (≤ 400 B base64); square crop for OG/JSON-LD. | sharp |
-| 6. Acceptance | No red fringe at 200 % zoom on `#0A0A0B` **and** on `#F3F1EA`; hair strands kept; 960 w AVIF ≤ 80 KB. | visual check + script that samples edge pixels |
+| **hero** | head to mid-thigh, ≈ 4:5; the stool edge may show | hero cut-out (§5.3) |
+| **full** | whole figure incl. stool, 3:4 | Credo block (§5.8), 404, OG compositions |
+| **editorial** (no cut-out) | original grey backdrop, colour-graded | About card (§5.4) / Contact glow (§5.10) where the grey suits the palette |
 
-Display rule while the source is low-res: render at **≤ 560 CSS px height at DPR 1** and rely on the upscaled export; never up-scale the raw PNG in CSS.
+**Pipeline** (offline, one-off, scripted in `tools/images/`):
+
+| Step | What | Tooling |
+|---|---|---|
+| 1. Matte | Cut the figure from the grey backdrop → alpha (hair and blazer edges matter; keep the stool in the **full** variant). | `rembg` with a BiRefNet model (verify that model's license permits commercial use) or manual refinement in Photopea/Photoshop. **Do not use** `@imgly/background-removal` (non-permissive license). |
+| 2. Edge decontamination | Light-grey backdrop leaves a pale fringe when the cut-out sits on `#0A0A0B`: shift edge-pixel colours toward the nearest interior colour; 2–3 px feather. | script (sharp/numpy) |
+| 3. Colour grade | Modest contrast curve + cool-neutral grade so the teal tee harmonises with ink/volt. **No retouching** of face, skin or body — colour only. | script or manual |
+| 4. Depth map | 8-bit grayscale 512×683 for the parallax shader (face/torso nearest, stool/legs farther). | Depth-Anything-V2-Small (Apache-2.0) one-off, or hand-painted gradient |
+| 5. Export | `portrait-hero-{480,720,960,1280,1600}.avif` + `.webp` with alpha · `portrait-full-{720,1080}.*` · `portrait-depth-512.webp` · `portrait-editorial-{960,1600}.avif` · LQIP (≤ 400 B) · square crop for OG/JSON-LD. | sharp |
+| 6. Acceptance | No grey halo at 200 % zoom on `#0A0A0B` **and** on `#F3F1EA`; hair detail kept; **hero 960 w AVIF ≤ 80 KB**; alt text per §13. | visual check + edge-pixel sampling script |
+
+**Display rule:** hero crop ≈ 88 vh tall on desktop, anchored bottom-right; ≈ 70 vw wide on mobile. Never scale the source in CSS — always use the exported sets.
 
 ### 4.8 Brand mark
 
@@ -462,11 +494,11 @@ Tiny HUD (bottom-left, above the badge on desktop): `EXPLORED 3/8`. Visiting all
 | CTAs | Primary **"Lihat Pencapaian"** (volt fill) · secondary **"Hubungi Saya"** (outlined pill, R6) · tertiary text link **"Unduh CV"** |
 | Stats strip | Four counters **derived from data, never hard-coded**: GPA `3.89/4.00` · `{n}` achievements (2026) · `{n}`× 1st place · `{n}` roles. Count-up 1.2 s `expo.out`, final values present in HTML (no-JS), `tabular-nums`. |
 | Marquee | Stroke text behind portrait: `SOFTWARE ENGINEERING ◆ AI & RAG ◆ IoT & ESP32 ◆ PROJECT MANAGEMENT ◆ STUDENT LEADER ◆`; base speed 40 px/s, **scroll-velocity coupled** (speeds up + skews ≤ 6° on fast scroll, eases back). CSS-animated; velocity only adjusts `animation-duration`/transform via one tween. |
-| Ticker band (R2) | Bottom edge, ink band, volt text: `AVAILABLE FOR … ◆ {availability} ◆ …` ([PLACEHOLDER: availability]) |
-| Portrait (WebGL, tier ≥ mid) | One OGL plane with the cut-out + depth map: (a) **volt rim-light** following the pointer (lerp .08), (b) **depth parallax** ≤ 12 px at 1440 w, (c) animated **grain** at 12 fps, (d) **RGB split** ∝ scroll velocity (cap 2 px), (e) idle "breathing" scale ±0.3 %. Fade-in over the `<img>` only after the first rendered frame; `<img>` (the LCP element, `fetchpriority="high"`) is then `visibility:hidden`. |
+| Ticker band (R2) | Bottom edge, ink band, volt text, two **data-derived** items alternating: (1) `1ST PLACE ◆ INTERNATIONAL FAPERTA FAIR 2026 ◆ CHIANG MAI UNIVERSITY, THAILAND` — generated from the highest-ranked international achievement (rank label + short title + `location`); (2) `{availability}` ([PLACEHOLDER: availability]). |
+| Portrait (WebGL, tier ≥ mid) | **Placement:** hero crop (§4.7), anchored bottom-right, ≈ 88 vh tall on desktop, looking *into* the page (gaze toward camera-left), bottom edge seated on the ticker band. One OGL plane with the cut-out + depth map: (a) **volt rim-light** following the pointer (lerp .08), (b) **depth parallax** ≤ 12 px at 1440 w, (c) animated **grain** at 12 fps, (d) **RGB split** ∝ scroll velocity (cap 2 px), (e) idle "breathing" scale ±0.3 %. Fade-in over the `<img>` only after the first rendered frame; `<img>` (the LCP element, `fetchpriority="high"`) is then `visibility:hidden`. |
 | Pointer ink trail (tier = high, P1) | 128² ping-pong FBO that subtly distorts glow/grain near the cursor. Off on mid/low. |
 | Floating stickers (P1) | 3–4 stickers drifting around the portrait with `data-speed` parallax (R1 floating-object pattern). |
-| Mobile | Name lines at top, portrait below (cropped at chest, 70 vw), pitch + CTAs under it, stats 2×2, ticker at the bottom; WebGL only on `high` tier, otherwise CSS parallax from `deviceorientation` is **not** used (kept static). |
+| Mobile | Name lines at top, portrait below (hero crop, ≈ 70 vw), pitch + CTAs under it, stats 2×2, ticker at the bottom; WebGL only on `high` tier, otherwise CSS parallax from `deviceorientation` is **not** used (kept static). |
 | Sound | `boot_stinger` (at gate), `hover_tick` on CTAs, `click_soft`. |
 | AC | LCP element is the portrait `<img>`; LCP ≤ 2.0 s (mobile, throttled); the page is fully legible with WebGL off; no layout shift when the canvas mounts. |
 
@@ -493,13 +525,13 @@ AC: scrub is smooth at 60 fps on mid-range laptop; reduced-motion = static parag
 | Header | `03 / PENCAPAIAN` mono label · huge title · live counter **"{unlocked}/{total} UNLOCKED"** · filter chips **All · Competition · Hackathon · Essay · Business** (P1; derived from `category`). |
 | Layout ≥ 1024 px, fine pointer, motion OK | **Pinned horizontal rail** (GSAP ScrollTrigger, `scrub: 0.6`, snap to card centers). Each card 420×540 at 1440 w. |
 | Layout otherwise | Native `scroll-snap-x` carousel (touch) or vertical stack (reduced-motion). No JS required for the stack fallback. |
-| Card | Big rank numeral in Anton (`1ST`, `3RD`, `TOP 4`, `TOP 10`) · event title (h3) · organizer · year · scope chip · 2–3-line summary · expandable highlights · **"Lihat bukti ↗"** if `proof_url` · cover image if provided else generated pattern art (SVG concentric rings + rank). |
+| Card | Big rank numeral in Anton (`1ST`, `3RD`, `TOP 4`, `TOP 10`) · event title (h3) · organizer · year · **location** (when set, e.g. *Chiang Mai University, Thailand*) · scope chip · 2–3-line summary · expandable highlights · **"Lihat bukti ↗"** if `proof_url` · cover image if provided else generated pattern art (SVG concentric rings + rank). |
 | Featured | `rank_tier = 1` cards use the **accent-highlighted middle-card pattern** (R4): volt border + soft glow + `unlock_gold`. |
 | Unlock moment | When a card crosses 60 % of the viewport width in the rail: ring-burst (CSS, 400 ms) + **`unlock`** cue (or `unlock_gold` for tier 1) + counter increments with a tick. Once per card per session. |
 | Hover/focus | Tilt ±6° (pointer only) with glare highlight; focus ring 2 px volt. Click/Enter → `/achievements/[slug]` (view-transition morph) or dialog if JS-only. |
 | Keyboard | `←/→` move between cards; `Tab` reaches links; rail has `role="region"` + `aria-label`; live-region announces "Achievement 3 of 5". |
 | Data | Published `achievements` ordered by `sort_order`, then `achieved_on` desc. New items appear automatically after publish. |
-| Detail page (P1) | Hero with rank numeral, meta grid (organizer, date, scope, category), description + highlights, proof image/PDF link, **certificate-style carousel** of proof images (center focused, sides dimmed/perspective — R5) when media exists, "Next achievement" link. |
+| Detail page (P1) | Hero with rank numeral, meta grid (organizer, date, **location**, scope, category), **linked project card** (e.g. the oyster-mushroom system → `/works/edge-ai-oyster-mushroom`), description + highlights, proof image/PDF link, **certificate-style carousel** of proof images (center focused, sides dimmed/perspective — R5) when media exists, "Next achievement" link. |
 | AC | All 5 seeded achievements render with correct ranks/labels; rail works with keyboard; zero CLS; unlock fires once; reduced-motion shows a static vertical stack. |
 
 ### 5.6 `[04]` Perjalanan / Journey (P0) · R6 ("Karir")
@@ -516,18 +548,18 @@ AC: scrub is smooth at 60 fps on mid-range laptop; reduced-motion = static parag
 ### 5.7 `[05]` Karya / Works (P0) · R2, R5
 
 * Slash-prefixed title **`/KARYA`**, intro line, arrows + `01/05` counter (R2).
-* **Numbered horizontal slider** (native scroll-snap + arrow buttons; GSAP only for the number/parallax polish). Cards: cover, title, role, year, stack chips, short description, "Lihat studi kasus" CTA; the **featured** card (RedDoorz Team Run) uses the accent pattern (R4).
+* **Numbered horizontal slider** (native scroll-snap + arrow buttons; GSAP only for the number/parallax polish). Cards: cover, title, role, year, stack chips, short description, "Lihat studi kasus" CTA; the **featured** cards (RedDoorz Team Run, and the Edge-AI mushroom system with a "1ST PLACE · FAPERTA FAIR 2026" award chip pulled from its linked achievement) use the accent pattern (R4).
 * Hover (pointer): image scale 1.04 + clip-reveal of the CTA, cursor label "LIHAT", `hover_tick`; click → `/works/[slug]` with **native cross-document view transition** (shared `view-transition-name`).
 * **Placeholders** show a "SEGERA / COMING SOON" ribbon, no fake links, and a generated cover (§4.6). They are counted in admin.
 * If > 6 projects: **archive grid + "Muat lebih banyak"** (R5).
-* **Detail page**: cover hero, meta grid (role, year, team size *[only if known]*, stack, links), *Context → Approach → Outcome* (markdown from admin), media gallery, "Next project". For `reddoorz-team-run`: use only CV facts (PM role; planning, sprints, QA/UAT, delivered for internal RedDoorz use). **No invented metrics.**
+* **Detail page**: cover hero, meta grid (role, year, team size *[only if known]*, stack, links), *Context → Approach → Outcome* (markdown from admin), media gallery, "Next project". For `reddoorz-team-run`: use only CV facts (PM role; planning, sprints, QA/UAT, delivered for internal RedDoorz use). **No invented metrics.** For `edge-ai-oyster-mushroom` use only confirmed facts: a proposal for a fully automated, near-zero-waste oyster-mushroom cultivation system with Edge AI + IoT; Dimas designed the architecture, wiring and hardware selection; it won 1st place at FAPERTA FAIR 2026 (Chiang Mai University, Thailand). **No invented technical details** (sensors, models, accuracy).
 * View toggle **grid / list / rail** (R0 "spiral/list" idea) — P2.
 
 ### 5.8 `[06]` Keahlian / Skills + Credo (P0/P1) · R5, R2
 
-* **Tile groups** (R5): *AI & Data* (AI-powered solutions, prompt engineering, RAG) · *Web & Backend* (full-stack web apps, database design, REST API integration) · *IoT & Embedded* (IoT systems, ESP32) · *Tools & Design* (Git, Figma) · *Leadership* (soft skills). One tile **"Stack — [PLACEHOLDER: languages/frameworks]"**.
+* **Tile groups** (R5): *AI & Data* (AI-powered solutions, prompt engineering, RAG) · *Web & Backend* (full-stack web apps, database design, REST API integration) · *IoT & Embedded* (IoT systems, ESP32) · *Tools & Design* (Git, Figma) · **Languages & frameworks** (Next.js · PHP · Laravel · Python · C++ · JavaScript — provided by Dimas) · *Leadership* (soft skills).
 * **Two marquee rows** (opposite directions) of skill chips, velocity-coupled, pause on hover/focus; a static list exists for AT users (`aria-hidden` on the marquee).
-* **Credo interstitial (R2):** dark block with stacked words **BUILD / LEAD / WIN** (greyed, the active word highlights as you scroll) + one sentence + a placeholder event photo. (Words derived from CV: builds software/AI/IoT; leads HMIF & projects; wins competitions.)
+* **Credo interstitial (R2):** dark block with stacked words **BUILD / LEAD / WIN** (greyed, the active word highlights as you scroll) + one sentence + the **full** portrait crop (seated figure, §4.7) as the visual anchor. (Words derived from CV: builds software/AI/IoT; leads HMIF & projects; wins competitions.)
 * No proficiency bars/percentages (HR-2).
 
 ### 5.9 `[07]` Galeri / Moments (P1) · R6 ("Galeri")
@@ -538,7 +570,7 @@ Masonry/auto-marquee of event & team photos from `gallery_items` (AVIF, lazy, bl
 
 * **Glow background** (warm→volt gradient) + **form card** (R4): name, email, message, honeypot, Turnstile (invisible/managed). Optional "Topic" select (Internship / Collaboration / Competition / Other).
 * **Giant headline** (R5 pattern, own words): ID *"AYO BIKIN SESUATU YANG BERDAMPAK."* · EN *"LET'S BUILD SOMETHING THAT MATTERS."* Letters respond to cursor proximity (≤ 24 letters, `quickTo`).
-* **Direct channels:** email (click = copy + toast + `copy_ok`), WhatsApp (`wa.me` link, shown only if `site_settings.whatsapp_number` is set), LinkedIn, GitHub — as **very large stacked links** (R0).
+* **Direct channels** as **very large stacked links** (R0): email (click = copy + toast + `copy_ok`), **WhatsApp** (`wa.me/<number>` — **shown**, per D-6; rendered only when `site_settings.contact.whatsappNumber` is set), **Instagram** (`@dimas_pancapamungkas`), LinkedIn, GitHub.
 * **Live clock** `SERANG · WIB HH:MM:SS` (Asia/Jakarta, `Intl.DateTimeFormat`, 1 s tick, paused when tab hidden) (R5) and a **round back-to-top** button (R5) with `click_soft`.
 * **Footer:** sticky-reveal; `© 2026 Dimas Panca Pamungkas`; links: Credits · Privacy · Lite-mode toggle · language · sound. **No AI/tooling credit** (HR-1).
 * Sound: `copy_ok`, `send_ok`, `error`.
@@ -761,8 +793,8 @@ Override with `?tier=static|low|mid|high` (also used by tests) and the footer **
 * **Below-the-fold:** `content-visibility: auto; contain-intrinsic-size: auto 800px` on heavy sections.
 * **Fonts:** self-hosted, preload Anton + Geist, metric-matched fallbacks (§4.3).
 * **Video:** none autoplaying on mobile; project previews are lazy `<video preload="none" poster>` started on hover/in-view, ≤ 600 KB.
-* **Third parties:** none except Cloudflare Turnstile (loaded on form focus/visibility) and the Cloudflare Web Analytics beacon (deferred). Everything else self-hosted.
-* **Caching (`_headers`):** hashed assets `public, max-age=31536000, immutable`; HTML `public, max-age=0, must-revalidate`; audio files hashed + immutable with `Accept-Ranges`.
+* **Third parties:** none except Cloudflare Turnstile (loaded on form focus/visibility); Vercel Analytics / Speed Insights are first-party `/_vercel/*` paths (deferred). Everything else self-hosted.
+* **Caching (`vercel.json` → `headers`, Appx I):** hashed assets `public, max-age=31536000, immutable`; HTML `public, max-age=0, must-revalidate`; audio files hashed + immutable with `Accept-Ranges`.
 * **Animations:** `transform/opacity/clip-path` only; `will-change` only during an animation; no animating `box-shadow`, `filter: blur` on large areas, or layout properties.
 
 ### 8.5 WebGL rules (hero)
@@ -781,7 +813,7 @@ Override with `?tier=static|low|mid|high` (also used by tests) and the footer **
 * **size-limit** on the named chunks (L1/L2/L3/L4) + CSS + fonts.
 * **Playwright perf probe:** records long tasks in the first 5 s (≤ 2 > 50 ms) and verifies no console errors.
 * **Manual device matrix per release:** Moto-G-Power-class Android (Chrome), iPhone 12-class (Safari), 2019-era Intel-iGPU laptop (Chrome/Firefox/Edge/Safari), a 1440p desktop with dGPU. Record FPS and tier chosen.
-* **RUM:** Cloudflare Web Analytics Web Vitals; investigate when p75 exceeds NFR-PERF-13.
+* **RUM:** Vercel Speed Insights (Web Vitals); investigate when p75 exceeds NFR-PERF-13.
 
 ---
 
@@ -801,7 +833,7 @@ Override with `?tier=static|low|mid|high` (also used by tests) and the footer **
 
 | Concern | Choice | Version | Why / notes |
 |---|---|---|---|
-| Runtime | **Node.js LTS** | **≥ 22.23.4** | Required by Astro 7 (`engines.node >=22.23.4`); Vitest 5 needs `^22.12`. ⚠ *Dimas's machine currently has Node v20.20.0 → upgrade (add `.nvmrc` = 22, `engines` in package.json).* |
+| Runtime | **Node.js 24 LTS** (minimum **≥ 22.23.4**) | 24.x | Astro 7 requires `engines.node >=22.23.4`; Vitest 5 needs `^22.12 \| ^24`; Vercel has retired Node 20 and offers 24.x (check Project Settings → Node.js Version). ⚠ *Dimas's machine currently has Node v20.20.0 → upgrade (add `.nvmrc` = 24, `engines.node: ">=22.23.4"`).* |
 | Package manager / monorepo | **pnpm** workspaces + **Turborepo** | pnpm 12.x · turbo 2.11 | fast installs, task caching |
 | Language | **TypeScript** (strict) | **~6.0.3** | ⚠ Do **not** use TS 7.0.x: `@astrojs/check`'s peer range is `^5 \|\| ^6`. Revisit when it widens. |
 | Lint/format | **Biome** | 2.6 | single fast tool; `noUnusedImports`, a11y rules |
@@ -818,13 +850,13 @@ Override with `?tier=static|low|mid|high` (also used by tests) and the footer **
 | Admin libs | `react-router` (v7), **TanStack Query** 5.107, **react-hook-form** 7.92 + `@hookform/resolvers`, **@dnd-kit** (core 6.3, sortable 10), Tailwind 4 + **shadcn/ui** (Radix), `sonner`, `browser-image-compression` 2.0, `vite-plugin-pwa` 2.0 | | installable PWA for quick-add from a phone |
 | Backend | **Supabase**: Postgres + Auth + Storage + Edge Functions (Deno) | supabase-js 2.119 · CLI 3.1 | RLS-first; free tier suffices. ⚠ Free projects **pause after ~7 days of low activity** → keep-alive workflow (§9.8). |
 | Email | **Resend** (from an Edge Function) | resend 6.38 | contact notifications |
-| Anti-spam | **Cloudflare Turnstile** + honeypot + rate limit | — | no cookies/CAPTCHA puzzles |
-| Hosting | **Cloudflare Pages** ×2 (web, admin) + `wrangler` | wrangler 4.16x | global CDN, unlimited bandwidth on free; PR preview deploys; deploy hooks |
-| Analytics | **Cloudflare Web Analytics** (cookie-less) + tiny first-party event counter (§12) | — | no consent banner |
+| Anti-spam | **Cloudflare Turnstile** (free; needs a free Cloudflare account — *not* Cloudflare hosting) + honeypot + time-trap + rate limit | — | no cookies/CAPTCHA puzzles; if Dimas prefers no extra account, drop Turnstile and keep honeypot + time-trap + rate limit (weaker) |
+| Hosting | **Vercel (Hobby, free)** — two projects (web, admin) from this repo | Vercel Git integration | global CDN, PR preview deployments, **Deploy Hooks**, `*.vercel.app` domains. Hobby is **personal / non-commercial only** (no ads, paid services or pricing on the site — §1.5). Quotas change: read the current Hobby plan page. |
+| Analytics | **Vercel Web Analytics** (cookie-less page views; Hobby quota ≈ 50k events/mo — verify) + **Vercel Speed Insights** (Web Vitals; free tier ≈ 10k events/30 days — verify) + tiny first-party event counter (§12) | — | no consent banner; custom events do **not** depend on Vercel |
 | Tests | **Vitest** 5.1 · **Playwright** 1.65 · `@axe-core/playwright` 4.14 · **Lighthouse CI** 0.16 · `size-limit` | | §14 |
 | OG images | static designed OG for home + per-page via **satori** (MPL-2.0) + `@resvg/resvg-js` (MPL-2.0) at build | 0.63 / 2.6 | optional dynamic; MPL is acceptable for unmodified use |
 
-**Considered & rejected:** Three.js (≈ 6× heavier than OGL for this use) · Next.js/React for the public site (hydration cost) · Framer Motion (React-only) · Tone.js (≈ 150 KB; Howler + a few Web Audio nodes suffice) · Locomotive/ScrollSmoother (Lenis is lighter) · hosted headless CMS (admin requirements are small; own admin = control + no vendor limits) · SSR/edge rendering (unneeded; adds runtime + cold paths) · `@imgly/background-removal` (non-permissive license) · Dependabot/Renovate (HR-1: no bot authors → manual updates).
+**Considered & rejected:** Three.js (≈ 6× heavier than OGL for this use) · Next.js/React for the public site (hydration cost; Next.js stays on the site only as one of Dimas's listed skills, and Vercel hosts Astro's static output natively) · Framer Motion (React-only) · Tone.js (≈ 150 KB; Howler + a few Web Audio nodes suffice) · Locomotive/ScrollSmoother (Lenis is lighter) · hosted headless CMS (admin requirements are small; own admin = control + no vendor limits) · SSR/edge rendering (unneeded; adds runtime + cold paths) · `@imgly/background-removal` (non-permissive license) · Dependabot/Renovate (HR-1: no bot authors → manual updates).
 
 ### 9.3 Repository layout
 
@@ -840,8 +872,9 @@ Dimas-s_Portofolio/
 │  │  │  ├─ styles/             # tokens.css, base.css, utilities
 │  │  │  ├─ i18n/               # id.json, en.json (UI strings only)
 │  │  │  └─ data/               # content.generated.json (git-ignored)
-│  │  ├─ public/                # _headers, robots.txt, audio/, favicons
-│  │  └─ astro.config.mjs
+│  │  ├─ public/                # robots.txt, audio/, favicons
+│  │  ├─ astro.config.mjs
+│  │  └─ vercel.json            # headers, cache rules, cleanUrls (Appx I)
 │  └─ admin/                    # private CMS — Vite + React (separate deployment)
 ├─ packages/
 │  ├─ schema/                   # Zod schemas + inferred types + i18n helpers (single source of truth)
@@ -856,7 +889,7 @@ Dimas-s_Portofolio/
 │  ├─ audio/                    # raw/ (ignored), build-sprite.mjs, LEDGER.json
 │  └─ images/                   # portrait pipeline scripts (§4.7)
 ├─ scripts/                     # fetch-content.ts, seed-db.ts, content-lint.ts, check-authorship.sh
-├─ design/source/Dimas.png      # source portrait (input)
+├─ design/source/Dimas.jpg      # source portrait (input)
 ├─ docs/                        # PRD.md, seed/content.seed.json
 ├─ .github/workflows/           # ci.yml, authorship.yml, keepalive.yml, backup.yml
 ├─ .husky/                      # commit-msg (HR-1 guard)
@@ -871,13 +904,13 @@ Dimas-s_Portofolio/
                        └───────────────┬───────────────────────────────────────┬───────────────────┘
                                        │ "Publish"                              │ Postgres (RLS) · Auth · Storage
                                        ▼                                        │
-                       Edge Function trigger-deploy ──(owner check)──▶ Cloudflare Pages deploy hook
+                       Edge Function trigger-deploy ──(owner check)──▶ Vercel Deploy Hook
                                                                                 │
-   Build (Cloudflare Pages, Node 22)                                            │
+   Build (Vercel, Node 24)                                            │
    pnpm build:web ─ scripts/fetch-content.ts ◀── Supabase REST (anon/publishable key, published rows only)
                  └─ validate (Zod) → content.generated.json → Astro SSG → AVIF/WebP images → dist/
                                                                                 ▼
- Visitor ──HTTPS──▶ Cloudflare CDN (HTML, hashed assets, audio) ──▶ L0 → L1 → L2 → L3 → L4 (lazy)
+ Visitor ──HTTPS──▶ Vercel CDN (HTML, hashed assets, audio) ──▶ L0 → L1 → L2 → L3 → L4 (lazy)
         └─ contact form ──▶ Edge Function contact (Turnstile, rate-limit, Resend) ──▶ messages table ──▶ Admin inbox
 ```
 
@@ -887,28 +920,28 @@ Dimas-s_Portofolio/
 2. Source selection: `CONTENT_SOURCE=supabase` (production) · `seed` (local/CI, reads `docs/seed/content.seed.json`). In production, **a fetch/validation failure fails the build loudly** (the last good deployment stays live). In CI/local the seed fallback keeps development unblocked.
 3. Astro renders every route (ID + EN) from the snapshot; remote media is downloaded and optimized by the image service at build time (no runtime image CDN needed).
 4. `pnpm content:lint` prints the **placeholder report** and enforces `STRICT_PLACEHOLDERS=1` if set.
-5. Output `apps/web/dist` → Cloudflare Pages.
+5. Output `apps/web/dist` → Vercel (static output; no adapter needed).
 
 ### 9.6 Publish flow (admin → live)
 
-Admin "Publish" → confirmation dialog (changed-item counts, **placeholder warning**) → Edge Function `trigger-deploy` (verifies JWT + `is_owner()` + aal2; calls the Cloudflare deploy hook URL stored as a server secret; inserts a `publish_runs` row) → Pages build (~60–90 s) → live. The admin shows "Triggered 14:02 · usually live in ~90 s" + a link to the deployment list. P1: poll build status through a second function using a scoped Cloudflare API token.
+Admin "Publish" → confirmation dialog (changed-item counts, **placeholder warning**) → Edge Function `trigger-deploy` (verifies JWT + `is_owner()` + aal2; calls the **Vercel Deploy Hook** URL stored as a server secret; inserts a `publish_runs` row) → Vercel build (~60–90 s) → live. The admin shows "Triggered 14:02 · usually live in ~90 s" + a link to the Vercel deployments page. P1: poll build status through a second function using a scoped Vercel API token. **If Deploy Hooks turn out to be unavailable on the Hobby plan** (verify in the dashboard), fall back to the Vercel REST API "create deployment" call with a scoped token — still server-side only.
 
 ### 9.7 Security & headers
 
-* **Headers (`public/_headers`)**: `Content-Security-Policy` (default-src 'self'; script-src 'self' + Turnstile + Cloudflare beacon origins; style-src 'self' with hashes or `'unsafe-inline'` only if unavoidable; img-src 'self' data: + the Supabase storage origin only if images are not self-hosted; connect-src 'self' + Supabase function origin; frame-src Turnstile; object-src 'none'; base-uri 'self'; form-action 'self' + function origin), `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()`, `Cross-Origin-Opener-Policy: same-origin`.
-* **Admin:** extra `X-Robots-Tag: noindex`, `<meta name="robots" content="noindex">`, optional **Cloudflare Access** (free ≤ 50 users) as a second gate, strict CSP (no inline scripts).
+* **Headers (`apps/*/vercel.json` → `headers`; example in Appx I)**: `Content-Security-Policy` (default-src 'self'; script-src 'self' + `https://challenges.cloudflare.com` (Turnstile); Vercel Analytics/Speed Insights are first-party `/_vercel/*` paths covered by 'self'; style-src 'self' with hashes, or `'unsafe-inline'` only if unavoidable; img-src 'self' data: (+ the Supabase storage origin only if images are not self-hosted); connect-src 'self' + the Supabase functions origin; frame-src `https://challenges.cloudflare.com`; object-src 'none'; base-uri 'self'; form-action 'self' + the functions origin), `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()`, `Cross-Origin-Opener-Policy: same-origin`. Vercel already serves HSTS on `*.vercel.app`.
+* **Admin:** extra `X-Robots-Tag: noindex, nofollow` header (in the admin's `vercel.json`), `<meta name="robots" content="noindex">`, strict CSP (no inline scripts). Vercel Hobby has no production-level password protection, so **Supabase Auth + mandatory MFA is the gate**; keep the admin URL unlisted.
 * **Auth:** Supabase Auth email OTP/magic link for the owner only; **public signups disabled**; `owner` table; **TOTP MFA mandatory** (RLS requires `aal2`); idle session timeout 7 days.
 * **Data:** RLS on every table; anon can only read `published` rows; **service-role key exists only inside Edge Functions**; CORS on functions locked to the site/admin origins.
 * **Uploads:** client re-encodes to WebP/AVIF (**strips EXIF/GPS**), ≤ 5 MB, MIME allow-list enforced by the bucket; alt text required.
 * **Markdown:** rendered through a sanitizer (`rehype-sanitize`/DOMPurify); no raw HTML.
 * **Audit:** every content write recorded in `audit_log`.
-* **Secrets:** only in Cloudflare/Supabase/GitHub secret stores; `.env.example` documents names (Appendix F).
+* **Secrets:** only in Vercel/Supabase/GitHub secret stores; `.env.example` documents names (Appendix F).
 
 ### 9.8 Reliability, backup & keep-alive
 
 * **Keep-alive** (`keepalive.yml`, weekly + manual): one anonymous REST read, so the free Supabase project is not paused for inactivity.
 * **Backups:** (1) admin **"Export all"** (JSON + media manifest, includes drafts); (2) `backup.yml` weekly: fetch published snapshot → upload as a GitHub Actions artifact (90-day retention); (3) `docs/seed/content.seed.json` in git (initial truth). Document restore steps in `docs/RUNBOOK.md`.
-* **Rollback:** Cloudflare Pages "Rollback to previous deployment".
+* **Rollback:** Vercel **Instant Rollback / promote a previous deployment** (check Hobby availability in the docs). A failed build never replaces the live deployment.
 
 ---
 
@@ -916,7 +949,7 @@ Admin "Publish" → confirmation dialog (changed-item counts, **placeholder warn
 
 ### 10.1 Purpose & principle
 
-Dimas MUST be able to add or edit **achievements, projects, experience, education, skills, gallery items, site text/links, the CV file**, read contact messages and publish — **without touching code** and without an IDE. The admin is a **different app on a different origin** (`admin.<domain>` or its own `*.pages.dev`), invisible to the public site (HR-7). One user: the owner.
+Dimas MUST be able to add or edit **achievements, projects, experience, education, skills, gallery items, site text/links, the CV file**, read contact messages and publish — **without touching code** and without an IDE. The admin is a **different app on a different origin** (its own `*.vercel.app` project, e.g. `dimas-panca-admin.vercel.app`, or a custom domain later), invisible to the public site (HR-7). One user: the owner.
 
 ### 10.2 Functional requirements
 
@@ -937,7 +970,7 @@ Dimas MUST be able to add or edit **achievements, projects, experience, educatio
 | FR-ADM-13 | P1 | **Audit log** viewer (who/what/when, old→new). |
 | FR-ADM-14 | P1 | **Export all** (JSON + media list) and **Import seed** (idempotent upsert by `slug`). |
 | FR-ADM-15 | P1 | **PWA:** installable, offline shell, **mobile-first** forms, camera capture for certificate photos. |
-| FR-ADM-16 | P2 | Revision history per record; scheduled publish; Cloudflare build-status polling. |
+| FR-ADM-16 | P2 | Revision history per record; scheduled publish; Vercel build-status polling. |
 
 **Quick-Add Achievement (mobile FAB, P0)** — the flow Dimas will use right after an event: *Title (ID/EN) → Placement preset (1st / 2nd / 3rd / Finalist / Top N / Other) → Organizer → Month-year → Category → Photo or certificate (optional) → Save draft → Publish.* **AC: ≤ 2 minutes from phone.**
 
@@ -951,6 +984,7 @@ Dimas MUST be able to add or edit **achievements, projects, experience, educatio
 | Organizer | text | required |
 | Category | select | competition · hackathon · essay · business · research · certification · other |
 | Scope | select | international · national · regional · campus (optional) |
+| Location | text | optional, e.g. *Chiang Mai University, Thailand* (shown on card, ticker and detail page) |
 | Achieved on | date + precision (year/month/day) | required |
 | Summary | localized text (≤ 280 chars) | shown on card |
 | Highlights | list of localized bullets | shown on detail/expander |
@@ -985,7 +1019,7 @@ Only `published` rows; placeholders included but flagged. The build computes **d
 | Function | Auth | Input → behavior | Errors |
 |---|---|---|---|
 | `contact` | public (`verify_jwt=false`), CORS = site origins | Validate (Zod) → honeypot → Turnstile verify → rate-limit by hashed IP (5/hour) → insert `messages` → send Resend email to owner → `303 /thanks` for HTML posts or `{ok:true}` JSON | 400 validation · 429 rate-limited · 502 mail failure (message is still stored) |
-| `trigger-deploy` | JWT required + `is_owner()` aal2 | Insert `publish_runs` → `POST` Cloudflare deploy hook (secret) → return run id | 401/403 · 502 hook failure |
+| `trigger-deploy` | JWT required + `is_owner()` aal2 | Insert `publish_runs` → `POST` the Vercel Deploy Hook URL (secret) → return run id | 401/403 · 502 hook failure |
 | `track` | public, CORS, tiny | Accepts `{name}` from an allow-list (`cv_download`, `sound_on`, `sound_off`, `contact_click`, `unlock_all`) → `events` upsert by day (no IP, no UA, no cookies) | 400 · 429 |
 
 ### 10.6 Admin acceptance criteria
@@ -1037,7 +1071,7 @@ Only `published` rows; placeholders included but flagged. The build computes **d
 
 ### 12.4 Analytics
 
-* **FR-ANA-01 (P0):** Cloudflare Web Analytics beacon (cookie-less, deferred) — Web Vitals + traffic.
+* **FR-ANA-01 (P0):** **Vercel Web Analytics** (cookie-less; first-party script `/_vercel/insights/script.js`, deferred) for traffic + **Vercel Speed Insights** for Web Vitals. Both are dashboard toggles and must stay within Hobby quotas (verify current numbers). No consent banner needed.
 * **FR-ANA-02 (P1):** first-party counters via the `track` function (allow-list: `cv_download`, `sound_on`, `sound_off`, `contact_click`, `unlock_all`), aggregated per day in `events`, shown on the admin dashboard. No IP/UA/ID stored.
 
 ---
@@ -1053,7 +1087,7 @@ Target **WCAG 2.2 AA** (Lighthouse a11y = 100 is the *floor*, not the goal).
 | Motion | Honor `prefers-reduced-motion` (§6.5); nothing flashes more than 3×/second; auto-moving content (marquees) can be paused (hover/focus + a global "Lite mode"); parallax/scrub never carries essential information. |
 | Sound | Off until consent (HR-6); toggle has `aria-pressed` + text label; sound is never the *only* feedback for state changes (always paired with visual state). |
 | Color/contrast | Text ≥ 4.5:1 (body ≥ 7:1 on `--bg` via `--fg/--muted`); large text ≥ 3:1; accent-on-paper rule (§4.2). |
-| Images | Meaningful `alt` (required in admin); decorative art `alt=""`/`aria-hidden`; portrait alt: *"Portrait of Dimas Panca Pamungkas in a black suit"* (ID/EN). |
+| Images | Meaningful `alt` (required in admin); decorative art `alt=""`/`aria-hidden`; portrait alt: *"Dimas Panca Pamungkas seated on a stool in a black blazer, looking to the side"* (ID/EN). |
 | Forms | Visible labels, programmatic errors (`aria-describedby`), `autocomplete` tokens, honeypot hidden from AT (`aria-hidden`, `tabindex=-1`). |
 | Targets | ≥ 44×44 px touch targets; 200 % zoom / 320 px reflow without horizontal scroll. |
 | Live regions | Achievement rail position, unlock events ("Achievement unlocked: …") politely announced; counters expose final values immediately to AT. |
@@ -1101,19 +1135,19 @@ Target **WCAG 2.2 AA** (Lighthouse a11y = 100 is the *floor*, not the goal).
 
 | # | Milestone | Deliverables | Acceptance |
 |---|---|---|---|
-| **M0** | **Foundations** | pnpm+Turborepo workspace, TS ~6.0.3 base, Biome, `.nvmrc`(22)/`engines`, husky `commit-msg`, `.editorconfig`, `.env.example`, CI skeleton (`ci`, `authorship`, `keepalive`, `backup`), PR template, CODEOWNERS, README | `pnpm i && pnpm lint && pnpm typecheck && pnpm test` green on Node 22; a commit with a `Co-authored-by:` trailer is **rejected** locally and in CI |
+| **M0** | **Foundations** | pnpm+Turborepo workspace, TS ~6.0.3 base, Biome, `.nvmrc`(24)/`engines`(≥ 22.23.4), husky `commit-msg`, `.editorconfig`, `.env.example`, CI skeleton (`ci`, `authorship`, `keepalive`, `backup`), PR template, CODEOWNERS, README | `pnpm i && pnpm lint && pnpm typecheck && pnpm test` green on Node 24; a commit with a `Co-authored-by:` trailer is **rejected** locally and in CI |
 | **M1** | **Design system + static site** (no motion) | Astro 7 app; tokens, fonts, layouts; **all sections rendered from the seed via `content-client`**; ID/EN routing; SEO basics; portrait pipeline outputs; placeholder art; `/credits`, `/privacy`, `/thanks`, 404; `/cv` | Fully readable with JS off; Lighthouse desktop ≥ 95/100/100/100; 5 achievements + 4 roles + 2 projects render; no facts hard-coded in templates |
 | **M2** | **Motion & WebGL** | Lenis+GSAP engine, gate, hero timeline, marquees, About scrub + card-stack, Achievements rail + unlock, Journey line, Works slider + native view transitions, Skills marquee, Contact headline, cursor, HUD; WebGL hero; tiers + governor; `?tier=` override | 60 fps on mid tier; §8.2 budgets; reduced-motion + each tier verified; WebGL context-loss fallback proven |
 | **M3** | **Sound** | Sources picked, processed, **ledger**; sprite + ambient; engine, gate flow, delegated bindings, scroll-reactive filter, toggles, `/credits` from ledger | No audio before gesture (e2e); mute persists; sprite ≤ 120 KB, ambient ≤ 450 KB; CI license check passes |
 | **M4** | **Backend + Admin** | Supabase migrations + RLS, `db:seed`, Edge Functions (`contact`, `trigger-deploy`, `track`), admin app (auth+MFA, CRUD, uploads, reorder, preview, publish, inbox, audit, export, placeholders view, PWA), `content-client` Supabase source, deploy-hook wiring | AC-ADM-1…6; add-from-phone ≤ 2 min; publish → live ≤ 90 s |
 | **M5** | **Hardening** | Perf tuning to budget, axe + manual SR pass, JSON-LD/OG/sitemap, CSP + headers, backups, cross-browser/device matrix | All CI gates green; device matrix recorded |
-| **M6** | **Launch & handoff** | Cloudflare deploys (web+admin), domain, Web Analytics, Turnstile live, smoke tests, `docs/RUNBOOK.md`, placeholder hand-over; flip `STRICT_PLACEHOLDERS=1` once Dimas has replaced them | §14.3 fully checked |
+| **M6** | **Launch & handoff** | Vercel deploys (web+admin), Vercel Analytics + Speed Insights, Turnstile live, smoke tests, `docs/RUNBOOK.md`, placeholder hand-over; flip `STRICT_PLACEHOLDERS=1` once Dimas has replaced them | §14.3 fully checked |
 
 **Implementation order inside each milestone:** data/types → static markup → styles → behavior → polish → tests.
 
 ### 15.2 What the implementer needs from Dimas (blocking items are in §16)
 
-Accounts/keys the owner must create (the implementer prepares scripts and a step-by-step guide): **GitHub** repo (exists) · **Cloudflare** account (Pages ×2, Web Analytics, Turnstile) · **Supabase** project · **Resend** API key (or skip email → inbox only) · domain (optional). Secrets go **only** into Cloudflare/Supabase/GitHub secret stores (Appendix F).
+Accounts/keys the owner must create (the implementer prepares scripts and a step-by-step guide): **GitHub** repo (exists) · **Vercel** account (Hobby; two projects) · **Supabase** project · a free **Cloudflare** account **for Turnstile only** · **Resend** API key (or skip email → inbox only). Domains: the free `*.vercel.app` names. Secrets go **only** into Vercel/Supabase/GitHub secret stores (Appendix F).
 
 ### 15.3 Git, authorship & contribution rules (HR-1)
 
@@ -1135,35 +1169,38 @@ fi
 
 ### 15.4 Deployment runbook (summary — expand in `docs/RUNBOOK.md`)
 
-1. **Supabase:** create project → run migrations (`supabase db push`) → disable public signups → create the owner user → insert into `owner` → enroll TOTP → set function secrets (`TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CF_DEPLOY_HOOK_URL`) → deploy functions → `pnpm db:seed`.
-2. **Cloudflare Pages (web):** connect the GitHub repo, root `apps/web`/monorepo build command, Node 22, env `PUBLIC_*`, `CONTENT_SOURCE=supabase` → create a **deploy hook** → store it as a Supabase function secret.
-3. **Cloudflare Pages (admin):** second project from the same repo (`apps/admin`), env `VITE_SUPABASE_URL`/`VITE_SUPABASE_PUBLISHABLE_KEY`; optional Cloudflare Access policy.
-4. **Turnstile + Web Analytics:** create site keys; add to env.
-5. **Domain:** attach to both projects; update `PUBLIC_SITE_URL`, Supabase Auth redirect URLs and function CORS origins.
+1. **Supabase:** create project → run migrations (`supabase db push`) → disable public signups → create the owner user → insert into `owner` → enroll TOTP → set function secrets (`TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `VERCEL_DEPLOY_HOOK_URL`) → deploy functions → `pnpm db:seed` (put `SEED_WHATSAPP_NUMBER` in a git-ignored `.env` first).
+2. **Vercel (web):** import the GitHub repo → Root Directory `apps/web` (keep "include source files outside of the Root Directory" enabled) → Framework Astro → Install `pnpm install --frozen-lockfile` → Build `pnpm turbo run build --filter=@portfolio/web` → Node 24.x → Production Branch `main` → env `PUBLIC_*` and `CONTENT_SOURCE=supabase` → Settings → Git → **Deploy Hooks**: create one for `main` and store the URL as the Supabase secret `VERCEL_DEPLOY_HOOK_URL` → optional Ignored Build Step `npx turbo-ignore @portfolio/web` → **turn off Pull Request Comments** (keeps bots out of the repo, HR-1) → enable Web Analytics + Speed Insights.
+3. **Vercel (admin):** a second project, Root Directory `apps/admin`, framework Vite, env `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY`; SPA rewrite + `noindex` header in `apps/admin/vercel.json` (Appx I).
+4. **Turnstile:** create a free Cloudflare account → add a Turnstile widget → copy the site key (public env) and secret (Supabase secret).
+5. **Domains:** use the free `*.vercel.app` names (suggested `dimas-panca.vercel.app` and `dimas-panca-admin.vercel.app` — names must be free); set `PUBLIC_SITE_URL`, the Supabase Auth redirect URLs and the functions' CORS origins to those origins (redo if a custom domain is added later).
 6. **Smoke test:** gate, sound, form (JS on/off), admin quick-add → publish → live; Lighthouse CI on production URL.
 
 ---
 
-## 16. Open questions (with defaults already applied)
+## 16. Open questions (status as of 2026-11-16)
 
-The build is **not blocked** by any of these; defaults are in force until Dimas answers.
+Nothing below blocks the build; defaults are in force until Dimas answers.
 
-| ID | Question | Default applied |
-|---|---|---|
-| **Q-1** | Do you have a higher-resolution original of the portrait (≥ 1400 px tall), and/or a second, more casual photo? (`Dimas.png` is only 355×474.) | Upscale pipeline (§4.7); hero portrait displayed small-ish |
-| **Q-2** | Which domain/handle do you want (e.g. `dimaspanca.dev`)? | `*.pages.dev` for now; `PUBLIC_SITE_URL` env |
-| **Q-3** | Degree wording: "Informatics Engineering" (summary) or "Informatic System" (degree line)? | "Informatics Engineering" in prose; degree line kept verbatim (A-1) |
-| **Q-4** | Which programming languages/frameworks should be listed (CV says "modern programming languages and frameworks")? | Placeholder tile; no chips invented |
-| **Q-5** | Is the oyster-mushroom Edge-AI/IoT system your FAPERTA FAIR 1st-place entry? | Separate records, link unconfirmed (A-2) |
-| **Q-6** | Which Drive link proves which achievement (two links in the CV)? | Not copied; add `proof_url` per item in admin (A-3) |
-| **Q-7** | Availability wording and date range (internship / full-time / freelance)? | `[PLACEHOLDER: availability]` in ticker + badge |
-| **Q-8** | Show phone/WhatsApp publicly? Which number format? | Hidden until set in admin; never in the repo (HR-10) |
-| **Q-9** | Default language Indonesian or English? Who reviews the Indonesian drafts? | Indonesian default; all ID text `needs_review` |
-| **Q-10** | OK to use free tiers of Cloudflare, Supabase and Resend (accounts in your name)? | Yes (assumed) |
-| **Q-11** | Event/team photos, project screenshots/links, and any testimonial (with permission)? | Placeholders; testimonials not rendered |
-| **Q-12** | Tone dial: strictly formal, or a bit playful ("Achievement Unlocked", easter egg)? | Professional with restrained playfulness |
+| ID | Question | Status | Answer / default applied |
+|---|---|---|---|
+| **Q-1** | Higher-resolution portrait? | **Answered** | New 1792×2400 studio photo (D-1); no upscaling needed |
+| **Q-2** | Domain? | **Answered** | Vercel free (Hobby), `*.vercel.app` (D-2) |
+| **Q-3** | Degree wording: "Informatics Engineering" or "Informatic System"? | Open | "Informatics Engineering" in prose; the degree line stays verbatim (A-1) |
+| **Q-4** | Languages/frameworks to list? | **Answered** | Next.js, PHP, Laravel, Python, C++, JavaScript (D-3) |
+| **Q-5** | Is the oyster-mushroom system the FAPERTA FAIR entry? | **Answered** | Yes — won 1st place in Thailand at Chiang Mai University (D-4) |
+| **Q-6** | Which Drive link proves which achievement? | Open | Not copied; add `proofUrl` per item in admin (A-3) |
+| **Q-7** | Availability wording and date range? | **Answered (placeholder)** | Keep the placeholder for now (D-5) |
+| **Q-8** | Show phone/WhatsApp publicly? | **Answered** | Yes, shown; number via admin or git-ignored `SEED_WHATSAPP_NUMBER` (D-6) |
+| **Q-9** | Default language Indonesian or English? Who reviews the Indonesian drafts? | Open | Indonesian default; all ID text `needs_review` |
+| **Q-10** | OK to use free tiers of Vercel, Supabase and Resend, plus a free Cloudflare account for Turnstile only? | Open (assumed yes) | If no extra Cloudflare account is wanted: honeypot + time-trap + rate limit only |
+| **Q-11** | Event/team photos (e.g. from Chiang Mai), project screenshots/links, and any testimonial (with permission)? | Open | Placeholders; testimonials not rendered |
+| **Q-12** | Tone dial: strictly formal or a bit playful ("Achievement Unlocked", easter egg)? | Open | Professional with restrained playfulness |
+| **Q-13** | Was the FAPERTA FAIR entry individual or a team (names to credit)? | Open | Wording stays neutral ("won 1st place"); no team claims |
+| **Q-14** | Exact months of each achievement (for ordering/precision)? | Open | Year precision, ordered by rank then `sortOrder` |
 
 ---
+
 
 ## 17. Appendices
 
@@ -1196,6 +1233,7 @@ export const Achievement = Base.extend({
   organizer: z.string().min(1),
   category: z.enum(['competition', 'hackathon', 'essay', 'business', 'research', 'certification', 'other']),
   scope: z.enum(['international', 'national', 'regional', 'campus']).nullable(),
+  location: z.string().nullable().optional(),          // e.g. "Chiang Mai University, Thailand"
   achievedOn: z.string(),                // ISO date; precision below
   datePrecision: Precision.default('year'),
   summary: Localized.optional(),
@@ -1308,6 +1346,7 @@ create table public.achievements (
   title jsonb not null, organizer text not null,
   category text not null check (category in ('competition','hackathon','essay','business','research','certification','other')),
   scope text check (scope in ('international','national','regional','campus')),
+  location text,
   achieved_on date not null, date_precision text not null default 'year' check (date_precision in ('year','month','day')),
   summary jsonb, highlights jsonb not null default '[]', tags text[] not null default '{}',
   cover_media_id uuid references public.media (id) on delete set null,
@@ -1494,9 +1533,9 @@ Run against `?mute=1` and the default URL (gate visible). `size-limit` entries: 
 | `CONTENT_SOURCE` | web build | `supabase` (prod) or `seed` (local/CI) |
 | `STRICT_PLACEHOLDERS` | web build | `1` ⇒ fail build if placeholders remain |
 | `PUBLIC_TURNSTILE_SITE_KEY`, `PUBLIC_CONTACT_FUNCTION_URL`, `PUBLIC_TRACK_FUNCTION_URL` | web build | form + events |
-| `PUBLIC_CF_ANALYTICS_TOKEN` | web build | Cloudflare Web Analytics |
+| `SEED_WHATSAPP_NUMBER` | local `.env` (git-ignored) only | WhatsApp number injected by `pnpm db:seed` into `site_settings.contact` (HR-10); format `62…` for `wa.me` |
 | `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` | admin build | admin client |
-| `TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `CF_DEPLOY_HOOK_URL`, `ALLOWED_ORIGINS`, `IP_HASH_SALT` | Supabase function secrets | server-only |
+| `TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, `VERCEL_DEPLOY_HOOK_URL`, `ALLOWED_ORIGINS`, `IP_HASH_SALT` | Supabase function secrets | server-only |
 | `AUTHOR_NAME`, `AUTHOR_EMAIL` | GitHub repo variables | authorship guard (HR-1) |
 | `SUPABASE_PROJECT_REF`, `SUPABASE_ACCESS_TOKEN` | GitHub secrets | migrations/functions deploy, keep-alive |
 
@@ -1580,6 +1619,53 @@ export function procTick(ctx: AudioContext, out: AudioNode) {
 
 **Gate** boot screen asking for sound consent · **Tier** runtime quality level · **Governor** frame-time watchdog that downgrades tier · **Sprite** one audio file containing many cues · **Placeholder** content not provided by Dimas, flagged in data · **Unlock** the sound+visual moment when an achievement card enters focus · **aal2** Supabase Auth assurance level after MFA · **RLS** Postgres row-level security · **LQIP** low-quality image placeholder.
 
+### Appendix I — `vercel.json` examples (static output; verify the schema in the Vercel docs)
+
+**`apps/web/vercel.json`**
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" }
+      ]
+    },
+    { "source": "/_astro/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/audio/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
+  ]
+}
+```
+
+Add the `Content-Security-Policy` from §9.7 to the first block. Audio files must be content-hashed for the `immutable` rule to be safe.
+
+**`apps/admin/vercel.json`**
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "no-referrer" }
+      ]
+    }
+  ]
+}
+```
+
+
 ---
 
-*End of PRD v1.0.*
+*End of PRD v1.1.*

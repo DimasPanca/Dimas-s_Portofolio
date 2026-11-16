@@ -2,12 +2,19 @@
   "_meta": {
     "version": 1,
     "generatedOn": "2026-11-16",
-    "source": "CV_Dimas Panca Pamungkas.pdf (provided by Dimas on 2026-11-16) + design/source/Dimas.png",
+    "source": "CV_Dimas Panca Pamungkas.pdf + design/source/Dimas.jpg + Dimas's written answers (see sources[])",
+    "revision": 2,
+    "revisedOn": "2026-11-16",
+    "sources": [
+      "CV_Dimas Panca Pamungkas.pdf (provided by Dimas on 2026-11-16)",
+      "design/source/Dimas.jpg (studio portrait, 1792x2400, replaced 2026-11-16)",
+      "Dimas's written answers of 2026-11-16: languages/frameworks, Instagram handle, FAPERTA FAIR venue and link to the mushroom project, WhatsApp shown on site"
+    ],
     "rules": [
       "English strings are verbatim or near-verbatim from the CV.",
       "Indonesian strings are drafts: needsReview=true until Dimas approves them in the admin app.",
-      "Anything not stated in the CV is a placeholder: isPlaceholder=true. Never invent facts (PRD HR-2).",
-      "The phone number from the CV is intentionally NOT stored here (PRD HR-10); set settings.contact.whatsappNumber via the admin app.",
+      "Anything not stated by Dimas is a placeholder: isPlaceholder=true. Never invent facts (PRD HR-2).",
+      "The phone number from the CV is intentionally NOT stored here (PRD HR-10); WhatsApp IS shown on the site, so inject the number at seed time from the git-ignored env SEED_WHATSAPP_NUMBER or set settings.contact.whatsappNumber in the admin app.",
       "The two Google Drive proof links from the CV are intentionally NOT stored here; add proofUrl per achievement via the admin app (PRD A-3)."
     ]
   },
@@ -31,11 +38,12 @@
       },
       "interests": ["Software engineering", "IoT", "AI"],
       "portrait": {
-        "source": "design/source/Dimas.png",
-        "sourceSize": "355x474",
+        "source": "design/source/Dimas.jpg",
+        "sourceSize": "1792x2400",
+        "pose": "seated on a high stool, gaze toward camera-left (place the portrait on the right half of the hero)",
         "alt": {
-          "en": "Portrait of Dimas Panca Pamungkas in a black suit",
-          "id": "Potret Dimas Panca Pamungkas mengenakan jas hitam"
+          "en": "Dimas Panca Pamungkas seated on a stool in a black blazer, looking to the side",
+          "id": "Dimas Panca Pamungkas duduk di kursi tinggi mengenakan blazer hitam, menatap ke samping"
         }
       }
     },
@@ -69,18 +77,20 @@
     "socials": [
       { "kind": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/in/dimas-panca-pamungkas-66609a208/" },
       { "kind": "github", "label": "GitHub", "url": "https://github.com/DimasPanca" },
+      { "kind": "instagram", "label": "Instagram", "handle": "@dimas_pancapamungkas", "url": "https://www.instagram.com/dimas_pancapamungkas/" },
       { "kind": "email", "label": "Email", "url": "mailto:dimaspanca2005@gmail.com" }
     ],
     "contact": {
       "email": "dimaspanca2005@gmail.com",
       "whatsappNumber": null,
-      "note": "Set the WhatsApp number in the admin app (PRD HR-10 / Q-8)."
+      "whatsappVisible": true,
+      "note": "WhatsApp IS shown on the site (Dimas confirmed, Q-8). The number is not committed (PRD HR-10): inject it from the git-ignored env SEED_WHATSAPP_NUMBER at seed time (format 62…) or set it in the admin app."
     },
     "seo": {
       "title": { "en": "Dimas Panca Pamungkas — Software, AI & IoT builder", "id": "Dimas Panca Pamungkas — Pembangun Software, AI & IoT" },
       "description": {
-        "en": "Informatics Engineering student at UNTIRTA, President of HMIF, project manager and multi-time national competition winner. Software, AI and IoT.",
-        "id": "Mahasiswa Teknik Informatika UNTIRTA, Ketua HMIF, project manager, dan juara berbagai kompetisi nasional. Software, AI, dan IoT."
+        "en": "Informatics Engineering student at UNTIRTA, President of HMIF, project manager and 1st-place winner at the International FAPERTA FAIR 2026 in Thailand. Software, AI and IoT.",
+        "id": "Mahasiswa Teknik Informatika UNTIRTA, Ketua HMIF, project manager, dan juara 1 International FAPERTA FAIR 2026 di Thailand. Software, AI, dan IoT."
       }
     },
     "cvPath": null
@@ -230,20 +240,21 @@
       "organizer": "FAPERTA FAIR",
       "category": "competition",
       "scope": "international",
+      "location": "Chiang Mai University, Thailand",
       "achievedOn": "2026-01-01",
       "datePrecision": "year",
       "summary": {
-        "en": "Won 1st place at the 10th International FAPERTA FAIR 2026 (Research, Technology, and Art).",
-        "id": "Meraih juara 1 di 10th International FAPERTA FAIR 2026 (Penelitian, Teknologi, dan Seni)."
+        "en": "Won 1st place at the 10th International FAPERTA FAIR 2026 (Research, Technology, and Art), held at Chiang Mai University, Thailand, with an Edge-AI and IoT oyster-mushroom cultivation system.",
+        "id": "Meraih juara 1 di 10th International FAPERTA FAIR 2026 (Penelitian, Teknologi, dan Seni) di Chiang Mai University, Thailand, dengan sistem budidaya jamur tiram berbasis Edge AI dan IoT."
       },
       "highlights": [],
-      "tags": ["international", "research", "technology", "art"],
+      "tags": ["international", "thailand", "research", "technology", "art", "edge ai", "iot"],
       "projectSlug": "edge-ai-oyster-mushroom",
-      "linkConfirmed": false,
+      "linkConfirmed": true,
       "proofUrl": null,
       "sortOrder": 0,
       "needsReview": true,
-      "_note": "The CV names no organizer; 'FAPERTA FAIR' is used as written. Link to the mushroom project is an unconfirmed assumption (PRD A-2 / Q-5)."
+      "_note": "Confirmed by Dimas on 2026-11-16: the mushroom Edge-AI/IoT system is the winning entry; won in Thailand at Chiang Mai University (Dimas wrote 'Chang Mai'; official spelling used). The CV names no organizer, so 'FAPERTA FAIR' is used as written. Individual vs team entry is unknown (Q-13) — keep wording neutral."
     },
     {
       "slug": "bmc-industrial-2026-1st",
@@ -403,13 +414,13 @@
       },
       "stack": [],
       "links": [],
-      "featured": false,
+      "featured": true,
       "linkedAchievementSlug": "faperta-fair-2026-1st",
-      "linkConfirmed": false,
+      "linkConfirmed": true,
       "isPlaceholder": false,
       "sortOrder": 1,
       "needsReview": true,
-      "_note": "Worded as a proposal exactly as the CV states. ESP32 is in the CV skills list but not tied to this project — leave stack empty until confirmed (Q-4/Q-5)."
+      "_note": "Worded as a proposal exactly as the CV states; confirmed on 2026-11-16 as the FAPERTA FAIR 2026 winning entry (Chiang Mai University, Thailand). ESP32 is in the CV skills list but not tied to this project by Dimas — leave stack empty until confirmed. Do not invent sensors, models or accuracy figures."
     },
     {
       "slug": "placeholder-project-1",
@@ -463,7 +474,12 @@
     { "slug": "skill-esp32", "status": "published", "group": "iot", "kind": "hard", "label": { "en": "Embedded systems with ESP32", "id": "Sistem embedded dengan ESP32" }, "sortOrder": 7 },
     { "slug": "skill-git", "status": "published", "group": "tools", "kind": "hard", "label": { "en": "Version control with Git", "id": "Version control dengan Git" }, "sortOrder": 8 },
     { "slug": "skill-figma", "status": "published", "group": "tools", "kind": "hard", "label": { "en": "UI prototyping with Figma", "id": "Prototyping UI dengan Figma" }, "sortOrder": 9 },
-    { "slug": "skill-stack-placeholder", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "Languages & frameworks", "id": "Bahasa pemrograman & framework" }, "isPlaceholder": true, "sortOrder": 10, "_note": "CV says 'modern programming languages and frameworks' without naming them (Q-4)." },
+    { "slug": "stack-nextjs", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "Next.js", "id": "Next.js" }, "sortOrder": 20, "_note": "Provided by Dimas on 2026-11-16 (not in the CV). No proficiency level given — do not invent one." },
+    { "slug": "stack-php", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "PHP", "id": "PHP" }, "sortOrder": 21 },
+    { "slug": "stack-laravel", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "Laravel", "id": "Laravel" }, "sortOrder": 22 },
+    { "slug": "stack-python", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "Python", "id": "Python" }, "sortOrder": 23 },
+    { "slug": "stack-cpp", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "C++", "id": "C++" }, "sortOrder": 24 },
+    { "slug": "stack-javascript", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "JavaScript", "id": "JavaScript" }, "sortOrder": 25 },
     { "slug": "skill-leadership", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Leadership", "id": "Kepemimpinan" }, "sortOrder": 11 },
     { "slug": "skill-collaboration", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Collaboration", "id": "Kolaborasi" }, "sortOrder": 12 },
     { "slug": "skill-project-planning", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Project planning", "id": "Perencanaan proyek" }, "sortOrder": 13 },
