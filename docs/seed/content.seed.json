@@ -3,7 +3,7 @@
     "version": 1,
     "generatedOn": "2026-11-16",
     "source": "CV_Dimas Panca Pamungkas.pdf + design/source/Dimas.jpg + Dimas's written answers (see sources[])",
-    "revision": 3,
+    "revision": 4,
     "revisedOn": "2026-11-16",
     "sources": [
       "CV_Dimas Panca Pamungkas.pdf (provided by Dimas on 2026-11-16)",
@@ -15,7 +15,7 @@
       "Indonesian strings are drafts: needsReview=true until Dimas approves them in the admin app.",
       "Anything not stated by Dimas is a placeholder: isPlaceholder=true. Never invent facts (PRD HR-2).",
       "Achievements follow the writing standard in PRD §2.5.1: canonical rank label, official event name only, full host institution, month-precision ISO date, scope/location only when stated. proofs[] is empty on purpose: Dimas adds certificates/links later via the admin Proofs panel (Q-6).",
-      "Achievements 2, 3, 5, 6 (IPB, Brawijaya, Agridata, GBIC Gunadarma) have a month but no stated year: 2026 is assumed and flagged (PRD A-8 / Q-15).",
+      "All nine achievements are from 2026 (Dimas confirmed, PRD Q-15). Work titles are not shown and no extra descriptions are needed (Q-16); summaries stay neutral one-liners. The CV is intentionally not being updated with the four newer achievements.",
       "The phone number from the CV is intentionally NOT stored here (PRD HR-10); WhatsApp IS shown on the site, so inject the number at seed time from the git-ignored env SEED_WHATSAPP_NUMBER or set settings.contact.whatsappNumber in the admin app.",
       "The two Google Drive proof links from the CV are intentionally NOT stored here; add proofUrl per achievement via the admin app (PRD A-3)."
     ]
@@ -255,10 +255,6 @@
       "achievedOn": "2026-08-01",
       "datePrecision": "month",
       "entryType": "individual",
-      "workTitle": {
-        "en": "Fully automated, near-zero-waste oyster mushroom cultivation system powered by Edge AI and IoT",
-        "id": "Sistem budidaya jamur tiram otomatis penuh dan nyaris tanpa limbah berbasis Edge AI dan IoT"
-      },
       "summary": {
         "en": "Won 1st place in the essay competition of the 10th International FAPERTA FAIR 2026 at Chiang Mai University, Thailand, with a fully automated, near-zero-waste oyster mushroom cultivation system powered by Edge AI and IoT.",
         "id": "Meraih juara 1 pada lomba esai 10th International FAPERTA FAIR 2026 di Chiang Mai University, Thailand, dengan sistem budidaya jamur tiram otomatis penuh dan nyaris tanpa limbah berbasis Edge AI dan IoT."
@@ -320,7 +316,7 @@
       "featured": true,
       "sortOrder": 1,
       "needsReview": true,
-      "_note": "Not in the CV; supplied in chat 2026-11-16 as \"1st Place Essay Winner\" (\"IPB\" expanded to IPB University). Year not stated by Dimas; assumed 2026 (PRD A-8 / Q-15). Work title and description not provided (Q-16)."
+      "_note": "Not in the CV; supplied in chat 2026-11-16 as \"1st Place Essay Winner\" (\"IPB\" expanded to IPB University). Year confirmed as 2026 by Dimas (Q-15). Dimas chose not to show work titles or extra descriptions (Q-16); the summary stays a neutral one-liner."
     },
     {
       "slug": "brawijaya-sustainable-innovation-2026-1st",
@@ -359,7 +355,7 @@
       "featured": true,
       "sortOrder": 2,
       "needsReview": true,
-      "_note": "Not in the CV; supplied in chat 2026-11-16 as \"1st Place Winner\" (title converted from ALL CAPS). Year not stated by Dimas; assumed 2026 (PRD A-8 / Q-15). Work title and description not provided (Q-16)."
+      "_note": "Not in the CV; supplied in chat 2026-11-16 as \"1st Place Winner\" (title converted from ALL CAPS). Year confirmed as 2026 by Dimas (Q-15). Dimas chose not to show work titles or extra descriptions (Q-16); the summary stays a neutral one-liner."
     },
     {
       "slug": "bmc-industrial-2026-1st",
@@ -445,7 +441,7 @@
       "featured": true,
       "sortOrder": 4,
       "needsReview": true,
-      "_note": "Not in the CV; supplied in chat 2026-11-16 (\"Politeknik Bandung\" expanded to the official name Politeknik Negeri Bandung). Year not stated by Dimas; assumed 2026 (PRD A-8 / Q-15). Work title and description not provided (Q-16)."
+      "_note": "Not in the CV; supplied in chat 2026-11-16 (\"Politeknik Bandung\" expanded to the official name Politeknik Negeri Bandung). Year confirmed as 2026 by Dimas (Q-15). Dimas chose not to show work titles or extra descriptions (Q-16); the summary stays a neutral one-liner."
     },
     {
       "slug": "gbic-gunadarma-2026-2nd",
@@ -482,7 +478,7 @@
       "featured": true,
       "sortOrder": 5,
       "needsReview": true,
-      "_note": "Not in the CV; supplied in chat 2026-11-16 (\"Bisnis Plan\" corrected to \"Business Plan\"; \"Gunadarma\" expanded to Universitas Gunadarma; \"UGP\"/\"GBIC\" kept exactly as written — expansions unknown). Year not stated by Dimas; assumed 2026 (PRD A-8 / Q-15). Work title and description not provided (Q-16)."
+      "_note": "Not in the CV; supplied in chat 2026-11-16 (\"Bisnis Plan\" corrected to \"Business Plan\"; \"Gunadarma\" expanded to Universitas Gunadarma; \"UGP\"/\"GBIC\" kept exactly as written — expansions unknown). Year confirmed as 2026 by Dimas (Q-15). Dimas chose not to show work titles or extra descriptions (Q-16); the summary stays a neutral one-liner."
     },
     {
       "slug": "geteksi-v3-2026-3rd",

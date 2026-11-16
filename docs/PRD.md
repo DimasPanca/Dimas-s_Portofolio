@@ -1,7 +1,7 @@
 # Product Requirements Document — Dimas Panca Pamungkas Portfolio
 
 > **Codename:** `SYSTEMS ONLINE`
-> **Version:** 1.2 · **Date:** 2026-11-16 · **Owner / Author of record:** Dimas Panca Pamungkas
+> **Version:** 1.3 · **Date:** 2026-11-16 · **Owner / Author of record:** Dimas Panca Pamungkas
 > **Audience of this document:** the implementer (an AI agent or an engineer) who will generate the whole product from this file and the files it points to.
 > **Status:** Ready for implementation. Anything not stated here is a decision for the implementer *within the hard rules in §0.3*.
 
@@ -96,6 +96,8 @@ Fitur utama: layar pembuka ala "boot sistem" dengan pilihan **masuk dengan / tan
 | **D-15** | Photos (Chiang Mai and others) come **later**; the admin has a **Gallery** screen with albums and bulk upload (Q-11). | §5.9, §10.2 |
 | **D-16** | Professional anti-spam chosen: **Turnstile + honeypot + time-trap + rate limit**, with Resend for owner notifications (Q-10). | §9.2, §11 |
 | **D-17** | Tone = **formal facts, playful interactions** (Q-12). | §4.10 |
+| **D-18** | **All nine achievements are from 2026** — Dimas confirmed the year for the four that had only a month (Q-15; A-8 closed). | §2.5 |
+| **D-19** | **No work titles are shown** for achievements, no extra descriptions are needed (summaries stay neutral one-liners), and Dimas is **not** updating the CV with the four newer achievements (Q-16; A-9 closed). The `work_title` field was removed from the model. | §2.5.1, §10.2, Appx B/C |
 
 
 ---
@@ -194,16 +196,16 @@ Bullets for each are in the seed (verbatim). Highlights worth surfacing: RedDoor
 
 ### 2.5 Achievements (2026) — 9 records
 
-> **Sources:** rows 1, 4, 7, 8, 9 appear in the CV; rows 2, 3, 5, 6 were added by Dimas in chat on 2026-11-16 (not yet in the CV). Months and host institutions were supplied by Dimas on 2026-11-16 (Q-14). The year is stated only for CV items; for rows 2, 3, 5, 6 it is **assumed to be 2026 and flagged** (A-8 / Q-15).
+> **Sources:** rows 1, 4, 7, 8, 9 appear in the CV; rows 2, 3, 5, 6 were added by Dimas in chat on 2026-11-16 (not in the CV, which Dimas chose **not** to update — D-19). Months and host institutions were supplied by Dimas on 2026-11-16 (Q-14), and Dimas **confirmed that all nine are from 2026** (Q-15 → D-18).
 
 | # | Slug | Rank | Event (official name) | Organizer (host) | Type · scope | When | Notes |
 |---|---|---|---|---|---|---|---|
 | 1 | `faperta-fair-2026-1st` | **1st Place** | 10th International **FAPERTA FAIR** 2026 (Research, Technology, and Art) | Chiang Mai University — *Chiang Mai, Thailand* | Essay Competition · international | Aug 2026 | **Individual** entry (D-12). The entry is the Edge-AI + IoT oyster-mushroom system (§2.6) — link confirmed |
-| 2 | `ipb-agri-volution-2026-1st` | **1st Place** | Agri-Volution: Redefining the Ordinary, Cultivating the Next Gen Agri-System | IPB University | Essay Competition | Oct 2026 | chat only; year assumed |
-| 3 | `brawijaya-sustainable-innovation-2026-1st` | **1st Place** | Brawijaya Sustainable Strategic Innovation Contest | Universitas Brawijaya | Essay Competition | Sep 2026 | chat only; year assumed |
+| 2 | `ipb-agri-volution-2026-1st` | **1st Place** | Agri-Volution: Redefining the Ordinary, Cultivating the Next Gen Agri-System | IPB University | Essay Competition | Oct 2026 | chat only |
+| 3 | `brawijaya-sustainable-innovation-2026-1st` | **1st Place** | Brawijaya Sustainable Strategic Innovation Contest | Universitas Brawijaya | Essay Competition | Sep 2026 | chat only |
 | 4 | `bmc-industrial-2026-1st` | **1st Place** | Industrial Competitions — Business Model Canvas Competition | Universitas Serang Raya | Business Model Canvas Competition | Jun 2026 | CV: innovative business model + commercialization strategy; market analysis, value-proposition design, business validation; pitched to the judges |
-| 5 | `agridata-telepati-8-2026-2nd` | **2nd Place** | Agridata Telepati 8.0 | Politeknik Negeri Bandung (Polban) | Machine Learning Competition | Nov 2026 | chat only; year assumed; "Politeknik Bandung" expanded to the official name |
-| 6 | `gbic-gunadarma-2026-2nd` | **2nd Place** | UGP – GBIC Business Plan Competition | Universitas Gunadarma | Business Plan Competition | Oct 2026 | chat only; year assumed |
+| 5 | `agridata-telepati-8-2026-2nd` | **2nd Place** | Agridata Telepati 8.0 | Politeknik Negeri Bandung (Polban) | Machine Learning Competition | Nov 2026 | chat only; "Politeknik Bandung" expanded to the official name |
+| 6 | `gbic-gunadarma-2026-2nd` | **2nd Place** | UGP – GBIC Business Plan Competition | Universitas Gunadarma | Business Plan Competition | Oct 2026 | chat only |
 | 7 | `geteksi-v3-2026-3rd` | **3rd Place** | GETEKSI Vol. 3 National Essay Competition | Institut Teknologi dan Bisnis STIKOM Bali | Essay Competition · national | Jul 2026 | CV: research-based innovation addressing real-world challenges through technology and strategic analysis |
 | 8 | `innovate-astra-2026-top4` | **Top 4 Finalist** | IN:NOVATE National Hackathon | Astra University | Hackathon · national | Jun 2026 | CV: multidisciplinary team (team entry) |
 | 9 | `bncc-binus-2026-top10` | **Top 10 Finalist** | National Hackathon Competition | BNCC — Bina Nusantara Computer Club (Binus) | Hackathon · national | Jul 2026 | CV: multidisciplinary team (team entry) |
@@ -224,8 +226,8 @@ Dimas supplied the list in free text (placement, event, month and organizer mixe
 | **Type label + category** | Type label from a controlled list (*Essay Competition, Business Model Canvas Competition, Business Plan Competition, Machine Learning Competition, Hackathon, …*); `category` enum drives the filter chips: `essay · business · hackathon · ai-ml · research · certification · other`. |
 | **When** | Month precision, stored ISO `YYYY-MM-01` (Dimas wrote months in Indonesian — *Agustus, Oktober …* — store ISO; display with `Intl` per locale: "Aug 2026" / "Agu 2026"). |
 | **Location / scope** | Only when stated (city + country when outside Indonesia). **Never guess** scope: unknown ⇒ empty. |
-| **Entry type / work title** | `individual\|team` and the title of the submitted work, when known. |
-| **Summary** | ≤ 280 chars, factual, first person allowed (D-12). When Dimas has not described a result, use one neutral sentence composed from the structured fields — no extra claims. |
+| **Entry type** | `individual\|team`, when known. (Work titles are **not shown** anywhere — D-19.) |
+| **Summary** | ≤ 280 chars, factual, first person allowed (D-12). When Dimas has not described a result, use one neutral sentence composed from the structured fields — no extra claims. Dimas confirmed no further descriptions are needed (D-19); the neutral line stays. |
 
 Examples (as written by Dimas → standard form):
 
@@ -262,8 +264,8 @@ The admin form (§10.2) enforces this with **lint hints** (warns on placement wo
 | **A-5** | "Available for …" status not stated. | `[PLACEHOLDER: availability text]` e.g. "Open to internships & collaborations" shown in ticker/badge, editable in admin. | Q-7 |
 | **A-6** | No photo of competitions/events, no project screenshots/links. | Generated placeholder art + `is_placeholder`. | Dimas uploads in admin |
 | **A-7** | Dimas wrote the venue as "Chang Mai University"; the institution's official name is **Chiang Mai University** (Thailand). | Official spelling used | tell me if the venue wording should differ |
-| **A-8** | Dimas gave months but no year for achievements 2, 3, 5, 6 (§2.5). | Year **assumed 2026** (all other achievements and the current date, 2026-11-16, are consistent), flagged `needs_review` | Q-15 |
-| **A-9** | Four of the nine achievements are **not in the CV** supplied on 2026-11-16 (the CV lists five). | Site uses the full list; no description invented for the four | update the CV; Q-16 |
+| **A-8** | **Resolved 2026-11-16:** Dimas confirmed all achievements, including the four that had only a month, are from **2026**. | Dates stored as `2026-MM-01`, month precision | closed |
+| **A-9** | **Resolved 2026-11-16:** four of the nine achievements are not in the CV supplied earlier; Dimas decided **not** to update the CV. | The site uses the full list from §2.5; the CV file itself is out of scope | closed |
 
 ### 2.9 Placeholder register (everything *not* in the CV)
 
@@ -1061,7 +1063,6 @@ Dimas MUST be able to add or edit **achievements, projects, experience, educatio
 | Location | text | optional, e.g. *Chiang Mai, Thailand* |
 | Month & year | month picker | required; stored `YYYY-MM-01`, precision `month` |
 | Entry type | individual · team · unknown | optional |
-| Work title | localized text | optional — title of the essay/project submitted |
 | Summary | localized text (≤ 280 chars) | shown on the card |
 | Highlights | list of localized bullets | detail page / expander |
 | Tags | chips | optional |
@@ -1077,7 +1078,7 @@ Dimas MUST be able to add or edit **achievements, projects, experience, educatio
 
 `owner` · `media` · `projects` · `achievements` · `experiences` · `education` · `skills` · `gallery_items` · `site_settings` (singleton) · `messages` · `contact_rate` · `events` · `audit_log` · `publish_runs`.
 Shared columns on content tables: `id uuid`, `slug`, `status content_status`, `is_placeholder`, `needs_review`, `sort_order`, `created_at`, `updated_at`, `published_at`. Localized fields are `jsonb` `{ "id": "…", "en": "…" }` validated by Zod (`Localized`). Storage buckets: `media` (public, images ≤ 5 MB), `docs` (public, PDFs ≤ 10 MB); writes owner-only.
-Achievements additionally carry `type_label`, `entry_type`, `work_title`, `featured`, `proofs jsonb` (filled later by Dimas) and `gallery_media_ids`; gallery items carry `album` and `achievement_id`.
+Achievements additionally carry `type_label`, `entry_type`, `featured`, `proofs jsonb` (filled later by Dimas) and `gallery_media_ids`; gallery items carry `album` and `achievement_id`.
 
 ### 10.4 Public content contract (`ContentSnapshot`)
 
@@ -1278,8 +1279,8 @@ Nothing below blocks the build; defaults are in force until Dimas answers.
 | **Q-12** | Tone? | **Answered** | Combine both: formal facts, playful interactions (D-17, §4.10) |
 | **Q-13** | FAPERTA FAIR entry individual or team? | **Answered** | **Individual** → first-person wording (D-12) |
 | **Q-14** | Months of each achievement? | **Answered** | Supplied; 9 achievements, writing standard applied (D-13, §2.5) |
-| **Q-15** | Is 2026 the right year for the four achievements that had only a month (IPB, Brawijaya, GBIC Gunadarma, Agridata)? | Open | Assumed 2026, flagged (A-8) |
-| **Q-16** | For each achievement: the title of your work (essay/project) and a one-line result description? Do you want the four newer ones added to your CV too? | Open | Neutral one-line summaries composed from the structured fields (A-9); no claims invented |
+| **Q-15** | Is 2026 the right year for the four achievements that had only a month? | **Answered** | Yes — all nine are from 2026 (D-18) |
+| **Q-16** | Titles of your works and a one-line result per achievement? Add the four newer achievements to your CV? | **Answered** | No work titles are shown; no extra descriptions needed; CV not updated (D-19) |
 
 ---
 
@@ -1328,7 +1329,6 @@ export const Achievement = Base.extend({
   achievedOn: z.string(),                // ISO date, YYYY-MM-01 for month precision
   datePrecision: Precision.default('month'),
   entryType: z.enum(['individual', 'team']).nullable().optional(),
-  workTitle: Localized.optional(),       // title of the submitted essay/project
   summary: Localized.optional(),
   highlights: z.array(Localized).default([]),
   tags: z.array(z.string()).default([]),
@@ -1446,7 +1446,6 @@ create table public.achievements (
   location text,
   achieved_on date not null, date_precision text not null default 'month' check (date_precision in ('year','month','day')),
   entry_type text check (entry_type in ('individual','team')),
-  work_title jsonb,
   summary jsonb, highlights jsonb not null default '[]', tags text[] not null default '{}',
   cover_media_id uuid references public.media (id) on delete set null,
   proofs jsonb not null default '[]',                -- [{kind,label?,url?,mediaId?}] — added later by Dimas (Q-6)
@@ -1771,4 +1770,4 @@ Add the `Content-Security-Policy` from §9.7 to the first block. Audio files mus
 
 ---
 
-*End of PRD v1.2.*
+*End of PRD v1.3.*
