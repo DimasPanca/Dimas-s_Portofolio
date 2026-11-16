@@ -1,8 +1,10 @@
 ---
 import About from '../../components/About.astro';
 import Achievements from '../../components/Achievements.astro';
+import Badge from '../../components/Badge.astro';
 import Contact from '../../components/Contact.astro';
 import Gallery from '../../components/Gallery.astro';
+import Gate from '../../components/Gate.astro';
 import Hero from '../../components/Hero.astro';
 import Journey from '../../components/Journey.astro';
 import Skills from '../../components/Skills.astro';
@@ -15,6 +17,7 @@ const locale = localeFromParam(Astro.params.lang);
 ---
 
 <Base locale={locale} path="/" home>
+  <Gate slot="gate" locale={locale} />
   <Hero locale={locale} />
   <About locale={locale} />
   <Achievements locale={locale} />
@@ -23,4 +26,5 @@ const locale = localeFromParam(Astro.params.lang);
   <Skills locale={locale} />
   <Gallery locale={locale} />
   <Contact locale={locale} />
+  <Badge locale={locale} />
 </Base>

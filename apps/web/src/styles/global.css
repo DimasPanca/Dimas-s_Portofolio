@@ -331,6 +331,43 @@ html.js [data-reveal]:not(.is-in) {
   transition-delay: calc(var(--i, 0) * 70ms);
 }
 
+/* Hero intro: pure CSS, starts when the gate closes (or on load when there is no gate). PRD §6.3 T-HERO-INTRO. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js[data-gate="open"] [data-hero-word] {
+    transform: translateY(112%);
+  }
+  html.js[data-gate="open"] [data-hero-fade] {
+    opacity: 0;
+  }
+  html.js:not([data-tier="static"]):not([data-gate="open"]) [data-hero-word] {
+    animation: hero-rise 1000ms var(--ease-out-expo) both;
+    animation-delay: calc(var(--i, 0) * 90ms + 120ms);
+  }
+  html.js:not([data-tier="static"]):not([data-gate="open"]) [data-hero-fade] {
+    animation: hero-fade 800ms var(--ease-out-expo) both;
+    animation-delay: 520ms;
+  }
+  html.js:not([data-tier="static"]):not([data-gate="open"]) [data-portrait] {
+    animation: hero-portrait 1400ms var(--ease-out-expo) both;
+  }
+}
+@keyframes hero-rise {
+  from {
+    transform: translateY(112%);
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+@keyframes hero-portrait {
+  from {
+    transform: translateY(3%) scale(1.05);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -352,6 +389,75 @@ html.js [data-reveal]:not(.is-in) {
 }
 html[data-tier="static"] .marquee__track {
   animation: none;
+}
+
+/* Custom cursor (desktop, mid/high tier only). PRD FR-CURSOR. */
+.cursor {
+  position: fixed;
+  inset: 0 auto auto 0;
+  z-index: 140;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: difference;
+  transition: opacity var(--dur-base) ease;
+}
+.cursor.is-on {
+  opacity: 1;
+}
+.cursor.is-hidden {
+  opacity: 0;
+}
+.cursor__dot,
+.cursor__ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.cursor__dot {
+  width: 8px;
+  height: 8px;
+  margin: -4px;
+  background: #fff;
+}
+.cursor__ring {
+  width: 36px;
+  height: 36px;
+  margin: -18px;
+  border: 1px solid #fff;
+  transition:
+    width var(--dur-base) var(--ease-spring),
+    height var(--dur-base) var(--ease-spring),
+    margin var(--dur-base) var(--ease-spring),
+    background-color var(--dur-fast) ease;
+}
+.cursor__ring b {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: #000;
+}
+.cursor[data-state="link"] .cursor__ring {
+  width: 56px;
+  height: 56px;
+  margin: -28px;
+}
+.cursor[data-state="view"] .cursor__ring,
+.cursor[data-state="drag"] .cursor__ring {
+  width: 76px;
+  height: 76px;
+  margin: -38px;
+  background: #fff;
+}
+.cursor[data-state="view"] .cursor__dot,
+.cursor[data-state="drag"] .cursor__dot {
+  opacity: 0;
+}
+.cursor.is-down .cursor__ring {
+  scale: 0.9;
 }
 
 @media print {

@@ -2,6 +2,7 @@
 import { Picture } from 'astro:assets';
 import { formatMonth, type Locale, tr } from '@portfolio/schema';
 import portrait from '../assets/portrait/hero.webp';
+import depth from '../assets/portrait/hero-depth.webp';
 import { href, ui } from '../i18n';
 import { headlineAchievement, settings, stats } from '../lib/content';
 import Icon from './Icon.astro';
@@ -78,7 +79,7 @@ const statItems = [
       {
         nameLines.map((line, i) => (
           <span class="hero__line" aria-hidden="true">
-            <span class:list={['hero__word', { stroke: i === 1 }]} data-hero-word>
+            <span class:list={['hero__word', { stroke: i === 1 }]} data-hero-word style={`--i:${i}`}>
               {line}
             </span>
           </span>
@@ -86,7 +87,7 @@ const statItems = [
       }
     </h1>
 
-    <div class="hero__portrait" data-portrait>
+    <div class="hero__portrait" data-portrait data-depth={depth.src}>
       <Picture
         src={portrait}
         formats={['avif', 'webp']}
@@ -338,7 +339,7 @@ const statItems = [
     .hero__name {
       grid-column: 1 / -1;
       grid-row: 2;
-      font-size: clamp(6rem, min(13.5vw, 17svh), 15rem);
+      font-size: clamp(6rem, min(13.5vw, 15.5svh), 15rem);
     }
     .hero__portrait {
       grid-column: 2;

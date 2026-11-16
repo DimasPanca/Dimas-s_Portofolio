@@ -1,0 +1,188 @@
+---
+import type { Locale } from '@portfolio/schema';
+import { ui } from '../i18n';
+import { projects, stats } from '../lib/content';
+
+/** Boot gate (PRD §5.2). Only shown when JS marks it open; without JS it never renders. */
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = ui(locale);
+const realProjects = projects.filter((p) => !p.isPlaceholder).length;
+const [boot, profile, mounting, compiling, signal] = t.gate.boot;
+const lines = [
+  { text: boot, value: t.gate.ok },
+  { text: profile, value: t.gate.ok },
+  { text: mounting, value: `${stats.achievements} ${t.gate.found}` },
+  { text: compiling, value: `${realProjects} ${t.gate.ok}` },
+  { text: signal, value: t.gate.online },
+];
+---
+
+<div class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title" data-gate-root>
+  <div class="gate__inner">
+    <p class="gate__mark display" aria-hidden="true">DP<i></i></p>
+    <h2 id="gate-title" class="sr-only">{t.gate.title}</h2>
+    <ol class="gate__log label" aria-hidden="true">
+      {
+        lines.map((l, i) => (
+          <li style={`--i:${i}`}>
+            <span>&gt; {l.text}</span>
+            <span class="gate__dots" />
+            <b>{l.value}</b>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="gate__count display" aria-hidden="true"><span data-gate-count>000</span></p>
+    <div class="gate__actions" data-gate-actions>
+      <button class="btn btn--volt" type="button" data-gate-enter="sound">{t.gate.withSound}</button>
+      <button class="btn btn--ghost" type="button" data-gate-enter="mute">{t.gate.withoutSound}</button>
+    </div>
+    <label class="gate__remember label">
+      <input type="checkbox" data-gate-remember />
+      {t.gate.remember}
+    </label>
+    <p class="gate__hint label">{t.gate.hint}</p>
+  </div>
+</div>
+
+<style>
+  .gate {
+    display: none;
+  }
+  :global(html[data-gate]) .gate {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: grid;
+    place-items: center;
+    padding: 24px var(--page-margin);
+    background: var(--ink-950);
+    overflow-y: auto;
+    clip-path: circle(150% at var(--gx, 50%) var(--gy, 60%));
+  }
+  :global(html[data-gate='closing']) .gate {
+    clip-path: circle(0% at var(--gx, 50%) var(--gy, 60%));
+    transition: clip-path 800ms var(--ease-out-expo);
+    pointer-events: none;
+  }
+  :global(html[data-gate='open']) {
+    overflow: hidden;
+  }
+  .gate__inner {
+    display: grid;
+    gap: 22px;
+    width: min(100%, 520px);
+  }
+  .gate__mark {
+    font-size: 3.5rem;
+    line-height: 1;
+  }
+  .gate__mark i {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-left: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: gate-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes gate-pulse {
+    50% {
+      transform: scale(0.6);
+      opacity: 0.5;
+    }
+  }
+  .gate__log {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 0.8125rem;
+  }
+  .gate__log li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    opacity: 0;
+    animation: gate-line 260ms ease-out forwards;
+    animation-delay: calc(var(--i) * 170ms + 120ms);
+  }
+  .gate__dots {
+    flex: 1;
+    border-bottom: 1px dotted var(--ink-600);
+    transform: translateY(-3px);
+  }
+  .gate__log b {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  @keyframes gate-line {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .gate__count {
+    font-size: clamp(4rem, 16vw, 7rem);
+    line-height: 0.9;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-700);
+    transition: color var(--dur-base) ease;
+  }
+  :global(html[data-gate-ready]) .gate__count {
+    color: var(--fg);
+  }
+  .gate__actions {
+    display: grid;
+    gap: 10px;
+    opacity: 0.35;
+    transition: opacity var(--dur-base) ease;
+  }
+  :global(html[data-gate-ready]) .gate__actions {
+    opacity: 1;
+  }
+  .gate__actions .btn {
+    min-height: 56px;
+    font-size: 1rem;
+  }
+  .gate__remember {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 32px;
+    cursor: pointer;
+  }
+  .gate__remember input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--volt-400);
+  }
+  .gate__hint {
+    color: var(--ink-500);
+  }
+  @media (min-width: 560px) {
+    .gate__actions {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gate__log li {
+      animation: none;
+      opacity: 1;
+    }
+    :global(html[data-gate='closing']) .gate {
+      transition: opacity 200ms linear;
+      opacity: 0;
+      clip-path: none;
+    }
+  }
+</style>

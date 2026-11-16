@@ -87,6 +87,7 @@ function onScroll() {
     const down = y > lastY && y > 240;
     if (Math.abs(y - lastY) > 6) nav.toggleAttribute('data-hidden', down && menu?.hidden !== false);
   }
+  root.toggleAttribute('data-scrolled', y > 320);
   lastY = y;
 }
 addEventListener(
