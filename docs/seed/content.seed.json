@@ -1,0 +1,485 @@
+{
+  "_meta": {
+    "version": 1,
+    "generatedOn": "2026-11-16",
+    "source": "CV_Dimas Panca Pamungkas.pdf (provided by Dimas on 2026-11-16) + design/source/Dimas.png",
+    "rules": [
+      "English strings are verbatim or near-verbatim from the CV.",
+      "Indonesian strings are drafts: needsReview=true until Dimas approves them in the admin app.",
+      "Anything not stated in the CV is a placeholder: isPlaceholder=true. Never invent facts (PRD HR-2).",
+      "The phone number from the CV is intentionally NOT stored here (PRD HR-10); set settings.contact.whatsappNumber via the admin app.",
+      "The two Google Drive proof links from the CV are intentionally NOT stored here; add proofUrl per achievement via the admin app (PRD A-3)."
+    ]
+  },
+
+  "settings": {
+    "profile": {
+      "name": "Dimas Panca Pamungkas",
+      "location": "Serang, Banten, Indonesia",
+      "email": "dimaspanca2005@gmail.com",
+      "headline": {
+        "en": "Informatics Engineering student · software, AI & IoT builder · student organization leader",
+        "id": "Mahasiswa Informatika · pembangun software, AI & IoT · pemimpin organisasi mahasiswa"
+      },
+      "summaryVerbatim": {
+        "en": "Dimas Panca Pamungkas is an Informatics Engineering student at Sultan Ageng Tirtayasa University with experience in leadership, software development, and intelligent automation. He has served as an ANBK Operator and Technician, Educational Foundation Secretary, and Project Manager, while actively participating in student organizations. His interests include software engineering, IoT, and AI, supported by multiple national achievements in hackathons, business innovation, and essay competitions."
+      },
+      "bio": {
+        "en": "I'm Dimas, an Informatics student from Serang who builds software, AI and IoT systems — and leads the teams around them. I'm the President of HMIF at UNTIRTA, I managed a multiplayer game delivered inside RedDoorz, and I keep turning ideas into things that win.",
+        "id": "Saya Dimas, mahasiswa Informatika dari Serang yang membangun software, AI, dan sistem IoT — sekaligus memimpin tim di sekitarnya. Saya Ketua HMIF FT UNTIRTA, memimpin proyek game multiplayer yang dipakai internal RedDoorz, dan terus mengubah ide menjadi karya yang menang.",
+        "needsReview": true
+      },
+      "interests": ["Software engineering", "IoT", "AI"],
+      "portrait": {
+        "source": "design/source/Dimas.png",
+        "sourceSize": "355x474",
+        "alt": {
+          "en": "Portrait of Dimas Panca Pamungkas in a black suit",
+          "id": "Potret Dimas Panca Pamungkas mengenakan jas hitam"
+        }
+      }
+    },
+    "hero": {
+      "eyebrow": {
+        "en": "Informatics Engineering · UNTIRTA · Serang, Banten",
+        "id": "Teknik Informatika · UNTIRTA · Serang, Banten",
+        "needsReview": true
+      },
+      "pitch": {
+        "en": "I build software, AI & IoT — and lead the teams that ship them.",
+        "id": "Saya membangun software, AI & IoT — dan memimpin tim yang merilisnya.",
+        "needsReview": true
+      },
+      "marquee": ["SOFTWARE ENGINEERING", "AI & RAG", "IoT & ESP32", "PROJECT MANAGEMENT", "STUDENT LEADER"]
+    },
+    "availability": {
+      "en": "Open to internships & collaborations",
+      "id": "Terbuka untuk magang & kolaborasi",
+      "isPlaceholder": true,
+      "note": "PLACEHOLDER — the CV does not state availability (PRD A-5 / Q-7)."
+    },
+    "credo": {
+      "words": ["BUILD", "LEAD", "WIN"],
+      "sentence": {
+        "en": "Build software, AI and IoT. Lead the team. Win the room.",
+        "id": "Bangun software, AI, dan IoT. Pimpin tim. Menangkan hati juri.",
+        "needsReview": true
+      }
+    },
+    "socials": [
+      { "kind": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/in/dimas-panca-pamungkas-66609a208/" },
+      { "kind": "github", "label": "GitHub", "url": "https://github.com/DimasPanca" },
+      { "kind": "email", "label": "Email", "url": "mailto:dimaspanca2005@gmail.com" }
+    ],
+    "contact": {
+      "email": "dimaspanca2005@gmail.com",
+      "whatsappNumber": null,
+      "note": "Set the WhatsApp number in the admin app (PRD HR-10 / Q-8)."
+    },
+    "seo": {
+      "title": { "en": "Dimas Panca Pamungkas — Software, AI & IoT builder", "id": "Dimas Panca Pamungkas — Pembangun Software, AI & IoT" },
+      "description": {
+        "en": "Informatics Engineering student at UNTIRTA, President of HMIF, project manager and multi-time national competition winner. Software, AI and IoT.",
+        "id": "Mahasiswa Teknik Informatika UNTIRTA, Ketua HMIF, project manager, dan juara berbagai kompetisi nasional. Software, AI, dan IoT."
+      }
+    },
+    "cvPath": null
+  },
+
+  "education": [
+    {
+      "slug": "untirta-informatics",
+      "status": "published",
+      "institution": "Universitas Sultan Ageng Tirtayasa",
+      "location": "Banten, Indonesia",
+      "program": {
+        "en": "Bachelor of Informatic System",
+        "id": "Bachelor of Informatic System",
+        "needsReview": true
+      },
+      "startOn": "2024-07-01",
+      "endOn": "2027-11-01",
+      "isExpected": true,
+      "gpa": 3.89,
+      "gpaScale": 4,
+      "sortOrder": 0,
+      "needsReview": true,
+      "_note": "CV degree line says 'Bachelor of Informatic System' while the summary says 'Informatics Engineering' (PRD A-1 / Q-3)."
+    }
+  ],
+
+  "experiences": [
+    {
+      "slug": "reddoorz-pm",
+      "status": "published",
+      "kind": "work",
+      "organization": "RedDoorz",
+      "location": "Indonesia",
+      "role": { "en": "Project Manager", "id": "Project Manager" },
+      "startOn": "2026-07-01",
+      "endOn": null,
+      "isCurrent": false,
+      "datePrecision": "month",
+      "summary": {
+        "en": "Software development project delivering a multiplayer co-op game for internal use within RedDoorz.",
+        "id": "Proyek pengembangan software berupa game co-op multiplayer untuk penggunaan internal di RedDoorz.",
+        "needsReview": true
+      },
+      "highlights": [
+        { "en": "Led end-to-end planning and execution of a multiplayer co-op game project delivered for RedDoorz.", "id": "Memimpin perencanaan dan eksekusi menyeluruh proyek game co-op multiplayer yang dikirimkan untuk RedDoorz." },
+        { "en": "Successfully delivered a production-ready application adopted for internal use by RedDoorz.", "id": "Berhasil menyerahkan aplikasi siap produksi yang dipakai untuk penggunaan internal RedDoorz." },
+        { "en": "Coordinated developers, designers, and stakeholders throughout the software development lifecycle.", "id": "Mengoordinasikan developer, desainer, dan pemangku kepentingan sepanjang siklus pengembangan software." },
+        { "en": "Managed sprint planning, task allocation, and milestone tracking to ensure on-time delivery.", "id": "Mengelola perencanaan sprint, pembagian tugas, dan pelacakan milestone demi ketepatan waktu." },
+        { "en": "Oversaw feature prioritization, quality assurance, and user acceptance testing before deployment.", "id": "Mengawasi prioritisasi fitur, penjaminan kualitas, dan user acceptance testing sebelum rilis." },
+        { "en": "Collaborated in software implementation and technical decision-making during development.", "id": "Berkolaborasi dalam implementasi software dan pengambilan keputusan teknis selama pengembangan." }
+      ],
+      "featuredHighlights": 3,
+      "projectSlug": "reddoorz-team-run",
+      "sortOrder": 0,
+      "needsReview": true,
+      "_note": "Highlights re-ordered so the strongest outcome sits in the first three; all bullets are from the CV."
+    },
+    {
+      "slug": "hmif-president",
+      "status": "published",
+      "kind": "organization",
+      "organization": "Himpunan Mahasiswa Informatika (HMIF FT UNTIRTA)",
+      "location": "Cilegon, Banten, Indonesia",
+      "role": { "en": "President", "id": "Ketua" },
+      "startOn": "2025-10-01",
+      "endOn": null,
+      "isCurrent": true,
+      "datePrecision": "month",
+      "summary": {
+        "en": "Student organization that develops leadership, technical skills, academic collaboration, and community engagement among Informatics Engineering students.",
+        "id": "Organisasi mahasiswa yang mengembangkan kepemimpinan, keterampilan teknis, kolaborasi akademik, dan keterlibatan komunitas di antara mahasiswa Teknik Informatika.",
+        "needsReview": true
+      },
+      "highlights": [
+        { "en": "Led the Informatics Engineering Student Association in planning and executing academic, professional, and student development programs.", "id": "Memimpin himpunan mahasiswa Teknik Informatika dalam merencanakan dan menjalankan program akademik, profesional, dan pengembangan mahasiswa." },
+        { "en": "Directed executive board members and coordinated multiple organizational divisions to achieve annual objectives.", "id": "Mengarahkan pengurus harian dan mengoordinasikan berbagai divisi untuk mencapai target tahunan." },
+        { "en": "Managed organizational planning, budgeting, and strategic decision-making.", "id": "Mengelola perencanaan organisasi, penganggaran, dan pengambilan keputusan strategis." },
+        { "en": "Represented the association in collaboration with the university, external organizations, and industry partners.", "id": "Mewakili himpunan dalam kolaborasi dengan universitas, organisasi eksternal, dan mitra industri." },
+        { "en": "Initiated programs to enhance students' technical, leadership, and professional development.", "id": "Menginisiasi program untuk meningkatkan pengembangan teknis, kepemimpinan, dan profesional mahasiswa." }
+      ],
+      "featuredHighlights": 3,
+      "sortOrder": 1,
+      "needsReview": true
+    },
+    {
+      "slug": "pkbm-abdi-pertiwi",
+      "status": "published",
+      "kind": "work",
+      "organization": "PKBM Abdi Pertiwi",
+      "location": "Indonesia",
+      "role": { "en": "ANBK Operator & Technician / Secretary", "id": "Operator & Teknisi ANBK / Sekretaris" },
+      "startOn": "2023-06-01",
+      "endOn": "2026-06-01",
+      "isCurrent": false,
+      "datePrecision": "month",
+      "summary": {
+        "en": "Educational institution providing community education services.",
+        "id": "Lembaga pendidikan yang menyediakan layanan pendidikan masyarakat.",
+        "needsReview": true
+      },
+      "highlights": [
+        { "en": "Managed ANBK technical operations.", "id": "Mengelola operasional teknis ANBK." },
+        { "en": "Prepared examination infrastructure.", "id": "Menyiapkan infrastruktur ujian." },
+        { "en": "Maintained computer and network systems.", "id": "Memelihara sistem komputer dan jaringan." },
+        { "en": "Coordinated administrative documentation.", "id": "Mengoordinasikan dokumentasi administrasi." },
+        { "en": "Assisted school staff during national computer-based assessments.", "id": "Membantu staf sekolah selama asesmen nasional berbasis komputer." }
+      ],
+      "featuredHighlights": 3,
+      "sortOrder": 2,
+      "needsReview": true
+    },
+    {
+      "slug": "voucher-game-shop",
+      "status": "published",
+      "kind": "work",
+      "organization": "Voucher Game Shop",
+      "location": null,
+      "role": { "en": "Graphic Designer", "id": "Desainer Grafis" },
+      "startOn": "2020-02-01",
+      "endOn": "2021-05-01",
+      "isCurrent": false,
+      "datePrecision": "month",
+      "summary": null,
+      "highlights": [
+        { "en": "Designed promotional banners.", "id": "Mendesain banner promosi." },
+        { "en": "Created product marketing visuals.", "id": "Membuat visual pemasaran produk." },
+        { "en": "Produced social media content.", "id": "Memproduksi konten media sosial." },
+        { "en": "Assisted branding and digital marketing campaigns.", "id": "Membantu kampanye branding dan pemasaran digital." }
+      ],
+      "featuredHighlights": 3,
+      "sortOrder": 3,
+      "needsReview": true
+    }
+  ],
+
+  "achievements": [
+    {
+      "slug": "faperta-fair-2026-1st",
+      "status": "published",
+      "rankLabel": { "en": "1st Place Winner", "id": "Juara 1" },
+      "rankTier": 1,
+      "title": {
+        "en": "10th International FAPERTA FAIR 2026 (Research, Technology, and Art)",
+        "id": "10th International FAPERTA FAIR 2026 (Penelitian, Teknologi, dan Seni)"
+      },
+      "organizer": "FAPERTA FAIR",
+      "category": "competition",
+      "scope": "international",
+      "achievedOn": "2026-01-01",
+      "datePrecision": "year",
+      "summary": {
+        "en": "Won 1st place at the 10th International FAPERTA FAIR 2026 (Research, Technology, and Art).",
+        "id": "Meraih juara 1 di 10th International FAPERTA FAIR 2026 (Penelitian, Teknologi, dan Seni)."
+      },
+      "highlights": [],
+      "tags": ["international", "research", "technology", "art"],
+      "projectSlug": "edge-ai-oyster-mushroom",
+      "linkConfirmed": false,
+      "proofUrl": null,
+      "sortOrder": 0,
+      "needsReview": true,
+      "_note": "The CV names no organizer; 'FAPERTA FAIR' is used as written. Link to the mushroom project is an unconfirmed assumption (PRD A-2 / Q-5)."
+    },
+    {
+      "slug": "bmc-industrial-2026-1st",
+      "status": "published",
+      "rankLabel": { "en": "1st Place", "id": "Juara 1" },
+      "rankTier": 1,
+      "title": {
+        "en": "Industrial Competitions — Business Model Canvas Competition",
+        "id": "Industrial Competitions — Kompetisi Business Model Canvas"
+      },
+      "organizer": "Industrial Competitions",
+      "category": "business",
+      "scope": null,
+      "achievedOn": "2026-01-01",
+      "datePrecision": "year",
+      "summary": {
+        "en": "Won 1st place by developing an innovative business model and commercialization strategy for a technology-driven solution.",
+        "id": "Meraih juara 1 dengan mengembangkan model bisnis dan strategi komersialisasi inovatif untuk solusi berbasis teknologi."
+      },
+      "highlights": [
+        { "en": "Conducted market analysis, value proposition design, and business validation.", "id": "Melakukan analisis pasar, perancangan value proposition, dan validasi bisnis." },
+        { "en": "Presented the project to the competition judges.", "id": "Mempresentasikan proyek kepada para juri kompetisi." }
+      ],
+      "tags": ["business model canvas", "commercialization", "pitching"],
+      "proofUrl": null,
+      "sortOrder": 1,
+      "needsReview": true
+    },
+    {
+      "slug": "geteksi-v3-2026-3rd",
+      "status": "published",
+      "rankLabel": { "en": "3rd Place", "id": "Juara 3" },
+      "rankTier": 3,
+      "title": {
+        "en": "GETEKSI Vol. 3 National Essay Competition",
+        "id": "GETEKSI Vol. 3 — Lomba Esai Nasional"
+      },
+      "organizer": "GETEKSI",
+      "category": "essay",
+      "scope": "national",
+      "achievedOn": "2026-01-01",
+      "datePrecision": "year",
+      "summary": {
+        "en": "Achieved 3rd place by presenting a research-based innovation addressing real-world challenges through technology and strategic analysis.",
+        "id": "Meraih juara 3 dengan menyajikan inovasi berbasis riset untuk tantangan dunia nyata melalui teknologi dan analisis strategis."
+      },
+      "highlights": [],
+      "tags": ["essay", "research", "innovation"],
+      "proofUrl": null,
+      "sortOrder": 2,
+      "needsReview": true
+    },
+    {
+      "slug": "innovate-astra-2026-top4",
+      "status": "published",
+      "rankLabel": { "en": "Top 4 Finalist", "id": "Finalis Top 4" },
+      "rankTier": 4,
+      "title": {
+        "en": "IN:NOVATE National Hackathon",
+        "id": "IN:NOVATE — Hackathon Nasional"
+      },
+      "organizer": "Astra",
+      "category": "hackathon",
+      "scope": "national",
+      "achievedOn": "2026-01-01",
+      "datePrecision": "year",
+      "summary": {
+        "en": "Selected as a Top 4 finalist among national participants in Astra's innovation hackathon.",
+        "id": "Terpilih sebagai finalis Top 4 di antara peserta nasional pada hackathon inovasi Astra."
+      },
+      "highlights": [
+        { "en": "Collaborated with a multidisciplinary team to design and develop a technology-based solution.", "id": "Berkolaborasi dengan tim multidisiplin untuk merancang dan mengembangkan solusi berbasis teknologi." },
+        { "en": "Demonstrated software development, problem-solving, teamwork, and presentation skills.", "id": "Menunjukkan kemampuan pengembangan software, pemecahan masalah, kerja tim, dan presentasi." }
+      ],
+      "tags": ["hackathon", "teamwork", "innovation"],
+      "proofUrl": null,
+      "sortOrder": 3,
+      "needsReview": true
+    },
+    {
+      "slug": "bncc-binus-2026-top10",
+      "status": "published",
+      "rankLabel": { "en": "Top 10 Finalist", "id": "Finalis Top 10" },
+      "rankTier": 10,
+      "title": {
+        "en": "National Hackathon Competition",
+        "id": "Kompetisi Hackathon Nasional"
+      },
+      "organizer": "BNCC — Bina Nusantara Computer Club (Binus)",
+      "category": "hackathon",
+      "scope": "national",
+      "achievedOn": "2026-01-01",
+      "datePrecision": "year",
+      "summary": {
+        "en": "Selected as a Top 10 finalist in a national hackathon organized by Bina Nusantara Computer Club (BNCC).",
+        "id": "Terpilih sebagai finalis Top 10 pada hackathon nasional yang diselenggarakan Bina Nusantara Computer Club (BNCC)."
+      },
+      "highlights": [
+        { "en": "Collaborated with a multidisciplinary team to design and develop an innovative technology solution.", "id": "Berkolaborasi dengan tim multidisiplin untuk merancang dan mengembangkan solusi teknologi inovatif." },
+        { "en": "Demonstrated software development, problem-solving, teamwork, and presentation skills.", "id": "Menunjukkan kemampuan pengembangan software, pemecahan masalah, kerja tim, dan presentasi." }
+      ],
+      "tags": ["hackathon", "teamwork", "innovation"],
+      "proofUrl": null,
+      "sortOrder": 4,
+      "needsReview": true
+    }
+  ],
+
+  "projects": [
+    {
+      "slug": "reddoorz-team-run",
+      "status": "published",
+      "title": { "en": "RedDoorz Team Run", "id": "RedDoorz Team Run" },
+      "role": { "en": "Project Manager", "id": "Project Manager" },
+      "year": 2026,
+      "summary": {
+        "en": "A multiplayer co-op game delivered for internal use within RedDoorz.",
+        "id": "Game co-op multiplayer yang diserahkan untuk penggunaan internal di RedDoorz.",
+        "needsReview": true
+      },
+      "body": {
+        "en": "Led the development of RedDoorz Team Run, a multiplayer co-op game project, as Project Manager. Managed project planning, sprint execution, and cross-functional collaboration while coordinating developers and designers. Oversaw feature prioritization, timeline management, and quality assurance to ensure successful project delivery.",
+        "id": "Memimpin pengembangan RedDoorz Team Run, proyek game co-op multiplayer, sebagai Project Manager. Mengelola perencanaan proyek, eksekusi sprint, dan kolaborasi lintas fungsi sambil mengoordinasikan developer dan desainer. Mengawasi prioritisasi fitur, manajemen jadwal, dan penjaminan kualitas demi keberhasilan pengiriman proyek.",
+        "needsReview": true
+      },
+      "stack": [],
+      "links": [],
+      "featured": true,
+      "isPlaceholder": false,
+      "sortOrder": 0,
+      "needsReview": true,
+      "_note": "Tech stack, screenshots and links are NOT in the CV — add them in the admin app. Do not invent metrics."
+    },
+    {
+      "slug": "edge-ai-oyster-mushroom",
+      "status": "published",
+      "title": {
+        "en": "Edge-AI & IoT Oyster Mushroom Cultivation System",
+        "id": "Sistem Budidaya Jamur Tiram berbasis Edge AI & IoT",
+        "needsReview": true
+      },
+      "role": {
+        "en": "Proposer — system architecture, wiring and hardware selection",
+        "id": "Pengusul — arsitektur sistem, pengkabelan, dan pemilihan perangkat keras",
+        "needsReview": true
+      },
+      "year": 2026,
+      "summary": {
+        "en": "A proposed fully automated, near-zero-waste oyster mushroom cultivation system powered by Edge AI and IoT.",
+        "id": "Usulan sistem budidaya jamur tiram otomatis penuh dan nyaris tanpa limbah berbasis Edge AI dan IoT.",
+        "needsReview": true
+      },
+      "body": {
+        "en": "I proposed a fully automated, near-zero-waste oyster mushroom cultivation system powered by Edge AI and IoT, for which I designed the system architecture, wiring, and hardware selection.",
+        "id": "Saya mengusulkan sistem budidaya jamur tiram otomatis penuh dan nyaris tanpa limbah berbasis Edge AI dan IoT, dengan merancang arsitektur sistem, pengkabelan, dan pemilihan perangkat keras.",
+        "needsReview": true
+      },
+      "stack": [],
+      "links": [],
+      "featured": false,
+      "linkedAchievementSlug": "faperta-fair-2026-1st",
+      "linkConfirmed": false,
+      "isPlaceholder": false,
+      "sortOrder": 1,
+      "needsReview": true,
+      "_note": "Worded as a proposal exactly as the CV states. ESP32 is in the CV skills list but not tied to this project — leave stack empty until confirmed (Q-4/Q-5)."
+    },
+    {
+      "slug": "placeholder-project-1",
+      "status": "published",
+      "title": { "en": "Project title", "id": "Judul proyek" },
+      "role": { "en": "Your role", "id": "Peran kamu" },
+      "year": 2026,
+      "summary": { "en": "Replace this card with a real project from the admin app.", "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin." },
+      "stack": [],
+      "links": [],
+      "featured": false,
+      "isPlaceholder": true,
+      "sortOrder": 2
+    },
+    {
+      "slug": "placeholder-project-2",
+      "status": "published",
+      "title": { "en": "Project title", "id": "Judul proyek" },
+      "role": { "en": "Your role", "id": "Peran kamu" },
+      "year": 2026,
+      "summary": { "en": "Replace this card with a real project from the admin app.", "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin." },
+      "stack": [],
+      "links": [],
+      "featured": false,
+      "isPlaceholder": true,
+      "sortOrder": 3
+    },
+    {
+      "slug": "placeholder-project-3",
+      "status": "published",
+      "title": { "en": "Project title", "id": "Judul proyek" },
+      "role": { "en": "Your role", "id": "Peran kamu" },
+      "year": 2026,
+      "summary": { "en": "Replace this card with a real project from the admin app.", "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin." },
+      "stack": [],
+      "links": [],
+      "featured": false,
+      "isPlaceholder": true,
+      "sortOrder": 4
+    }
+  ],
+
+  "skills": [
+    { "slug": "skill-fullstack-web", "status": "published", "group": "web", "kind": "hard", "label": { "en": "Full-stack web application development", "id": "Pengembangan aplikasi web full-stack" }, "sortOrder": 0 },
+    { "slug": "skill-database-design", "status": "published", "group": "web", "kind": "hard", "label": { "en": "Database design", "id": "Perancangan basis data" }, "sortOrder": 1 },
+    { "slug": "skill-rest-api", "status": "published", "group": "web", "kind": "hard", "label": { "en": "REST API integration", "id": "Integrasi REST API" }, "sortOrder": 2 },
+    { "slug": "skill-ai-solutions", "status": "published", "group": "ai", "kind": "hard", "label": { "en": "AI-powered solutions", "id": "Solusi berbasis AI" }, "sortOrder": 3 },
+    { "slug": "skill-prompt-engineering", "status": "published", "group": "ai", "kind": "hard", "label": { "en": "Prompt engineering", "id": "Prompt engineering" }, "sortOrder": 4 },
+    { "slug": "skill-rag", "status": "published", "group": "ai", "kind": "hard", "label": { "en": "Retrieval-augmented generation (RAG)", "id": "Retrieval-augmented generation (RAG)" }, "sortOrder": 5 },
+    { "slug": "skill-iot-systems", "status": "published", "group": "iot", "kind": "hard", "label": { "en": "IoT systems", "id": "Sistem IoT" }, "sortOrder": 6 },
+    { "slug": "skill-esp32", "status": "published", "group": "iot", "kind": "hard", "label": { "en": "Embedded systems with ESP32", "id": "Sistem embedded dengan ESP32" }, "sortOrder": 7 },
+    { "slug": "skill-git", "status": "published", "group": "tools", "kind": "hard", "label": { "en": "Version control with Git", "id": "Version control dengan Git" }, "sortOrder": 8 },
+    { "slug": "skill-figma", "status": "published", "group": "tools", "kind": "hard", "label": { "en": "UI prototyping with Figma", "id": "Prototyping UI dengan Figma" }, "sortOrder": 9 },
+    { "slug": "skill-stack-placeholder", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "Languages & frameworks", "id": "Bahasa pemrograman & framework" }, "isPlaceholder": true, "sortOrder": 10, "_note": "CV says 'modern programming languages and frameworks' without naming them (Q-4)." },
+    { "slug": "skill-leadership", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Leadership", "id": "Kepemimpinan" }, "sortOrder": 11 },
+    { "slug": "skill-collaboration", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Collaboration", "id": "Kolaborasi" }, "sortOrder": 12 },
+    { "slug": "skill-project-planning", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Project planning", "id": "Perencanaan proyek" }, "sortOrder": 13 },
+    { "slug": "skill-communication", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Effective communication", "id": "Komunikasi efektif" }, "sortOrder": 14 },
+    { "slug": "skill-problem-solving", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Problem-solving", "id": "Pemecahan masalah" }, "sortOrder": 15 },
+    { "slug": "skill-strategic-decisions", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Strategic decision-making", "id": "Pengambilan keputusan strategis" }, "sortOrder": 16 },
+    { "slug": "skill-multitasking", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Balancing multiple responsibilities", "id": "Mengelola banyak tanggung jawab" }, "sortOrder": 17 },
+    { "slug": "skill-presentation", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Presentation & pitching", "id": "Presentasi & pitching" }, "sortOrder": 18 }
+  ],
+
+  "gallery": [
+    { "slug": "gallery-placeholder-1", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 0 },
+    { "slug": "gallery-placeholder-2", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 1 },
+    { "slug": "gallery-placeholder-3", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 2 },
+    { "slug": "gallery-placeholder-4", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 3 },
+    { "slug": "gallery-placeholder-5", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 4 },
+    { "slug": "gallery-placeholder-6", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 5 }
+  ]
+}
