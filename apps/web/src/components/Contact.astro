@@ -1,0 +1,317 @@
+---
+import type { Locale } from '@portfolio/schema';
+import { href, ui } from '../i18n';
+import { env, settings, whatsappHref } from '../lib/content';
+import Icon, { type IconName } from './Icon.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = ui(locale);
+const email = settings.contact.email;
+const topics = ['internship', 'collaboration', 'competition', 'other'] as const;
+const action = env.contactUrl || `mailto:${email}`;
+const channels: { icon: IconName; label: string; text: string; url: string; copy?: string }[] = [
+  { icon: 'mail', label: 'Email', text: email, url: `mailto:${email}`, copy: email },
+  ...(whatsappHref ? [{ icon: 'whatsapp' as const, label: 'WhatsApp', text: 'WhatsApp', url: whatsappHref }] : []),
+  ...settings.socials
+    .filter((s) => s.kind !== 'email' && s.kind !== 'whatsapp')
+    .map((s) => ({
+      icon: (['linkedin', 'github', 'instagram'].includes(s.kind) ? s.kind : 'external') as IconName,
+      label: s.label,
+      text: s.handle ?? s.label,
+      url: s.url,
+    })),
+];
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-h">
+  <div class="contact__glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="label" data-reveal>08 / {t.contact.label}</p>
+    <h2 id="contact-h" class="contact__headline display" data-proximity>{t.contact.headline}</h2>
+
+    <div class="contact__grid">
+      <div class="contact__left" data-reveal>
+        <p class="lead">{t.contact.intro}</p>
+        <ul class="channels">
+          {
+            channels.map((c) => (
+              <li>
+                <a
+                  href={c.url}
+                  target={c.url.startsWith('http') ? '_blank' : undefined}
+                  rel={c.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  data-copy={c.copy}
+                  data-copied={c.copy ? t.contact.copied : undefined}
+                  data-sound="hover"
+                  data-track={c.copy ? undefined : 'contact_click'}
+                >
+                  <span class="label">
+                    <Icon name={c.icon} size={14} /> {c.label}
+                  </span>
+                  <span class="channels__text">{c.text}</span>
+                  <Icon name={c.copy ? 'copy' : 'arrow-up-right'} size={22} class="channels__arrow" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="contact__clock label">
+          <span class="contact__live" aria-hidden="true"></span>
+          {t.contact.clock}
+          <time data-clock>--:--:--</time>
+        </p>
+      </div>
+
+      <form
+        class="form"
+        action={action}
+        method="post"
+        enctype={env.contactUrl ? undefined : 'text/plain'}
+        data-contact-form
+        data-endpoint={env.contactUrl}
+        data-turnstile={env.turnstileKey}
+        data-msg-sent={t.contact.sent}
+        data-msg-failed={t.contact.failed}
+        data-msg-offline={t.contact.offline}
+        data-msg-sending={t.contact.sending}
+        data-reveal
+        novalidate
+      >
+        <input type="hidden" name="locale" value={locale} />
+        <input type="hidden" name="redirect" value={`${env.siteUrl.replace(/\/$/, '')}${href(locale, '/thanks')}`} />
+        <div class="field">
+          <label for="c-name">{t.contact.name}</label>
+          <input id="c-name" name="name" type="text" autocomplete="name" required minlength="2" maxlength="80" data-error={t.contact.errors.name} />
+          <p class="field__error" id="c-name-err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="c-email">{t.contact.email}</label>
+          <input id="c-email" name="email" type="email" autocomplete="email" required inputmode="email" data-error={t.contact.errors.email} />
+          <p class="field__error" id="c-email-err" hidden></p>
+        </div>
+        <div class="field">
+          <label for="c-topic">{t.contact.topic}</label>
+          <select id="c-topic" name="topic">
+            {topics.map((k) => <option value={k} selected={k === 'other'}>{t.contact.topics[k]}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="c-message">{t.contact.message}</label>
+          <textarea id="c-message" name="message" rows="5" required minlength="10" maxlength="2000" data-error={t.contact.errors.message}></textarea>
+          <p class="field__error" id="c-message-err" hidden></p>
+        </div>
+        <div class="hp" aria-hidden="true">
+          <label for="c-website">Website</label>
+          <input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+        <div data-turnstile-slot></div>
+        <button class="btn btn--volt form__submit" type="submit" data-sound="hover">
+          <span data-submit-label>{t.contact.send}</span><Icon name="arrow-right" size={18} />
+        </button>
+        <p class="form__status" role="status" aria-live="polite" data-form-status></p>
+        <p class="form__note label">
+          {t.contact.privacyNote}
+          <a class="link-u" href={href(locale, '/privacy')}>{t.footer.privacy}</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <a class="totop" href="#top" aria-label={t.contact.top} data-sound="hover click">
+    <Icon name="arrow-up" size={22} />
+  </a>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    overflow: clip;
+    isolation: isolate;
+  }
+  .contact__glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(50% 45% at 85% 20%, rgb(255 106 77 / 0.16), transparent 70%),
+      radial-gradient(55% 55% at 15% 90%, rgb(212 255 63 / 0.12), transparent 70%);
+  }
+  .contact__headline {
+    margin: 18px 0 clamp(36px, 6vw, 72px);
+    font-size: clamp(3rem, 11.5vw, 12rem);
+    line-height: 0.88;
+    max-width: 12ch;
+  }
+  .contact__headline :global(.ch) {
+    display: inline-block;
+    will-change: transform;
+  }
+  .contact__grid {
+    display: grid;
+    gap: 40px;
+  }
+  .channels {
+    display: grid;
+    margin: 28px 0 24px;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+  .channels a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2px 16px;
+    padding: 16px 4px;
+    border-bottom: 1px solid var(--line);
+    transition:
+      padding var(--dur-base) var(--ease-out-expo),
+      color var(--dur-fast) ease;
+  }
+  .channels a:hover {
+    padding-left: 14px;
+    color: var(--accent);
+  }
+  .channels .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    grid-column: 1;
+  }
+  .channels__text {
+    grid-column: 1;
+    font-size: clamp(1.375rem, 3vw, 2.25rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+  .channels :global(.channels__arrow) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .contact__clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .contact__clock time {
+    color: var(--fg);
+    min-width: 8ch;
+  }
+  .contact__live {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--flare-500);
+    animation: live 1.6s ease-in-out infinite;
+  }
+  @keyframes live {
+    50% {
+      opacity: 0.25;
+    }
+  }
+  .form {
+    display: grid;
+    gap: 16px;
+    padding: clamp(20px, 3vw, 36px);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--line);
+    background: rgb(20 20 23 / 0.86);
+    align-self: start;
+  }
+  .field {
+    display: grid;
+    gap: 6px;
+  }
+  .field label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-200);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--ink-600);
+    background: var(--ink-950);
+    color: var(--fg);
+    font: inherit;
+    transition: border-color var(--dur-fast) ease;
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 132px;
+  }
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover {
+    border-color: var(--ink-400);
+  }
+  .field [aria-invalid='true'] {
+    border-color: var(--flare-400);
+  }
+  .field__error {
+    color: var(--flare-400);
+    font-size: 0.8125rem;
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .form__submit {
+    justify-self: start;
+  }
+  .form__submit[disabled] {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .form__status {
+    min-height: 1.5em;
+    font-size: 0.9375rem;
+  }
+  .form__status[data-state='ok'] {
+    color: var(--accent);
+  }
+  .form__status[data-state='error'] {
+    color: var(--flare-400);
+  }
+  .form__note {
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+  }
+  .totop {
+    position: absolute;
+    right: var(--page-margin);
+    bottom: 28px;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--flare-500);
+    color: var(--ink-950);
+    transition: transform var(--dur-base) var(--ease-spring);
+  }
+  .totop:hover {
+    transform: translateY(-4px) scale(1.06);
+  }
+  @media (min-width: 960px) {
+    .contact__grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: clamp(40px, 6vw, 96px);
+      padding-bottom: 40px;
+    }
+  }
+</style>

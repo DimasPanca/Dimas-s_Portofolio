@@ -1,0 +1,26 @@
+---
+import About from '../../components/About.astro';
+import Achievements from '../../components/Achievements.astro';
+import Contact from '../../components/Contact.astro';
+import Gallery from '../../components/Gallery.astro';
+import Hero from '../../components/Hero.astro';
+import Journey from '../../components/Journey.astro';
+import Skills from '../../components/Skills.astro';
+import Works from '../../components/Works.astro';
+import { localeFromParam, localePaths } from '../../i18n';
+import Base from '../../layouts/Base.astro';
+
+export const getStaticPaths = localePaths;
+const locale = localeFromParam(Astro.params.lang);
+---
+
+<Base locale={locale} path="/" home>
+  <Hero locale={locale} />
+  <About locale={locale} />
+  <Achievements locale={locale} />
+  <Journey locale={locale} />
+  <Works locale={locale} />
+  <Skills locale={locale} />
+  <Gallery locale={locale} />
+  <Contact locale={locale} />
+</Base>

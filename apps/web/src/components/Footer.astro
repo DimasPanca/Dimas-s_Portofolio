@@ -1,0 +1,116 @@
+---
+import type { Locale } from '@portfolio/schema';
+import { href, ui } from '../i18n';
+import { settings } from '../lib/content';
+
+interface Props {
+  locale: Locale;
+  path: string;
+  singleLocale?: boolean;
+}
+const { locale, path, singleLocale = false } = Astro.props;
+const t = ui(locale);
+const home = href(locale, '/');
+const sections = ['about', 'achievements', 'journey', 'works', 'skills', 'gallery', 'contact'] as const;
+const other: Locale = locale === 'en' ? 'id' : 'en';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer no-print">
+  <div class="wrap footer__grid">
+    <nav id="footer-nav" class="footer__nav" aria-label="Footer">
+      {
+        sections.map((s) => (
+          <a class="link-u" href={`${home}#${s}`}>
+            {t.nav[s]}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="footer__meta label">
+      <a class="link-u" href={href(locale, '/cv')}>CV</a>
+      <a class="link-u" href="/credits">{t.footer.credits}</a>
+      <a class="link-u" href={href(locale, '/privacy')}>{t.footer.privacy}</a>
+      {
+        !singleLocale && (
+          <a class="link-u" href={href(other, path)} hreflang={other} data-lang-switch={other}>
+            {other === 'id' ? 'Bahasa Indonesia' : 'English'}
+          </a>
+        )
+      }
+      <button class="footer__lite" type="button" aria-pressed="false" data-lite-toggle hidden>
+        <span class="footer__lite-dot" aria-hidden="true"></span>{t.footer.lite}
+      </button>
+    </div>
+    <p class="footer__copy label">
+      © {year}
+      {settings.profile.name}. {t.footer.rights}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-block: 40px max(40px, env(safe-area-inset-bottom));
+    background: var(--ink-950);
+  }
+  .footer__grid {
+    display: grid;
+    gap: 28px;
+  }
+  .footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    font-size: 0.9375rem;
+  }
+  .footer__nav a,
+  .footer__meta a,
+  .footer__lite {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    align-items: center;
+  }
+  .footer__lite {
+    gap: 8px;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+  }
+  .footer__lite[hidden] {
+    display: none;
+  }
+  .footer__lite-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+  }
+  .footer__lite[aria-pressed='true'] .footer__lite-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .footer__copy {
+    color: var(--ink-400);
+  }
+  @media (min-width: 900px) {
+    .footer__grid {
+      grid-template-columns: 1fr auto;
+      align-items: end;
+    }
+    .footer__copy {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

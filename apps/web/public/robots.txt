@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /thanks
+Disallow: /id/thanks
+
+Sitemap: https://dimas-panca.vercel.app/sitemap-index.xml

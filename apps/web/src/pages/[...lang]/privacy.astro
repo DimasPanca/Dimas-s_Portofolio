@@ -1,0 +1,77 @@
+---
+import { href, localeFromParam, localePaths, ui } from '../../i18n';
+import Page from '../../layouts/Page.astro';
+import { settings } from '../../lib/content';
+
+export const getStaticPaths = localePaths;
+const locale = localeFromParam(Astro.params.lang);
+const t = ui(locale);
+const email = settings.contact.email;
+const en = locale === 'en';
+---
+
+<Page locale={locale} path="/privacy" title={t.footer.privacy} back={{ href: href(locale, '/'), label: t.nav.home }}>
+  <div class="prose">
+    {
+      en ? (
+        <>
+          <p class="lead">This is a personal portfolio. It is built to collect as little about you as possible.</p>
+          <h2>No cookies, no tracking</h2>
+          <p>
+            This site sets no cookies and uses no advertising or cross-site tracking. Visit statistics are aggregate and anonymous (page views and loading
+            performance), with no profile of you.
+          </p>
+          <h2>What is stored in your browser</h2>
+          <p>A few preferences are kept in your own browser so the site remembers your choices. They never leave your device:</p>
+          <ul>
+            <li><code>dp:audio</code> — whether you turned sound on or off</li>
+            <li><code>dp:lang</code> — your language choice</li>
+            <li><code>dp:lite</code> — whether Lite mode is on</li>
+            <li><code>dp:explored</code>, <code>dp:explorer</code> — which sections you have seen</li>
+            <li><code>dp:gate</code> — that you already passed the intro screen in this session</li>
+          </ul>
+          <h2>The contact form</h2>
+          <p>
+            When you send a message, I receive your name, email address, topic and message, and use them only to reply to you. To limit spam, the form uses an
+            automated check (Cloudflare Turnstile) and stores a one-way, salted hash of your IP address — not the address itself.
+          </p>
+          <p>Messages are deleted after 90 days. Nothing is sold or shared with anyone else.</p>
+          <h2>Your choices</h2>
+          <p>
+            You can ask me to delete a message you sent at any time by writing to <a href={`mailto:${email}`}>{email}</a>. You can clear the stored preferences
+            by clearing this site's data in your browser.
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="lead">Ini adalah portofolio pribadi. Situs ini dibuat untuk mengumpulkan data tentangmu sesedikit mungkin.</p>
+          <h2>Tanpa cookie, tanpa pelacakan</h2>
+          <p>
+            Situs ini tidak memasang cookie dan tidak memakai iklan atau pelacakan lintas situs. Statistik kunjungan bersifat agregat dan anonim (jumlah
+            kunjungan halaman dan performa pemuatan), tanpa profil tentangmu.
+          </p>
+          <h2>Yang disimpan di browsermu</h2>
+          <p>Beberapa preferensi disimpan di browsermu sendiri agar situs mengingat pilihanmu. Data ini tidak pernah keluar dari perangkatmu:</p>
+          <ul>
+            <li><code>dp:audio</code> — apakah suara kamu nyalakan atau matikan</li>
+            <li><code>dp:lang</code> — pilihan bahasamu</li>
+            <li><code>dp:lite</code> — apakah Mode hemat aktif</li>
+            <li><code>dp:explored</code>, <code>dp:explorer</code> — bagian mana yang sudah kamu lihat</li>
+            <li><code>dp:gate</code> — bahwa kamu sudah melewati layar pembuka di sesi ini</li>
+          </ul>
+          <h2>Formulir kontak</h2>
+          <p>
+            Saat kamu mengirim pesan, saya menerima nama, alamat email, topik, dan pesanmu, dan memakainya hanya untuk membalasmu. Untuk membatasi spam,
+            formulir memakai pemeriksaan otomatis (Cloudflare Turnstile) dan menyimpan hash satu arah dari alamat IP-mu — bukan alamatnya.
+          </p>
+          <p>Pesan dihapus setelah 90 hari. Tidak ada data yang dijual atau dibagikan ke pihak lain.</p>
+          <h2>Pilihanmu</h2>
+          <p>
+            Kamu bisa meminta saya menghapus pesan yang kamu kirim kapan saja lewat <a href={`mailto:${email}`}>{email}</a>. Preferensi yang tersimpan bisa
+            dihapus dengan membersihkan data situs ini di browsermu.
+          </p>
+        </>
+      )
+    }
+  </div>
+</Page>

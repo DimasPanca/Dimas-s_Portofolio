@@ -1,0 +1,217 @@
+{
+  "skip": "Skip to content",
+  "nav": {
+    "about": "About",
+    "achievements": "Achievements",
+    "journey": "Journey",
+    "works": "Works",
+    "skills": "Skills",
+    "gallery": "Gallery",
+    "contact": "Contact",
+    "menu": "Menu",
+    "close": "Close",
+    "cv": "Download CV",
+    "language": "Language",
+    "soundOn": "Sound on",
+    "soundOff": "Sound off",
+    "sound": "Sound",
+    "home": "Home"
+  },
+  "gate": {
+    "title": "Welcome",
+    "withSound": "Enter with sound",
+    "withoutSound": "Enter without sound",
+    "remember": "Remember my choice",
+    "hint": "Scroll or press Esc to skip",
+    "tapSound": "Tap to turn sound on",
+    "boot": [
+      "booting dimas.sys",
+      "profile · Informatics Engineering · UNTIRTA",
+      "mounting achievements",
+      "compiling projects",
+      "signal"
+    ],
+    "found": "found",
+    "ok": "ok",
+    "online": "online"
+  },
+  "hero": {
+    "ctaPrimary": "See achievements",
+    "ctaSecondary": "Contact me",
+    "scroll": "Scroll",
+    "statGpa": "GPA",
+    "statAchievements": "Achievements",
+    "statFirst": "1st-place wins",
+    "statRoles": "Roles held"
+  },
+  "about": {
+    "label": "About",
+    "cardTitle": "About me",
+    "education": "Education",
+    "location": "Based in",
+    "focus": "Focus",
+    "now": "Now",
+    "expected": "expected",
+    "toolkit": "Toolkit"
+  },
+  "achievements": {
+    "label": "Achievements",
+    "title": "Achievements",
+    "intro": "{n} placements in 2026 across essay, business, machine-learning and hackathon competitions.",
+    "unlocked": "unlocked",
+    "all": "All",
+    "allTitle": "All achievements",
+    "proof": "View proof",
+    "details": "Details",
+    "of": "of",
+    "organizer": "Organizer",
+    "date": "Date",
+    "location": "Location",
+    "scope": "Scope",
+    "type": "Type",
+    "entry": "Entry",
+    "linkedProject": "The winning entry",
+    "next": "Next achievement",
+    "back": "All achievements",
+    "proofs": "Proof",
+    "highlights": "Highlights",
+    "toast": "Achievement unlocked",
+    "railHint": "Drag or scroll",
+    "categories": {
+      "essay": "Essay",
+      "business": "Business",
+      "hackathon": "Hackathon",
+      "ai-ml": "AI / ML",
+      "research": "Research",
+      "certification": "Certification",
+      "other": "Other"
+    },
+    "scopes": {
+      "international": "International",
+      "national": "National",
+      "regional": "Regional",
+      "campus": "Campus"
+    },
+    "entries": {
+      "individual": "Individual",
+      "team": "Team"
+    }
+  },
+  "journey": {
+    "label": "Journey",
+    "title": "Journey",
+    "intro": "Work, leadership and study — with the wins marked along the way.",
+    "all": "All",
+    "work": "Work",
+    "organization": "Organization",
+    "education": "Education",
+    "milestones": "Achievements",
+    "present": "Present",
+    "now": "Now",
+    "showAll": "Show all",
+    "gpa": "GPA",
+    "wins": "achievements",
+    "win": "achievement"
+  },
+  "works": {
+    "label": "Works",
+    "title": "/Works",
+    "intro": "Things I have led, designed or built.",
+    "view": "View case study",
+    "soon": "Coming soon",
+    "prev": "Previous",
+    "next": "Next",
+    "role": "Role",
+    "year": "Year",
+    "stack": "Stack",
+    "links": "Links",
+    "award": "Award",
+    "nextProject": "Next project",
+    "back": "All works",
+    "overview": "Overview",
+    "placeholderBody": "This project slot is a placeholder. Real projects are added from the admin app."
+  },
+  "skills": {
+    "label": "Skills",
+    "title": "Skills",
+    "intro": "What I work with — no percentages, just the things I actually use.",
+    "groups": {
+      "ai": "AI & Data",
+      "web": "Web & Backend",
+      "iot": "IoT & Embedded",
+      "tools": "Tools & Design",
+      "stack": "Languages & Frameworks",
+      "leadership": "Leadership"
+    }
+  },
+  "gallery": {
+    "label": "Gallery",
+    "title": "Moments",
+    "intro": "Photos from competitions, events and the teams behind them.",
+    "placeholder": "Photo coming soon"
+  },
+  "contact": {
+    "label": "Contact",
+    "headline": "Let's build something that matters.",
+    "intro": "Internships, collaborations, competitions — or just a good idea. My inbox is open.",
+    "name": "Name",
+    "email": "Email",
+    "topic": "Topic",
+    "message": "Message",
+    "send": "Send message",
+    "sending": "Sending…",
+    "topics": {
+      "internship": "Internship",
+      "collaboration": "Collaboration",
+      "competition": "Competition",
+      "other": "Other"
+    },
+    "sent": "Message sent. I'll get back to you soon.",
+    "failed": "That didn't go through. Try again or email me directly.",
+    "offline": "The contact form is not connected yet. Please email me directly.",
+    "copied": "Copied. Go ahead, paste it.",
+    "copy": "Copy email",
+    "clock": "Serang · WIB",
+    "top": "Back to top",
+    "privacyNote": "Your message is used only to reply to you.",
+    "errors": {
+      "name": "Please enter your name (at least 2 characters).",
+      "email": "Please enter a valid email address.",
+      "message": "Please write a message (at least 10 characters)."
+    }
+  },
+  "footer": {
+    "credits": "Credits",
+    "privacy": "Privacy",
+    "lite": "Lite mode",
+    "rights": "All rights reserved."
+  },
+  "cv": {
+    "title": "Curriculum Vitae",
+    "print": "Print / Save as PDF",
+    "download": "Download official PDF",
+    "summary": "Summary",
+    "experience": "Experience",
+    "organization": "Organization",
+    "education": "Education",
+    "achievements": "Achievements",
+    "skills": "Skills",
+    "projects": "Projects"
+  },
+  "thanks": {
+    "title": "Message sent.",
+    "body": "Thank you — I'll get back to you soon.",
+    "home": "Back to the site"
+  },
+  "notFound": {
+    "log": "route not found …… this page didn't ship.",
+    "title": "404",
+    "home": "Take me home"
+  },
+  "misc": {
+    "placeholder": "Placeholder",
+    "away": "Still here — Dimas Panca Pamungkas",
+    "explored": "Explored",
+    "explorer": "Explorer unlocked — you saw it all."
+  }
+}

@@ -1,0 +1,373 @@
+---
+import { Picture } from 'astro:assets';
+import { formatMonth, type Locale, tr } from '@portfolio/schema';
+import portrait from '../assets/portrait/hero.webp';
+import { href, ui } from '../i18n';
+import { headlineAchievement, settings, stats } from '../lib/content';
+import Icon from './Icon.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = ui(locale);
+const home = href(locale, '/');
+const nameLines = settings.profile.name.toUpperCase().split(' ');
+const marquee = settings.hero.marquee;
+const availability = settings.availability;
+
+const tickerItems: string[] = [];
+if (headlineAchievement) {
+  const a = headlineAchievement;
+  tickerItems.push(
+    [
+      tr(a.rankLabel, locale),
+      tr(a.title, locale).replace(/\s*\(.*\)$/, ''),
+      a.organizer,
+      a.location,
+      formatMonth(a.achievedOn, locale),
+    ]
+      .filter(Boolean)
+      .join(' ◆ '),
+  );
+}
+if (availability) tickerItems.push(tr(availability, locale));
+
+const statItems = [
+  stats.gpa != null && {
+    value: stats.gpa.toFixed(2),
+    count: stats.gpa,
+    decimals: 2,
+    suffix: `/${stats.gpaScale.toFixed(2)}`,
+    label: t.hero.statGpa,
+  },
+  {
+    value: String(stats.achievements),
+    count: stats.achievements,
+    decimals: 0,
+    suffix: '',
+    label: t.hero.statAchievements,
+  },
+  { value: String(stats.firstPlaces), count: stats.firstPlaces, decimals: 0, suffix: '×', label: t.hero.statFirst },
+  { value: String(stats.roles), count: stats.roles, decimals: 0, suffix: '', label: t.hero.statRoles },
+].filter((s) => s !== false && s !== null);
+---
+
+<section class="hero texture" id="top" data-hero>
+  <div class="hero__glow" aria-hidden="true"></div>
+
+  <div class="hero__marquee marquee display stroke" aria-hidden="true" data-velocity-marquee>
+    {
+      [0, 1].map(() => (
+        <div class="marquee__track">
+          {marquee.map((word) => (
+            <span>
+              {word}
+              <i>◆</i>
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="wrap hero__inner">
+    <p class="label hero__eyebrow" data-hero-fade>{tr(settings.hero.eyebrow, locale)}</p>
+
+    <h1 class="hero__name display" aria-label={settings.profile.name}>
+      {
+        nameLines.map((line, i) => (
+          <span class="hero__line" aria-hidden="true">
+            <span class:list={['hero__word', { stroke: i === 1 }]} data-hero-word>
+              {line}
+            </span>
+          </span>
+        ))
+      }
+    </h1>
+
+    <div class="hero__portrait" data-portrait>
+      <Picture
+        src={portrait}
+        formats={['avif', 'webp']}
+        widths={[420, 640, 860, 1100, 1400]}
+        sizes="(min-width: 1024px) 44vw, 78vw"
+        alt={tr(settings.profile.portrait.alt, locale)}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        quality={62}
+        fallbackFormat="webp"
+        data-portrait-img
+      />
+    </div>
+
+    <div class="hero__copy">
+      <p class="hero__pitch" data-hero-fade>{tr(settings.hero.pitch, locale)}</p>
+      <div class="hero__cta" data-hero-fade>
+        <a class="btn btn--volt" href={`${home}#achievements`} data-sound="hover click">
+          {t.hero.ctaPrimary}<Icon name="arrow-down" size={18} />
+        </a>
+        <a class="btn btn--ghost" href={`${home}#contact`} data-sound="hover click">{t.hero.ctaSecondary}</a>
+        <a class="hero__cv link-u" href={href(locale, '/cv')} data-sound="hover click" data-track="cv_download">
+          {t.nav.cv}<Icon name="download" size={16} />
+        </a>
+      </div>
+    </div>
+
+    <dl class="hero__stats" data-hero-fade>
+      {
+        statItems.map((s) => (
+          <div>
+            <dd class="display">
+              <span data-count={s.count} data-decimals={s.decimals}>
+                {s.value}
+              </span>
+              {s.suffix && <small>{s.suffix}</small>}
+            </dd>
+            <dt class="label">{s.label}</dt>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+
+  {
+    tickerItems.length > 0 && (
+      <div class="hero__ticker marquee" data-hero-fade>
+        {[0, 1].map((n) => (
+          <div class="marquee__track label" aria-hidden={n === 1 ? 'true' : undefined}>
+            {[0, 1].flatMap(() => tickerItems).map((item) => (
+              <span>
+                {item}
+                <i aria-hidden="true">✦</i>
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    padding-top: 96px;
+    overflow: clip;
+    isolation: isolate;
+  }
+  .hero__glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60% 50% at 78% 38%, rgb(212 255 63 / 0.1), transparent 70%),
+      radial-gradient(45% 45% at 12% 85%, rgb(124 140 255 / 0.08), transparent 70%),
+      linear-gradient(to bottom, transparent 70%, var(--ink-950));
+  }
+  .hero__marquee {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 46%;
+    z-index: 0;
+    font-size: clamp(5rem, 15vw, 15rem);
+    opacity: 0.16;
+    -webkit-text-stroke-width: 1px;
+    --marquee-duration: 60s;
+    pointer-events: none;
+  }
+  .hero__marquee span {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    padding-right: 0.35em;
+  }
+  .hero__marquee i {
+    font-style: normal;
+    font-size: 0.3em;
+    margin-left: 1.1em;
+    -webkit-text-stroke: 0;
+    color: var(--accent);
+  }
+  .hero__inner {
+    position: relative;
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    gap: 18px;
+  }
+  .hero__eyebrow {
+    color: var(--ink-200);
+    padding-top: 10px;
+  }
+  .hero__name {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(3.75rem, 18.5vw, 9rem);
+    line-height: 0.88;
+    margin: 0;
+  }
+  .hero__line {
+    display: block;
+    overflow: clip;
+    overflow-clip-margin: 0.08em;
+    padding-top: 0.04em;
+  }
+  .hero__word {
+    display: inline-block;
+    will-change: transform;
+  }
+  .hero__portrait {
+    position: relative;
+    z-index: 2;
+    justify-self: end;
+    width: min(78vw, 420px);
+    margin-top: -22vw;
+    margin-right: calc(var(--page-margin) * -0.5);
+    pointer-events: none;
+  }
+  .hero__portrait :global(img) {
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 30px 60px rgb(0 0 0 / 0.55));
+  }
+  .hero__portrait :global(canvas) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .hero__portrait::after {
+    content: '';
+    position: absolute;
+    inset: auto -10% 0 -10%;
+    height: 22%;
+    background: linear-gradient(to bottom, transparent, var(--ink-950) 85%);
+  }
+  .hero__copy {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    gap: 20px;
+    margin-top: -64px;
+  }
+  .hero__pitch {
+    font-size: clamp(1.125rem, 1.7vw, 1.625rem);
+    line-height: 1.35;
+    max-width: 24ch;
+    font-weight: 500;
+    text-wrap: balance;
+  }
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
+  }
+  .hero__cv {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-left: 6px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  .hero__stats {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 24px;
+    margin: 12px 0 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .hero__stats dd {
+    margin: 0;
+    font-size: clamp(2.25rem, 4.2vw, 4rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .hero__stats small {
+    font-size: 0.42em;
+    color: var(--ink-400);
+    margin-left: 0.15em;
+  }
+  .hero__stats dt {
+    margin-top: 8px;
+  }
+  .hero__ticker {
+    position: relative;
+    z-index: 4;
+    border-block: 1px solid var(--line);
+    background: var(--ink-900);
+    --marquee-duration: 38s;
+  }
+  .hero__ticker .marquee__track {
+    color: var(--accent);
+    padding-block: 14px;
+  }
+  .hero__ticker span {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .hero__ticker i {
+    font-style: normal;
+    margin-inline: 1.6em;
+    color: var(--ink-500);
+  }
+
+  @media (min-width: 1024px) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      grid-template-rows: auto auto 1fr auto;
+      column-gap: var(--gutter);
+      row-gap: 14px;
+    }
+    .hero__eyebrow {
+      grid-column: 1 / -1;
+    }
+    .hero__name {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      font-size: clamp(6rem, min(13.5vw, 17svh), 15rem);
+    }
+    .hero__portrait {
+      grid-column: 2;
+      grid-row: 1 / -1;
+      align-self: end;
+      justify-self: end;
+      width: auto;
+      height: min(88svh, 1100px);
+      aspect-ratio: 4 / 5;
+      margin: 0 -1vw 0 0;
+    }
+    .hero__portrait :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: bottom right;
+    }
+    .hero__copy {
+      grid-column: 1;
+      grid-row: 3;
+      align-self: end;
+      margin-top: 0;
+    }
+    .hero__stats {
+      grid-column: 1;
+      grid-row: 4;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      max-width: 760px;
+      margin-bottom: 32px;
+    }
+  }
+</style>

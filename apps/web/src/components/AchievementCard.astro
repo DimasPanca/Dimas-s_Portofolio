@@ -1,0 +1,245 @@
+---
+import { type Achievement, formatMonth, type Locale, rankShort, tr } from '@portfolio/schema';
+import { href, ui } from '../i18n';
+import Icon from './Icon.astro';
+import PatternArt from './PatternArt.astro';
+
+interface Props {
+  item: Achievement;
+  locale: Locale;
+  index: number;
+  total: number;
+  variant?: 'rail' | 'list';
+}
+const { item: a, locale, index, total, variant = 'rail' } = Astro.props;
+const t = ui(locale);
+const tone = a.rankTier === 1 ? 'volt' : a.rankTier === 2 ? 'silver' : a.rankTier === 3 ? 'flare' : 'signal';
+const proof = a.proofs.find((p) => p.url);
+const url = href(locale, `/achievements/${a.slug}`);
+---
+
+<article
+  class:list={['ach', `ach--${variant}`, `ach--${tone}`]}
+  data-kind={a.category}
+  data-tier={a.rankTier ?? ''}
+  data-unlock={variant === 'rail' ? '' : undefined}
+  data-title={`${tr(a.rankLabel, locale)} · ${tr(a.title, locale).replace(/\s*\(.*\)$/, '')}`}
+  data-tilt={variant === 'rail' ? '' : undefined}
+>
+  {
+    variant === 'rail' && (
+      <div class="ach__art">
+        <PatternArt seed={a.slug} tone={tone} />
+        <span class="ach__burst" aria-hidden="true" />
+      </div>
+    )
+  }
+  <div class="ach__body">
+    <p class="ach__top label">
+      <span>{String(index + 1).padStart(2, '0')}/{String(total).padStart(2, '0')}</span>
+      <span>{formatMonth(a.achievedOn, locale, a.datePrecision)}</span>
+    </p>
+    <p class="ach__rank display" aria-hidden="true">{rankShort(a.rankTier)}</p>
+    <h3 class="ach__title">
+      <a href={url} data-sound="hover click" data-cursor="view">
+        <span class="sr-only">{tr(a.rankLabel, locale)} — </span>{tr(a.title, locale)}
+      </a>
+    </h3>
+    <p class="ach__org">
+      {a.organizer}{a.location ? ` · ${a.location}` : ''}
+    </p>
+    <ul class="ach__chips">
+      <li class="chip chip--rank">{tr(a.rankLabel, locale)}</li>
+      {a.typeLabel && <li class="chip">{tr(a.typeLabel, locale)}</li>}
+      {a.scope && <li class="chip">{t.achievements.scopes[a.scope]}</li>}
+    </ul>
+    {variant === 'rail' && a.summary && <p class="ach__summary">{tr(a.summary, locale)}</p>}
+    {
+      proof?.url && (
+        <a class="ach__proof link-u label" href={proof.url} target="_blank" rel="noopener noreferrer">
+          {t.achievements.proof}
+          <Icon name="arrow-up-right" size={14} />
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .ach {
+    --tone: var(--signal-400);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    background: var(--ink-900);
+    overflow: clip;
+    transition:
+      border-color var(--dur-base) ease,
+      box-shadow var(--dur-slow) ease,
+      transform var(--dur-base) var(--ease-out-expo);
+  }
+  .ach--volt {
+    --tone: var(--volt-400);
+  }
+  .ach--silver {
+    --tone: var(--ink-200);
+  }
+  .ach--flare {
+    --tone: var(--flare-400);
+  }
+  .ach--rail {
+    flex: none;
+    width: min(84vw, 420px);
+    min-height: 540px;
+    scroll-snap-align: center;
+    transform-style: preserve-3d;
+  }
+  .ach--rail.ach--volt {
+    border-color: color-mix(in srgb, var(--volt-400) 55%, transparent);
+    box-shadow: 0 0 0 1px rgb(212 255 63 / 0.08), 0 30px 80px -30px rgb(212 255 63 / 0.25);
+  }
+  .ach:hover,
+  .ach:focus-within {
+    border-color: var(--tone);
+  }
+  .ach__art {
+    position: relative;
+    height: 150px;
+    border-bottom: 1px solid var(--line);
+  }
+  .ach__burst {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 40px;
+    height: 40px;
+    margin: -20px;
+    border-radius: 50%;
+    border: 2px solid var(--tone);
+    opacity: 0;
+    pointer-events: none;
+  }
+  :global(.ach.is-unlocked) .ach__burst {
+    animation: burst 700ms var(--ease-out-expo);
+  }
+  @keyframes burst {
+    0% {
+      opacity: 0.9;
+      transform: scale(0.4);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(9);
+    }
+  }
+  .ach__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    padding: 20px 22px 22px;
+  }
+  .ach__top {
+    display: flex;
+    justify-content: space-between;
+  }
+  .ach__rank {
+    font-size: clamp(4rem, 9vw, 6.5rem);
+    line-height: 0.85;
+    color: var(--tone);
+    margin-top: 4px;
+  }
+  .ach__title {
+    font-size: var(--fs-h3);
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .ach__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+  .ach__org {
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+  .ach__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 2px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chip--rank {
+    border-color: var(--tone);
+    color: var(--tone);
+  }
+  .ach__summary {
+    margin-top: auto;
+    padding-top: 12px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ink-200);
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ach__proof {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    width: fit-content;
+    min-height: 32px;
+    color: var(--fg);
+  }
+
+  /* Archive rows */
+  .ach--list {
+    border-radius: var(--radius-lg);
+  }
+  .ach--list .ach__body {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: 'rank title' 'rank org' 'rank chips';
+    column-gap: 18px;
+    row-gap: 6px;
+    padding: 16px 18px;
+    align-items: start;
+  }
+  .ach--list .ach__top {
+    display: none;
+  }
+  .ach--list .ach__rank {
+    grid-area: rank;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    min-width: 2.6em;
+    margin: 0;
+    line-height: 1;
+  }
+  .ach--list .ach__title {
+    grid-area: title;
+    font-size: 1.0625rem;
+  }
+  .ach--list .ach__org {
+    grid-area: org;
+    font-size: 0.875rem;
+  }
+  .ach--list .ach__chips {
+    grid-area: chips;
+  }
+  .ach--list .ach__proof {
+    grid-column: 2;
+  }
+  .ach[hidden] {
+    display: none;
+  }
+</style>

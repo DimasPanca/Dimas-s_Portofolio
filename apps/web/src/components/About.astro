@@ -1,0 +1,242 @@
+---
+import { formatMonth, type Locale, tr } from '@portfolio/schema';
+import { href, ui } from '../i18n';
+import { education, experiences, settings, skills } from '../lib/content';
+import Icon, { type IconName } from './Icon.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = ui(locale);
+const bio = tr(settings.profile.bio, locale);
+const words = bio.split(/\s+/);
+const edu = education[0];
+const current = experiences.filter((e) => e.isCurrent);
+const recent = experiences.find((e) => !e.isCurrent && e.kind === 'work');
+const now = [...current, ...(recent ? [recent] : [])].map(
+  (e) => `${tr(e.role, locale)} · ${e.organization.replace(/\s*\(.*\)$/, '')}`,
+);
+
+// Inline "stickers" pop in at these words while the statement is scrubbed (PRD §5.4).
+const stickers: [RegExp, IconName][] = [
+  [/^(software|IoT)/i, 'chip'],
+  [/^multiplayer/i, 'bolt'],
+  [/^(teams|tim)\b/i, 'users'],
+  [/^(win|menang)/i, 'trophy'],
+];
+const stickerFor = (w: string) => stickers.find(([re]) => re.test(w))?.[1];
+const used = new Set<string>();
+const stack = skills.filter((s) => s.group === 'stack' && !s.isPlaceholder);
+const tools = skills.filter((s) => ['ai', 'iot', 'tools'].includes(s.group)).slice(0, 6);
+---
+
+<section class="section about" id="about" aria-labelledby="about-h">
+  <div class="wrap">
+    <p class="label" data-reveal>02 / {t.about.label}</p>
+    <h2 id="about-h" class="sr-only">{t.about.label}</h2>
+    <p class="about__statement" data-scrub-words>
+      {
+        words.map((w) => {
+          const icon = stickerFor(w);
+          const show = icon && !used.has(icon);
+          if (show) used.add(icon);
+          return (
+            <span class="w">
+              {show && (
+                <span class="sticker" aria-hidden="true">
+                  <Icon name={icon} size={22} />
+                </span>
+              )}
+              {w}{' '}
+            </span>
+          );
+        })
+      }
+    </p>
+  </div>
+
+  <div class="wrap">
+    <div class="about__card paper" data-about-card data-reveal>
+      <div class="about__facts">
+        <h3 class="display about__card-title">{t.about.cardTitle}</h3>
+        <dl>
+          {
+            edu && (
+              <div>
+                <dt class="label">{t.about.education}</dt>
+                <dd>
+                  {tr(edu.program, locale)}
+                  <br />
+                  <span class="muted">
+                    {edu.institution} · {formatMonth(edu.startOn, locale, 'year')}–{edu.endOn ? formatMonth(edu.endOn, locale, 'year') : ''}
+                    {edu.isExpected ? ` (${t.about.expected})` : ''}
+                  </span>
+                  {edu.gpa != null && (
+                    <span class="chip chip--volt about__gpa">
+                      {t.hero.statGpa} {edu.gpa.toFixed(2)}/{edu.gpaScale.toFixed(2)}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            )
+          }
+          <div>
+            <dt class="label">{t.about.location}</dt>
+            <dd>{settings.profile.location}</dd>
+          </div>
+          <div>
+            <dt class="label">{t.about.focus}</dt>
+            <dd>{settings.profile.interests.join(' · ')}</dd>
+          </div>
+          {
+            now.length > 0 && (
+              <div>
+                <dt class="label">{t.about.now}</dt>
+                <dd>
+                  {now.map((n) => (
+                    <span class="about__now">{n}</span>
+                  ))}
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+        <a class="btn btn--ink" href={href(locale, '/cv')} data-sound="hover click" data-track="cv_download">
+          {t.nav.cv}<Icon name="download" size={18} />
+        </a>
+      </div>
+
+      <div class="about__tiles">
+        <p class="label">{t.about.toolkit}</p>
+        <ul>
+          {
+            [...stack, ...tools].map((s) => (
+              <li data-sound="hover">
+                <Icon name={s.group === 'stack' ? 'code' : s.group === 'ai' ? 'brain' : s.group === 'iot' ? 'chip' : 'tool'} size={20} />
+                <span>{tr(s.label, locale)}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__statement {
+    margin: 28px auto calc(var(--section-gap) * 0.5);
+    max-width: 22ch;
+    font-size: clamp(1.75rem, 4.6vw, 4.25rem);
+    line-height: 1.12;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-align: center;
+    text-wrap: balance;
+    max-width: min(100%, 1180px);
+  }
+  .w {
+    transition: color var(--dur-base) linear;
+  }
+  :global(html.js[data-scrub='on']) .w {
+    color: var(--ink-500);
+  }
+  :global(html.js[data-scrub='on']) .w.is-lit {
+    color: var(--fg);
+  }
+  .sticker {
+    display: inline-grid;
+    place-items: center;
+    width: 1.05em;
+    height: 1.05em;
+    margin-right: 0.18em;
+    border-radius: 0.28em;
+    background: var(--accent);
+    color: var(--ink-950);
+    vertical-align: -0.12em;
+    transform: rotate(-6deg);
+    transition: transform var(--dur-slow) var(--ease-spring);
+  }
+  .sticker :global(svg) {
+    width: 62%;
+    height: 62%;
+  }
+  :global(html.js[data-scrub='on']) .w:not(.is-lit) .sticker {
+    transform: scale(0) rotate(-40deg);
+  }
+  .about__card {
+    display: grid;
+    gap: 36px;
+    padding: clamp(24px, 4vw, 64px);
+    border-radius: var(--radius-xl);
+  }
+  .about__card-title {
+    font-size: var(--fs-xl);
+    margin-bottom: 24px;
+  }
+  .about__facts dl {
+    display: grid;
+    gap: 18px;
+    margin: 0 0 28px;
+  }
+  .about__facts dl > div {
+    display: grid;
+    gap: 4px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .about__facts dd {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 500;
+  }
+  .muted {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 0.9375rem;
+  }
+  .about__gpa {
+    margin-top: 10px;
+    display: flex;
+    width: fit-content;
+    color: var(--ink-950);
+  }
+  .about__now {
+    display: block;
+  }
+  .about__tiles ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+    gap: 10px;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .about__tiles li {
+    display: grid;
+    gap: 12px;
+    align-content: space-between;
+    min-height: 104px;
+    padding: 14px;
+    border-radius: var(--radius-lg);
+    background: var(--paper-50);
+    border: 1px solid var(--line);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25;
+    transition:
+      transform var(--dur-base) var(--ease-spring),
+      background-color var(--dur-fast) ease;
+  }
+  .about__tiles li:hover {
+    transform: translateY(-4px);
+    background: #fff;
+  }
+  @media (min-width: 960px) {
+    .about__card {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 56px;
+    }
+  }
+</style>

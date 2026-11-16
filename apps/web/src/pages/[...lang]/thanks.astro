@@ -1,0 +1,15 @@
+---
+import { href, localeFromParam, localePaths, ui } from '../../i18n';
+import Page from '../../layouts/Page.astro';
+
+export const getStaticPaths = localePaths;
+const locale = localeFromParam(Astro.params.lang);
+const t = ui(locale);
+---
+
+<Page locale={locale} path="/thanks" title={t.thanks.title} noindex>
+  <p class="lead">{t.thanks.body}</p>
+  <p style="margin-top:28px">
+    <a class="btn btn--volt" href={href(locale, '/')}>{t.thanks.home}</a>
+  </p>
+</Page>

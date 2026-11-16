@@ -1,0 +1,136 @@
+---
+import type { Locale } from '@portfolio/schema';
+import Icon from '../components/Icon.astro';
+import Base from './Base.astro';
+
+interface Props {
+  locale: Locale;
+  path: string;
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  back?: { href: string; label: string };
+  noindex?: boolean;
+  singleLocale?: boolean;
+  jsonLd?: Record<string, unknown>[];
+  paper?: boolean;
+}
+const { eyebrow, back, title, paper = false, ...base } = Astro.props;
+---
+
+<Base title={title} {...base}>
+  <article class:list={['page', { paper }]}>
+    <div class="wrap page__wrap">
+      {
+        back && (
+          <a class="page__back label link-u no-print" href={back.href} data-sound="hover nav">
+            <Icon name="arrow-left" size={14} /> {back.label}
+          </a>
+        )
+      }
+      {eyebrow && <p class="label page__eyebrow">{eyebrow}</p>}
+      <slot name="header">
+        <h1 class="page__title display">{title}</h1>
+      </slot>
+      <slot />
+    </div>
+  </article>
+</Base>
+
+<style is:global>
+  .page {
+    padding: 132px 0 calc(var(--section-gap) / 2);
+    min-height: 80svh;
+  }
+  .page__wrap {
+    max-width: 1180px;
+  }
+  .page__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-bottom: 20px;
+    color: var(--fg);
+  }
+  .page__eyebrow {
+    margin-bottom: 14px;
+  }
+  .page__title {
+    font-size: clamp(2.75rem, 8vw, 7.5rem);
+    line-height: 0.92;
+    margin-bottom: clamp(24px, 4vw, 48px);
+    overflow-wrap: anywhere;
+  }
+  .prose {
+    max-width: 68ch;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .prose > * + * {
+    margin-top: 1em;
+  }
+  .prose h2 {
+    margin-top: 2.2em;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+  .prose ul {
+    padding-left: 1.2em;
+    list-style: disc;
+  }
+  .prose li + li {
+    margin-top: 0.4em;
+  }
+  .prose a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    background: var(--ink-800);
+  }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    margin: 0 0 clamp(28px, 4vw, 56px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: clip;
+    background: var(--line);
+  }
+  .meta-grid > div {
+    display: grid;
+    gap: 6px;
+    align-content: start;
+    padding: 16px 18px;
+    background: var(--ink-900);
+  }
+  .meta-grid dd {
+    margin: 0;
+    font-weight: 500;
+  }
+  .next-link {
+    display: grid;
+    gap: 8px;
+    margin-top: clamp(48px, 8vw, 110px);
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .next-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    font-size: clamp(1.75rem, 5vw, 4rem);
+    line-height: 1;
+  }
+  .next-link a:hover {
+    color: var(--accent);
+  }
+</style>

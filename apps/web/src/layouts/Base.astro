@@ -1,0 +1,213 @@
+---
+import '../styles/global.css';
+import antonUrl from '@fontsource/anton/files/anton-latin-400-normal.woff2?url';
+import geistUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import { type Locale, tr } from '@portfolio/schema';
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import { href, htmlLang, LOCALES, ogLocale, ui } from '../i18n';
+import { env, settings } from '../lib/content';
+
+interface Props {
+  locale: Locale;
+  /** Path without the locale prefix, e.g. "/" or "/works/reddoorz-team-run". */
+  path: string;
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  /** Only the home page shows the boot gate. */
+  home?: boolean;
+  /** Extra JSON-LD objects for this page. */
+  jsonLd?: Record<string, unknown>[];
+  /** Pages that exist in one language only (404, credits). */
+  singleLocale?: boolean;
+  bare?: boolean;
+}
+
+const {
+  locale,
+  path,
+  title,
+  description,
+  ogImage = '/og.png',
+  noindex = false,
+  home = false,
+  jsonLd = [],
+  singleLocale = false,
+  bare = false,
+} = Astro.props;
+
+const t = ui(locale);
+const site = env.siteUrl.replace(/\/$/, '');
+const name = settings.profile.name;
+const pageTitle = title ? `${title} — ${name}` : tr(settings.seo.title, locale);
+const pageDescription = description ?? tr(settings.seo.description, locale);
+const canonical = `${site}${href(locale, path)}`;
+const abs = (p: string) => (p.startsWith('http') ? p : `${site}${p}`);
+const sameAs = settings.socials.filter((s) => s.kind !== 'email' && s.kind !== 'whatsapp').map((s) => s.url);
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name,
+  url: site,
+  image: abs('/og-portrait.jpg'),
+  email: `mailto:${settings.profile.email}`,
+  description: settings.profile.summaryVerbatim?.en ?? tr(settings.profile.bio, 'en'),
+  jobTitle: 'Informatics Engineering student',
+  affiliation: { '@type': 'CollegeOrUniversity', name: 'Universitas Sultan Ageng Tirtayasa' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Serang', addressRegion: 'Banten', addressCountry: 'ID' },
+  knowsAbout: settings.profile.interests,
+  sameAs,
+};
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name,
+  url: site,
+  inLanguage: LOCALES.map((l) => htmlLang[l]),
+};
+const ld = home ? [person, website, ...jsonLd] : jsonLd;
+---
+
+<!doctype html>
+<html
+  lang={htmlLang[locale]}
+  class="no-js"
+  data-locale={locale}
+  data-home={home ? '' : undefined}
+  data-msg-away={t.misc.away}
+  data-msg-explorer={t.misc.explorer}
+  data-track-url={env.trackUrl || undefined}
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {
+      !singleLocale &&
+        !noindex &&
+        LOCALES.map((l) => <link rel="alternate" hreflang={htmlLang[l]} href={`${site}${href(l, path)}`} />)
+    }
+    {!singleLocale && !noindex && <link rel="alternate" hreflang="x-default" href={`${site}${href('en', path)}`} />}
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preload" href={antonUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content={home ? 'profile' : 'article'} />
+    <meta property="og:site_name" content={name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={abs(ogImage)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={ogLocale[locale]} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={abs(ogImage)} />
+
+    {ld.map((obj) => <script is:inline type="application/ld+json" set:html={JSON.stringify(obj)} />)}
+
+    <script is:inline>
+      // Runs before first paint: marks JS as available, restores preferences, decides whether the gate shows.
+      (function () {
+        var d = document.documentElement;
+        d.classList.remove('no-js');
+        d.classList.add('js');
+        var get = function (s, k) {
+          try {
+            return s.getItem(k);
+          } catch (e) {
+            return null;
+          }
+        };
+        var q = new URLSearchParams(location.search);
+        var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce || get(localStorage, 'dp:lite') === '1' || q.get('tier') === 'static') d.dataset.tier = 'static';
+        var audio = null;
+        try {
+          audio = JSON.parse(get(localStorage, 'dp:audio') || 'null');
+        } catch (e) {}
+        var seen = get(sessionStorage, 'dp:gate') === '1';
+        var skip = q.get('mute') === '1' || seen || (audio && audio.remember);
+        if (d.hasAttribute('data-home') && !skip) d.dataset.gate = 'open';
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t.skip}</a>
+    <slot name="gate" />
+    {!bare && <Nav locale={locale} path={path} singleLocale={singleLocale} />}
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    {!bare && <Footer locale={locale} path={path} singleLocale={singleLocale} />}
+    <div class="toasts" aria-live="polite" aria-atomic="true" data-toasts></div>
+    <script>
+      import '../enhancers/core.ts';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  main:focus {
+    outline: none;
+  }
+  .toasts {
+    position: fixed;
+    left: 50%;
+    bottom: max(20px, env(safe-area-inset-bottom));
+    z-index: 120;
+    display: grid;
+    gap: 8px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    width: max-content;
+    max-width: calc(100vw - 32px);
+  }
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    padding: 0.75em 1.1em;
+    border-radius: var(--radius-full);
+    background: var(--ink-800);
+    border: 1px solid var(--line);
+    color: #f5f5f2;
+    font-size: 0.875rem;
+    box-shadow: 0 12px 40px rgb(0 0 0 / 0.5);
+    animation: toast-in var(--dur-slow) var(--ease-spring) both;
+  }
+  .toast::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+  }
+  .toast.is-out {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--dur-base) ease,
+      transform var(--dur-base) ease;
+  }
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.96);
+    }
+  }
+</style>

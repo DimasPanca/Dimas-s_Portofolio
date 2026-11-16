@@ -1,0 +1,181 @@
+---
+import type { Locale } from '@portfolio/schema';
+import { ui } from '../i18n';
+import { achievements, railAchievements, stats } from '../lib/content';
+import AchievementCard from './AchievementCard.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = ui(locale);
+const categories = [...new Set(achievements.map((a) => a.category))];
+const intro = t.achievements.intro.replace('{n}', String(stats.achievements));
+---
+
+<section class="section achievements texture" id="achievements" aria-labelledby="ach-h">
+  <div class="wrap ach-head">
+    <div>
+      <p class="label" data-reveal>03 / {t.achievements.label}</p>
+      <h2 id="ach-h" class="title" data-reveal>{t.achievements.title}</h2>
+    </div>
+    <div class="ach-head__side" data-reveal>
+      <p class="lead">{intro}</p>
+      <p class="ach-counter label" aria-hidden="true">
+        <b data-unlock-count>{railAchievements.length}</b>/{railAchievements.length}{" "}{t.achievements.unlocked}
+      </p>
+    </div>
+  </div>
+
+  <div class="rail" data-rail role="region" aria-label={t.achievements.title} tabindex="0">
+    <ol class="rail__track" data-rail-track>
+      {
+        railAchievements.map((a, i) => (
+          <li>
+            <AchievementCard item={a} locale={locale} index={i} total={railAchievements.length} />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+  <p class="sr-only" aria-live="polite" data-rail-live></p>
+
+  <div class="wrap archive">
+    <div class="archive__head">
+      <h3 class="display archive__title">
+        {t.achievements.allTitle}
+        <span class="label">{achievements.length}</span>
+      </h3>
+      <div class="archive__filters" data-filter-group="ach-archive" hidden>
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">{t.achievements.all}</button>
+        {
+          categories.map((c) => (
+            <button class="chip" type="button" data-filter={c} aria-pressed="false">
+              {t.achievements.categories[c]}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    <ol class="archive__list" id="ach-archive">
+      {
+        achievements.map((a, i) => (
+          <li data-kind={a.category} data-reveal style={`--i:${i % 3}`}>
+            <AchievementCard item={a} locale={locale} index={i} total={achievements.length} variant="list" />
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .achievements {
+    overflow: clip;
+  }
+  .ach-head {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .ach-head .title {
+    margin-top: 14px;
+  }
+  .ach-head__side {
+    display: grid;
+    gap: 14px;
+    align-content: end;
+  }
+  .ach-counter b {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .rail {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-block: 12px 28px;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail__track {
+    display: flex;
+    gap: 20px;
+    width: max-content;
+    margin: 0;
+    padding: 0 var(--page-margin);
+    list-style: none;
+    perspective: 1200px;
+  }
+  .rail__track > li {
+    display: flex;
+  }
+  /* Pinned mode (set by the motion layer on desktop): the track is moved by transform instead. */
+  .rail[data-pinned] {
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+  .archive {
+    margin-top: clamp(48px, 8vw, 110px);
+  }
+  .archive__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .archive__title {
+    font-size: var(--fs-xl);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .archive__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .archive__filters[hidden] {
+    display: none;
+  }
+  .archive__filters .chip {
+    min-height: 36px;
+    background: transparent;
+    transition:
+      background-color var(--dur-fast) ease,
+      color var(--dur-fast) ease;
+  }
+  .archive__filters .chip[aria-pressed='true'] {
+    background: var(--fg);
+    color: var(--ink-950);
+    border-color: var(--fg);
+  }
+  .archive__list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .archive__list > li[hidden] {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .ach-head {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      align-items: end;
+    }
+    .archive__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1400px) {
+    .archive__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

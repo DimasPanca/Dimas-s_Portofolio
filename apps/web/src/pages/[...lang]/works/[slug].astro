@@ -1,0 +1,119 @@
+---
+import { type Locale, type Project, rankShort, tr } from '@portfolio/schema';
+import Icon from '../../../components/Icon.astro';
+import PatternArt from '../../../components/PatternArt.astro';
+import { href, LOCALES, ui } from '../../../i18n';
+import Page from '../../../layouts/Page.astro';
+import { achievementBySlug, projects } from '../../../lib/content';
+
+export function getStaticPaths() {
+  const real = projects.filter((p) => !p.isPlaceholder);
+  return LOCALES.flatMap((locale: Locale) =>
+    real.map((project, i) => ({
+      params: { lang: locale === 'en' ? undefined : locale, slug: project.slug },
+      props: { locale, project, next: real[(i + 1) % real.length]! },
+    })),
+  );
+}
+interface Props {
+  locale: Locale;
+  project: Project;
+  next: Project;
+}
+const { locale, project: p, next } = Astro.props;
+const t = ui(locale);
+const award = p.linkedAchievementSlug ? achievementBySlug.get(p.linkedAchievementSlug) : undefined;
+const body = p.body ? tr(p.body, locale).split(/\n{2,}/) : [];
+---
+
+<Page
+  locale={locale}
+  path={`/works/${p.slug}`}
+  title={tr(p.title, locale)}
+  description={p.summary ? tr(p.summary, locale) : undefined}
+  eyebrow={`${t.works.label}${p.year ? ` · ${p.year}` : ''}`}
+  back={{ href: `${href(locale, '/')}#works`, label: t.works.back }}
+>
+  <div class="cover" style={`view-transition-name: work-${p.slug}`}>
+    <PatternArt seed={p.slug} tone="volt" />
+  </div>
+
+  <dl class="meta-grid">
+    {
+      p.role && (
+        <div>
+          <dt class="label">{t.works.role}</dt>
+          <dd>{tr(p.role, locale)}</dd>
+        </div>
+      )
+    }
+    {
+      p.year && (
+        <div>
+          <dt class="label">{t.works.year}</dt>
+          <dd>{p.year}</dd>
+        </div>
+      )
+    }
+    {
+      p.stack.length > 0 && (
+        <div>
+          <dt class="label">{t.works.stack}</dt>
+          <dd>{p.stack.join(' · ')}</dd>
+        </div>
+      )
+    }
+    {
+      award && (
+        <div>
+          <dt class="label">{t.works.award}</dt>
+          <dd>
+            <a class="link-u" href={href(locale, `/achievements/${award.slug}`)}>
+              {rankShort(award.rankTier)} — {tr(award.title, locale)}
+            </a>
+          </dd>
+        </div>
+      )
+    }
+  </dl>
+
+  <div class="prose">
+    {p.summary && <p class="lead">{tr(p.summary, locale)}</p>}
+    {body.length > 0 && <h2>{t.works.overview}</h2>}
+    {body.map((para) => <p>{para}</p>)}
+    {
+      p.links.length > 0 && (
+        <ul>
+          {p.links.map((l) => (
+            <li>
+              <a href={l.url} target="_blank" rel="noopener noreferrer">
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+
+  {
+    next.slug !== p.slug && (
+      <p class="next-link">
+        <span class="label">{t.works.nextProject}</span>
+        <a class="display" href={href(locale, `/works/${next.slug}`)} data-sound="hover nav">
+          {tr(next.title, locale)} <Icon name="arrow-right" size={36} />
+        </a>
+      </p>
+    )
+  }
+</Page>
+
+<style>
+  .cover {
+    aspect-ratio: 21 / 9;
+    margin-bottom: 28px;
+    border-radius: var(--radius-xl);
+    overflow: clip;
+    border: 1px solid var(--line);
+  }
+</style>

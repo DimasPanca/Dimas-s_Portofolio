@@ -1,0 +1,350 @@
+---
+import { formatMonth, type Locale, tr } from '@portfolio/schema';
+import { href, ui } from '../i18n';
+import { achievements, education, experiences, period } from '../lib/content';
+import Icon from './Icon.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = ui(locale);
+
+type Entry =
+  | { kind: 'work' | 'organization'; date: string; data: (typeof experiences)[number] }
+  | { kind: 'education'; date: string; data: (typeof education)[number] }
+  | { kind: 'milestones'; date: string; month: string; items: typeof achievements };
+
+// Achievement milestones are clustered per month to keep the timeline readable (PRD §5.6).
+const byMonth = new Map<string, typeof achievements>();
+for (const a of achievements) {
+  const key = a.achievedOn.slice(0, 7);
+  byMonth.set(key, [...(byMonth.get(key) ?? []), a]);
+}
+const entries: Entry[] = [
+  ...experiences.map((e) => ({ kind: e.kind, date: e.isCurrent ? '9999-12' : e.startOn, data: e }) as Entry),
+  ...[...byMonth].map(([month, items]) => ({ kind: 'milestones', date: `${month}-15`, month, items }) as Entry),
+].sort((a, b) => b.date.localeCompare(a.date));
+for (const e of education) entries.push({ kind: 'education', date: e.startOn, data: e });
+
+const filters = ['all', 'work', 'organization', 'education', 'milestones'] as const;
+---
+
+<section class="section journey paper" id="journey" aria-labelledby="journey-h">
+  <div class="wrap">
+    <div class="journey__head">
+      <div>
+        <p class="label" data-reveal>04 / {t.journey.label}</p>
+        <h2 id="journey-h" class="title" data-reveal>{t.journey.title}</h2>
+      </div>
+      <div data-reveal>
+        <p class="lead">{t.journey.intro}</p>
+        <div class="journey__filters" data-filter-group="journey-list" hidden>
+          {
+            filters.map((f, i) => (
+              <button class="chip" type="button" data-filter={f} aria-pressed={i === 0 ? 'true' : 'false'}>
+                {t.journey[f]}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <ol class="timeline" id="journey-list" data-timeline>
+      {
+        entries.map((entry) => {
+          if (entry.kind === 'milestones') {
+            return (
+              <li class="node node--milestone" data-kind="milestones" data-reveal>
+                <span class="node__dot" aria-hidden="true">
+                  <Icon name="trophy" size={14} />
+                </span>
+                <div class="milestone">
+                  <p class="label">
+                    {formatMonth(`${entry.month}-01`, locale)} · {entry.items.length} {entry.items.length === 1 ? t.journey.win : t.journey.wins}
+                  </p>
+                  <ul>
+                    {entry.items.map((a) => (
+                      <li>
+                        <a class="link-u" href={href(locale, `/achievements/${a.slug}`)} data-sound="hover">
+                          <b>{tr(a.rankLabel, locale)}</b> — {tr(a.title, locale).replace(/\s*\(.*\)$/, '')}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            );
+          }
+          if (entry.kind === 'education') {
+            const e = entry.data;
+            return (
+              <li class="node" data-kind="education" data-reveal>
+                <span class="node__dot" aria-hidden="true" />
+                <article class="card">
+                  <p class="label card__meta">
+                    <span>
+                      <Icon name="cap" size={14} /> {t.journey.education}
+                    </span>
+                    <span>
+                      {formatMonth(e.startOn, locale)} — {e.endOn ? formatMonth(e.endOn, locale) : t.journey.present}
+                      {e.isExpected ? '*' : ''}
+                    </span>
+                  </p>
+                  <h3 class="card__role">{tr(e.program, locale)}</h3>
+                  <p class="card__org">
+                    {e.institution}
+                    {e.location ? ` · ${e.location}` : ''}
+                  </p>
+                  {e.gpa != null && (
+                    <p class="card__gpa">
+                      <span class="display">{e.gpa.toFixed(2)}</span>
+                      <span class="label">/ {e.gpaScale.toFixed(2)} {t.journey.gpa}</span>
+                    </p>
+                  )}
+                </article>
+              </li>
+            );
+          }
+          const e = entry.data;
+          const first = e.highlights.slice(0, e.featuredHighlights);
+          const rest = e.highlights.slice(e.featuredHighlights);
+          return (
+            <li class="node" data-kind={e.kind} data-reveal>
+              <span class:list={['node__dot', { 'is-now': e.isCurrent }]} aria-hidden="true" />
+              <article class:list={['card', { 'card--now': e.isCurrent }]} data-sound="hover">
+                <p class="label card__meta">
+                  <span>
+                    <Icon name={e.kind === 'work' ? 'briefcase' : 'users'} size={14} /> {t.journey[e.kind]}
+                    {e.isCurrent && <b class="now">{t.journey.now}</b>}
+                  </span>
+                  <span>{period(e, locale, t.journey.present)}</span>
+                </p>
+                <h3 class="card__role">{tr(e.role, locale)}</h3>
+                <p class="card__org">
+                  {e.organization}
+                  {e.location ? ` · ${e.location}` : ''}
+                </p>
+                {e.summary && <p class="card__summary">{tr(e.summary, locale)}</p>}
+                <ul class="card__list">
+                  {first.map((h) => (
+                    <li>{tr(h, locale)}</li>
+                  ))}
+                </ul>
+                {rest.length > 0 && (
+                  <details>
+                    <summary class="label">
+                      {t.journey.showAll} (+{rest.length})
+                    </summary>
+                    <ul class="card__list">
+                      {rest.map((h) => (
+                        <li>{tr(h, locale)}</li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
+              </article>
+            </li>
+          );
+        })
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .journey__head {
+    display: grid;
+    gap: 20px;
+    margin-bottom: clamp(36px, 6vw, 72px);
+  }
+  .journey__head .title {
+    margin-top: 14px;
+  }
+  .journey__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 18px;
+  }
+  .journey__filters[hidden] {
+    display: none;
+  }
+  .journey__filters .chip {
+    min-height: 36px;
+    background: transparent;
+  }
+  .journey__filters .chip[aria-pressed='true'] {
+    background: var(--ink-950);
+    color: var(--paper-50);
+    border-color: var(--ink-950);
+  }
+  .timeline {
+    position: relative;
+    display: grid;
+    gap: 22px;
+    margin: 0;
+    padding: 0 0 0 34px;
+    list-style: none;
+  }
+  .timeline::before,
+  .timeline::after {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--line);
+  }
+  .timeline::after {
+    background: var(--ink-950);
+    transform-origin: top;
+    transform: scaleY(var(--fill, 1));
+  }
+  .node {
+    position: relative;
+  }
+  .node[hidden] {
+    display: none;
+  }
+  .node__dot {
+    position: absolute;
+    left: -34px;
+    top: 22px;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--paper-100);
+    border: 2px solid var(--ink-950);
+  }
+  .node__dot.is-now {
+    background: var(--volt-400);
+    box-shadow: 0 0 0 5px rgb(194 238 31 / 0.35);
+  }
+  .node--milestone .node__dot {
+    background: var(--ink-950);
+    color: var(--volt-400);
+    width: 26px;
+    height: 26px;
+    left: -37px;
+    top: 8px;
+  }
+  .card {
+    padding: clamp(18px, 2.4vw, 30px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--paper-50);
+  }
+  .card--now {
+    border-color: var(--ink-950);
+    box-shadow: 6px 6px 0 var(--volt-400);
+  }
+  .card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 6px 16px;
+  }
+  .card__meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .now {
+    margin-left: 6px;
+    padding: 0.2em 0.6em;
+    border-radius: var(--radius-full);
+    background: var(--ink-950);
+    color: var(--volt-400);
+    font-weight: 500;
+  }
+  .card__role {
+    margin-top: 12px;
+    font-size: clamp(1.375rem, 2.4vw, 2rem);
+    line-height: 1.15;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+  .card__org {
+    margin-top: 4px;
+    font-weight: 500;
+  }
+  .card__summary {
+    margin-top: 10px;
+    color: var(--muted);
+    max-width: 70ch;
+  }
+  .card__list {
+    display: grid;
+    gap: 6px;
+    margin: 14px 0 0;
+    padding: 0 0 0 1.1em;
+    max-width: 78ch;
+    font-size: 0.9688rem;
+  }
+  .card__list li::marker {
+    color: var(--ink-400);
+  }
+  details {
+    margin-top: 12px;
+  }
+  summary {
+    cursor: pointer;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    color: var(--ink-950);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .card__gpa {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .card__gpa .display {
+    font-size: var(--fs-xl);
+  }
+  .milestone {
+    padding: 6px 0 4px;
+  }
+  .milestone ul {
+    display: grid;
+    gap: 4px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9688rem;
+  }
+  .milestone a {
+    display: inline;
+    line-height: 1.7;
+  }
+  @media (min-width: 900px) {
+    .journey__head {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      align-items: end;
+    }
+    .timeline {
+      padding-left: 64px;
+      max-width: 1100px;
+      margin-inline: auto;
+    }
+    .timeline::before,
+    .timeline::after {
+      left: 21px;
+    }
+    .node__dot {
+      left: -52px;
+    }
+    .node--milestone .node__dot {
+      left: -55px;
+    }
+  }
+</style>

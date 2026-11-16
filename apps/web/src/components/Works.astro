@@ -1,0 +1,230 @@
+---
+import { type Locale, rankShort, tr } from '@portfolio/schema';
+import { href, ui } from '../i18n';
+import { achievementBySlug, projects } from '../lib/content';
+import Icon from './Icon.astro';
+import PatternArt from './PatternArt.astro';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = ui(locale);
+const total = String(projects.length).padStart(2, '0');
+---
+
+<section class="section works" id="works" aria-labelledby="works-h" data-slider>
+  <div class="wrap works__head">
+    <div>
+      <p class="label" data-reveal>05 / {t.works.label}</p>
+      <h2 id="works-h" class="title" data-reveal>{t.works.title}</h2>
+    </div>
+    <div class="works__side" data-reveal>
+      <p class="lead">{t.works.intro}</p>
+      <div class="works__ctrl">
+        <span class="label" data-slider-count>01/{total}</span>
+        <button class="works__arrow" type="button" data-slider-prev aria-label={t.works.prev}>
+          <Icon name="arrow-left" />
+        </button>
+        <button class="works__arrow" type="button" data-slider-next aria-label={t.works.next}>
+          <Icon name="arrow-right" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <ol class="works__track" data-slider-track tabindex="0" aria-label={t.works.label}>
+    {
+      projects.map((p, i) => {
+        const award = p.linkedAchievementSlug ? achievementBySlug.get(p.linkedAchievementSlug) : undefined;
+        const url = href(locale, `/works/${p.slug}`);
+        return (
+          <li class:list={['work', { 'work--featured': p.featured, 'work--ph': p.isPlaceholder }]}>
+            <div class="work__cover" style={`view-transition-name: work-${p.slug}`}>
+              <PatternArt seed={p.slug} tone={p.isPlaceholder ? 'silver' : i % 2 ? 'signal' : 'volt'} label={String(i + 1).padStart(2, '0')} />
+              {p.isPlaceholder && <span class="ph-ribbon">{t.works.soon}</span>}
+            </div>
+            <div class="work__body">
+              <p class="label work__meta">
+                <span>{p.role ? tr(p.role, locale) : ''}</span>
+                {p.year && <span>{p.year}</span>}
+              </p>
+              <h3 class="work__title">
+                {p.isPlaceholder ? (
+                  tr(p.title, locale)
+                ) : (
+                  <a href={url} data-sound="hover click" data-cursor="view">
+                    {tr(p.title, locale)}
+                  </a>
+                )}
+              </h3>
+              {p.summary && <p class="work__summary">{tr(p.summary, locale)}</p>}
+              <ul class="work__chips">
+                {award && (
+                  <li class="chip chip--volt">
+                    {rankShort(award.rankTier)} · {tr(award.title, locale).replace(/^\d+(st|nd|rd|th)\s+/i, '').replace(/\s*\(.*\)$/, '')}
+                  </li>
+                )}
+                {p.stack.map((s) => (
+                  <li class="chip">{s}</li>
+                ))}
+              </ul>
+              {!p.isPlaceholder && (
+                <span class="work__cta label" aria-hidden="true">
+                  {t.works.view} <Icon name="arrow-up-right" size={14} />
+                </span>
+              )}
+            </div>
+          </li>
+        );
+      })
+    }
+  </ol>
+</section>
+
+<style>
+  .works__head {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+  .works__head .title {
+    margin-top: 14px;
+  }
+  .works__side {
+    display: grid;
+    gap: 16px;
+    align-content: end;
+  }
+  .works__ctrl {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .works__ctrl .label {
+    margin-right: auto;
+  }
+  .works__arrow {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: transparent;
+    transition:
+      background-color var(--dur-fast) ease,
+      color var(--dur-fast) ease,
+      transform var(--dur-base) var(--ease-spring);
+  }
+  .works__arrow:hover {
+    background: var(--fg);
+    color: var(--ink-950);
+  }
+  .works__arrow:active {
+    transform: scale(0.92);
+  }
+  .works__track {
+    display: flex;
+    gap: 20px;
+    margin: 0;
+    padding: 4px var(--page-margin) 24px;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--page-margin);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .works__track::-webkit-scrollbar {
+    display: none;
+  }
+  .work {
+    position: relative;
+    flex: none;
+    width: min(86vw, 520px);
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: start;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-xl);
+    background: var(--ink-900);
+    overflow: clip;
+    transition: border-color var(--dur-base) ease;
+  }
+  .work--featured {
+    border-color: color-mix(in srgb, var(--volt-400) 50%, transparent);
+  }
+  .work:hover,
+  .work:focus-within {
+    border-color: var(--fg);
+  }
+  .work__cover {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: clip;
+  }
+  .work__cover :global(.art),
+  .work__cover :global(img) {
+    transition: transform var(--dur-slower) var(--ease-out-expo);
+  }
+  .work:hover .work__cover :global(.art),
+  .work:hover .work__cover :global(img) {
+    transform: scale(1.05);
+  }
+  .work__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    padding: 20px 22px 22px;
+  }
+  .work__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .work__title {
+    font-size: clamp(1.5rem, 2.4vw, 2.125rem);
+    line-height: 1.1;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+  }
+  .work__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .work__summary {
+    color: var(--muted);
+    font-size: 0.9688rem;
+  }
+  .work__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .work__chips .chip {
+    white-space: normal;
+  }
+  .work__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 14px;
+    color: var(--fg);
+  }
+  .work--ph {
+    opacity: 0.72;
+  }
+  @media (min-width: 900px) {
+    .works__head {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      align-items: end;
+    }
+  }
+</style>

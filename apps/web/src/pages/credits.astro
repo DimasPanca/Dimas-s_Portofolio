@@ -1,0 +1,74 @@
+---
+import ledger from '../data/audio-ledger.json';
+import Page from '../layouts/Page.astro';
+
+type Entry = { id: string; title: string; author: string; url: string; license: string };
+const audio = ledger as Entry[];
+const fonts = [
+  {
+    name: 'Anton',
+    by: 'The Anton Project Authors',
+    license: 'SIL Open Font License 1.1',
+    url: 'https://fontsource.org/fonts/anton',
+  },
+  { name: 'Geist', by: 'Vercel', license: 'SIL Open Font License 1.1', url: 'https://fontsource.org/fonts/geist' },
+  {
+    name: 'Geist Mono',
+    by: 'Vercel',
+    license: 'SIL Open Font License 1.1',
+    url: 'https://fontsource.org/fonts/geist-mono',
+  },
+];
+const libs = [
+  { name: 'Astro', license: 'MIT', url: 'https://astro.build' },
+  { name: 'GSAP', license: "GSAP Standard 'no charge' license", url: 'https://gsap.com/standard-license' },
+  { name: 'Lenis', license: 'MIT', url: 'https://lenis.darkroom.engineering' },
+  { name: 'OGL', license: 'Unlicense', url: 'https://github.com/oframe/ogl' },
+  { name: 'Howler.js', license: 'MIT', url: 'https://howlerjs.com' },
+  { name: 'Tailwind CSS', license: 'MIT', url: 'https://tailwindcss.com' },
+  { name: 'Zod', license: 'MIT', url: 'https://zod.dev' },
+];
+---
+
+<Page locale="en" path="/credits" title="Credits" back={{ href: '/', label: 'Home' }} singleLocale>
+  <div class="prose">
+    <p class="lead">Third-party work used on this site, with thanks to the people who made it.</p>
+
+    <h2>Fonts</h2>
+    <ul>
+      {
+        fonts.map((f) => (
+          <li>
+            <a href={f.url} target="_blank" rel="noopener noreferrer">{f.name}</a> — {f.by}. {f.license}.
+          </li>
+        ))
+      }
+    </ul>
+
+    <h2>Sound</h2>
+    {
+      audio.length === 0 ? (
+        <p>No third-party audio is in use yet.</p>
+      ) : (
+        <ul>
+          {audio.map((a) => (
+            <li>
+              <a href={a.url} target="_blank" rel="noopener noreferrer">{a.title}</a> — {a.author}. {a.license}.
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <h2>Open-source software</h2>
+    <ul>
+      {
+        libs.map((l) => (
+          <li>
+            <a href={l.url} target="_blank" rel="noopener noreferrer">{l.name}</a> — {l.license}.
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Page>

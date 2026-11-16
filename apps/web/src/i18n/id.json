@@ -1,0 +1,217 @@
+{
+  "skip": "Lompat ke konten",
+  "nav": {
+    "about": "Tentang",
+    "achievements": "Pencapaian",
+    "journey": "Perjalanan",
+    "works": "Karya",
+    "skills": "Keahlian",
+    "gallery": "Galeri",
+    "contact": "Kontak",
+    "menu": "Menu",
+    "close": "Tutup",
+    "cv": "Unduh CV",
+    "language": "Bahasa",
+    "soundOn": "Suara menyala",
+    "soundOff": "Suara mati",
+    "sound": "Suara",
+    "home": "Beranda"
+  },
+  "gate": {
+    "title": "Selamat datang",
+    "withSound": "Masuk dengan suara",
+    "withoutSound": "Masuk tanpa suara",
+    "remember": "Ingat pilihan saya",
+    "hint": "Scroll atau tekan Esc untuk melewati",
+    "tapSound": "Ketuk untuk menyalakan suara",
+    "boot": [
+      "memuat dimas.sys",
+      "profil · Teknik Informatika · UNTIRTA",
+      "memasang pencapaian",
+      "menyusun proyek",
+      "sinyal"
+    ],
+    "found": "ditemukan",
+    "ok": "ok",
+    "online": "aktif"
+  },
+  "hero": {
+    "ctaPrimary": "Lihat pencapaian",
+    "ctaSecondary": "Hubungi saya",
+    "scroll": "Gulir",
+    "statGpa": "IPK",
+    "statAchievements": "Pencapaian",
+    "statFirst": "Juara 1",
+    "statRoles": "Peran dijalani"
+  },
+  "about": {
+    "label": "Tentang",
+    "cardTitle": "Tentang saya",
+    "education": "Pendidikan",
+    "location": "Berdomisili di",
+    "focus": "Fokus",
+    "now": "Saat ini",
+    "expected": "perkiraan lulus",
+    "toolkit": "Perkakas"
+  },
+  "achievements": {
+    "label": "Pencapaian",
+    "title": "Pencapaian",
+    "intro": "{n} pencapaian di 2026 dari lomba esai, bisnis, machine learning, dan hackathon.",
+    "unlocked": "terbuka",
+    "all": "Semua",
+    "allTitle": "Semua pencapaian",
+    "proof": "Lihat bukti",
+    "details": "Detail",
+    "of": "dari",
+    "organizer": "Penyelenggara",
+    "date": "Waktu",
+    "location": "Lokasi",
+    "scope": "Tingkat",
+    "type": "Jenis",
+    "entry": "Keikutsertaan",
+    "linkedProject": "Karya pemenang",
+    "next": "Pencapaian berikutnya",
+    "back": "Semua pencapaian",
+    "proofs": "Bukti",
+    "highlights": "Sorotan",
+    "toast": "Pencapaian terbuka",
+    "railHint": "Geser atau gulir",
+    "categories": {
+      "essay": "Esai",
+      "business": "Bisnis",
+      "hackathon": "Hackathon",
+      "ai-ml": "AI / ML",
+      "research": "Riset",
+      "certification": "Sertifikasi",
+      "other": "Lainnya"
+    },
+    "scopes": {
+      "international": "Internasional",
+      "national": "Nasional",
+      "regional": "Regional",
+      "campus": "Kampus"
+    },
+    "entries": {
+      "individual": "Individu",
+      "team": "Tim"
+    }
+  },
+  "journey": {
+    "label": "Perjalanan",
+    "title": "Perjalanan",
+    "intro": "Kerja, kepemimpinan, dan studi — dengan kemenangan yang ditandai di sepanjang jalan.",
+    "all": "Semua",
+    "work": "Kerja",
+    "organization": "Organisasi",
+    "education": "Pendidikan",
+    "milestones": "Pencapaian",
+    "present": "Sekarang",
+    "now": "Kini",
+    "showAll": "Lihat semua",
+    "gpa": "IPK",
+    "wins": "pencapaian",
+    "win": "pencapaian"
+  },
+  "works": {
+    "label": "Karya",
+    "title": "/Karya",
+    "intro": "Hal-hal yang saya pimpin, rancang, atau bangun.",
+    "view": "Lihat studi kasus",
+    "soon": "Segera hadir",
+    "prev": "Sebelumnya",
+    "next": "Berikutnya",
+    "role": "Peran",
+    "year": "Tahun",
+    "stack": "Teknologi",
+    "links": "Tautan",
+    "award": "Penghargaan",
+    "nextProject": "Proyek berikutnya",
+    "back": "Semua karya",
+    "overview": "Ringkasan",
+    "placeholderBody": "Slot proyek ini masih placeholder. Proyek asli ditambahkan lewat aplikasi admin."
+  },
+  "skills": {
+    "label": "Keahlian",
+    "title": "Keahlian",
+    "intro": "Yang saya kuasai — tanpa persentase, hanya hal yang benar-benar saya pakai.",
+    "groups": {
+      "ai": "AI & Data",
+      "web": "Web & Backend",
+      "iot": "IoT & Embedded",
+      "tools": "Tools & Desain",
+      "stack": "Bahasa & Framework",
+      "leadership": "Kepemimpinan"
+    }
+  },
+  "gallery": {
+    "label": "Galeri",
+    "title": "Momen",
+    "intro": "Foto dari kompetisi, acara, dan tim di baliknya.",
+    "placeholder": "Foto segera hadir"
+  },
+  "contact": {
+    "label": "Kontak",
+    "headline": "Ayo bikin sesuatu yang berdampak.",
+    "intro": "Magang, kolaborasi, kompetisi — atau sekadar ide bagus. Kotak masuk saya terbuka.",
+    "name": "Nama",
+    "email": "Email",
+    "topic": "Topik",
+    "message": "Pesan",
+    "send": "Kirim pesan",
+    "sending": "Mengirim…",
+    "topics": {
+      "internship": "Magang",
+      "collaboration": "Kolaborasi",
+      "competition": "Kompetisi",
+      "other": "Lainnya"
+    },
+    "sent": "Pesan terkirim. Saya akan segera membalas.",
+    "failed": "Gagal terkirim. Coba lagi atau email saya langsung.",
+    "offline": "Formulir kontak belum terhubung. Silakan email saya langsung.",
+    "copied": "Tersalin. Silakan tempel.",
+    "copy": "Salin email",
+    "clock": "Serang · WIB",
+    "top": "Kembali ke atas",
+    "privacyNote": "Pesanmu hanya dipakai untuk membalasmu.",
+    "errors": {
+      "name": "Mohon isi nama (minimal 2 karakter).",
+      "email": "Mohon isi alamat email yang valid.",
+      "message": "Mohon tulis pesan (minimal 10 karakter)."
+    }
+  },
+  "footer": {
+    "credits": "Kredit",
+    "privacy": "Privasi",
+    "lite": "Mode hemat",
+    "rights": "Hak cipta dilindungi."
+  },
+  "cv": {
+    "title": "Curriculum Vitae",
+    "print": "Cetak / Simpan PDF",
+    "download": "Unduh PDF resmi",
+    "summary": "Ringkasan",
+    "experience": "Pengalaman",
+    "organization": "Organisasi",
+    "education": "Pendidikan",
+    "achievements": "Pencapaian",
+    "skills": "Keahlian",
+    "projects": "Proyek"
+  },
+  "thanks": {
+    "title": "Pesan terkirim.",
+    "body": "Terima kasih — saya akan segera membalas.",
+    "home": "Kembali ke situs"
+  },
+  "notFound": {
+    "log": "rute tidak ditemukan …… halaman ini belum dirilis.",
+    "title": "404",
+    "home": "Antar saya pulang"
+  },
+  "misc": {
+    "placeholder": "Placeholder",
+    "away": "Masih di sini — Dimas Panca Pamungkas",
+    "explored": "Dijelajahi",
+    "explorer": "Penjelajah terbuka — kamu sudah lihat semuanya."
+  }
+}
