@@ -8,7 +8,7 @@ Personal portfolio website of **Dimas Panca Pamungkas** — Informatics student,
 ## Plan at a glance
 
 - **Public site** (`apps/web`): Astro 7 static site — HTML-first, fully usable without JS; GSAP + Lenis motion, an OGL WebGL hero and Howler sound, all lazy-loaded behind quality tiers so it stays light.
-- **Admin app** (`apps/admin`): a *separate* app/deployment (Vite + React PWA, Supabase Auth + MFA) to add achievements, projects and other content without touching code.
+- **Admin app** (`apps/admin`): a _separate_ app/deployment (Vite + React PWA, Supabase Auth + MFA) to add achievements, projects and other content without touching code.
 - **Backend**: Supabase (Postgres + RLS, Storage, Edge Functions).
 - **Hosting**: Vercel (free Hobby plan, `*.vercel.app`) — one project for the site, one for the admin.
 - **Rules**: performance budgets are CI gates; every fact comes from Dimas's own data; placeholders are flagged.
@@ -19,7 +19,7 @@ Personal portfolio website of **Dimas Panca Pamungkas** — Informatics student,
 
 ## Ringkas (Bahasa Indonesia)
 
-Website portofolio pribadi Dimas Panca Pamungkas. Spesifikasi lengkap ada di [`docs/PRD.md`](docs/PRD.md). Konten awal diambil dari CV dan jawaban Dimas, disimpan di `docs/seed/content.seed.json`; bagian yang belum ada datanya ditandai sebagai *placeholder*. Hosting memakai Vercel (gratis).
+Website portofolio pribadi Dimas Panca Pamungkas. Spesifikasi lengkap ada di [`docs/PRD.md`](docs/PRD.md). Konten awal diambil dari CV dan jawaban Dimas, disimpan di `docs/seed/content.seed.json`; bagian yang belum ada datanya ditandai sebagai _placeholder_. Hosting memakai Vercel (gratis).
 
 ## License
 

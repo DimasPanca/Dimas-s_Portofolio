@@ -79,9 +79,18 @@
       }
     },
     "socials": [
-      { "kind": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/in/dimas-panca-pamungkas-66609a208/" },
+      {
+        "kind": "linkedin",
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/dimas-panca-pamungkas-66609a208/"
+      },
       { "kind": "github", "label": "GitHub", "url": "https://github.com/DimasPanca" },
-      { "kind": "instagram", "label": "Instagram", "handle": "@dimas_pancapamungkas", "url": "https://www.instagram.com/dimas_pancapamungkas/" },
+      {
+        "kind": "instagram",
+        "label": "Instagram",
+        "handle": "@dimas_pancapamungkas",
+        "url": "https://www.instagram.com/dimas_pancapamungkas/"
+      },
       { "kind": "email", "label": "Email", "url": "mailto:dimaspanca2005@gmail.com" }
     ],
     "contact": {
@@ -91,7 +100,10 @@
       "note": "WhatsApp IS shown on the site (Dimas confirmed, Q-8). The number is not committed (PRD HR-10): inject it from the git-ignored env SEED_WHATSAPP_NUMBER at seed time (format 62…) or set it in the admin app."
     },
     "seo": {
-      "title": { "en": "Dimas Panca Pamungkas — Software, AI & IoT builder", "id": "Dimas Panca Pamungkas — Pembangun Software, AI & IoT" },
+      "title": {
+        "en": "Dimas Panca Pamungkas — Software, AI & IoT builder",
+        "id": "Dimas Panca Pamungkas — Pembangun Software, AI & IoT"
+      },
       "description": {
         "en": "Informatics Engineering student at UNTIRTA, President of HMIF and project manager, with multiple 1st-place wins in 2026 including the International FAPERTA FAIR in Thailand. Software, AI and IoT.",
         "id": "Mahasiswa Teknik Informatika UNTIRTA, Ketua HMIF dan project manager, dengan beberapa juara 1 di 2026 termasuk International FAPERTA FAIR di Thailand. Software, AI, dan IoT."
@@ -140,12 +152,30 @@
         "needsReview": true
       },
       "highlights": [
-        { "en": "Led end-to-end planning and execution of a multiplayer co-op game project delivered for RedDoorz.", "id": "Memimpin perencanaan dan eksekusi menyeluruh proyek game co-op multiplayer yang dikirimkan untuk RedDoorz." },
-        { "en": "Successfully delivered a production-ready application adopted for internal use by RedDoorz.", "id": "Berhasil menyerahkan aplikasi siap produksi yang dipakai untuk penggunaan internal RedDoorz." },
-        { "en": "Coordinated developers, designers, and stakeholders throughout the software development lifecycle.", "id": "Mengoordinasikan developer, desainer, dan pemangku kepentingan sepanjang siklus pengembangan software." },
-        { "en": "Managed sprint planning, task allocation, and milestone tracking to ensure on-time delivery.", "id": "Mengelola perencanaan sprint, pembagian tugas, dan pelacakan milestone demi ketepatan waktu." },
-        { "en": "Oversaw feature prioritization, quality assurance, and user acceptance testing before deployment.", "id": "Mengawasi prioritisasi fitur, penjaminan kualitas, dan user acceptance testing sebelum rilis." },
-        { "en": "Collaborated in software implementation and technical decision-making during development.", "id": "Berkolaborasi dalam implementasi software dan pengambilan keputusan teknis selama pengembangan." }
+        {
+          "en": "Led end-to-end planning and execution of a multiplayer co-op game project delivered for RedDoorz.",
+          "id": "Memimpin perencanaan dan eksekusi menyeluruh proyek game co-op multiplayer yang dikirimkan untuk RedDoorz."
+        },
+        {
+          "en": "Successfully delivered a production-ready application adopted for internal use by RedDoorz.",
+          "id": "Berhasil menyerahkan aplikasi siap produksi yang dipakai untuk penggunaan internal RedDoorz."
+        },
+        {
+          "en": "Coordinated developers, designers, and stakeholders throughout the software development lifecycle.",
+          "id": "Mengoordinasikan developer, desainer, dan pemangku kepentingan sepanjang siklus pengembangan software."
+        },
+        {
+          "en": "Managed sprint planning, task allocation, and milestone tracking to ensure on-time delivery.",
+          "id": "Mengelola perencanaan sprint, pembagian tugas, dan pelacakan milestone demi ketepatan waktu."
+        },
+        {
+          "en": "Oversaw feature prioritization, quality assurance, and user acceptance testing before deployment.",
+          "id": "Mengawasi prioritisasi fitur, penjaminan kualitas, dan user acceptance testing sebelum rilis."
+        },
+        {
+          "en": "Collaborated in software implementation and technical decision-making during development.",
+          "id": "Berkolaborasi dalam implementasi software dan pengambilan keputusan teknis selama pengembangan."
+        }
       ],
       "featuredHighlights": 3,
       "projectSlug": "reddoorz-team-run",
@@ -170,11 +200,26 @@
         "needsReview": true
       },
       "highlights": [
-        { "en": "Led the Informatics Engineering Student Association in planning and executing academic, professional, and student development programs.", "id": "Memimpin himpunan mahasiswa Teknik Informatika dalam merencanakan dan menjalankan program akademik, profesional, dan pengembangan mahasiswa." },
-        { "en": "Directed executive board members and coordinated multiple organizational divisions to achieve annual objectives.", "id": "Mengarahkan pengurus harian dan mengoordinasikan berbagai divisi untuk mencapai target tahunan." },
-        { "en": "Managed organizational planning, budgeting, and strategic decision-making.", "id": "Mengelola perencanaan organisasi, penganggaran, dan pengambilan keputusan strategis." },
-        { "en": "Represented the association in collaboration with the university, external organizations, and industry partners.", "id": "Mewakili himpunan dalam kolaborasi dengan universitas, organisasi eksternal, dan mitra industri." },
-        { "en": "Initiated programs to enhance students' technical, leadership, and professional development.", "id": "Menginisiasi program untuk meningkatkan pengembangan teknis, kepemimpinan, dan profesional mahasiswa." }
+        {
+          "en": "Led the Informatics Engineering Student Association in planning and executing academic, professional, and student development programs.",
+          "id": "Memimpin himpunan mahasiswa Teknik Informatika dalam merencanakan dan menjalankan program akademik, profesional, dan pengembangan mahasiswa."
+        },
+        {
+          "en": "Directed executive board members and coordinated multiple organizational divisions to achieve annual objectives.",
+          "id": "Mengarahkan pengurus harian dan mengoordinasikan berbagai divisi untuk mencapai target tahunan."
+        },
+        {
+          "en": "Managed organizational planning, budgeting, and strategic decision-making.",
+          "id": "Mengelola perencanaan organisasi, penganggaran, dan pengambilan keputusan strategis."
+        },
+        {
+          "en": "Represented the association in collaboration with the university, external organizations, and industry partners.",
+          "id": "Mewakili himpunan dalam kolaborasi dengan universitas, organisasi eksternal, dan mitra industri."
+        },
+        {
+          "en": "Initiated programs to enhance students' technical, leadership, and professional development.",
+          "id": "Menginisiasi program untuk meningkatkan pengembangan teknis, kepemimpinan, dan profesional mahasiswa."
+        }
       ],
       "featuredHighlights": 3,
       "sortOrder": 1,
@@ -201,7 +246,10 @@
         { "en": "Prepared examination infrastructure.", "id": "Menyiapkan infrastruktur ujian." },
         { "en": "Maintained computer and network systems.", "id": "Memelihara sistem komputer dan jaringan." },
         { "en": "Coordinated administrative documentation.", "id": "Mengoordinasikan dokumentasi administrasi." },
-        { "en": "Assisted school staff during national computer-based assessments.", "id": "Membantu staf sekolah selama asesmen nasional berbasis komputer." }
+        {
+          "en": "Assisted school staff during national computer-based assessments.",
+          "id": "Membantu staf sekolah selama asesmen nasional berbasis komputer."
+        }
       ],
       "featuredHighlights": 3,
       "sortOrder": 2,
@@ -223,7 +271,10 @@
         { "en": "Designed promotional banners.", "id": "Mendesain banner promosi." },
         { "en": "Created product marketing visuals.", "id": "Membuat visual pemasaran produk." },
         { "en": "Produced social media content.", "id": "Memproduksi konten media sosial." },
-        { "en": "Assisted branding and digital marketing campaigns.", "id": "Membantu kampanye branding dan pemasaran digital." }
+        {
+          "en": "Assisted branding and digital marketing campaigns.",
+          "id": "Membantu kampanye branding dan pemasaran digital."
+        }
       ],
       "featuredHighlights": 3,
       "sortOrder": 3,
@@ -265,13 +316,7 @@
           "id": "Merancang arsitektur sistem, pengkabelan, dan pemilihan perangkat keras."
         }
       ],
-      "tags": [
-        "international",
-        "thailand",
-        "essay",
-        "edge ai",
-        "iot"
-      ],
+      "tags": ["international", "thailand", "essay", "edge ai", "iot"],
       "projectSlug": "edge-ai-oyster-mushroom",
       "linkConfirmed": true,
       "proofs": [],
@@ -308,10 +353,7 @@
         "id": "Meraih juara 1 pada lomba esai Agri-Volution yang diselenggarakan IPB University."
       },
       "highlights": [],
-      "tags": [
-        "essay",
-        "agriculture"
-      ],
+      "tags": ["essay", "agriculture"],
       "proofs": [],
       "featured": true,
       "sortOrder": 1,
@@ -346,11 +388,7 @@
         "id": "Meraih juara 1 pada lomba esai Brawijaya Sustainable Strategic Innovation Contest yang diselenggarakan Universitas Brawijaya."
       },
       "highlights": [],
-      "tags": [
-        "essay",
-        "sustainability",
-        "innovation"
-      ],
+      "tags": ["essay", "sustainability", "innovation"],
       "proofs": [],
       "featured": true,
       "sortOrder": 2,
@@ -394,11 +432,7 @@
           "id": "Mempresentasikan proyek kepada para juri kompetisi."
         }
       ],
-      "tags": [
-        "business model canvas",
-        "commercialization",
-        "pitching"
-      ],
+      "tags": ["business model canvas", "commercialization", "pitching"],
       "proofs": [],
       "featured": true,
       "sortOrder": 3,
@@ -433,10 +467,7 @@
         "id": "Meraih juara 2 pada Agridata Telepati 8.0, kompetisi machine learning yang diselenggarakan Politeknik Negeri Bandung (Polban)."
       },
       "highlights": [],
-      "tags": [
-        "machine learning",
-        "agridata"
-      ],
+      "tags": ["machine learning", "agridata"],
       "proofs": [],
       "featured": true,
       "sortOrder": 4,
@@ -471,9 +502,7 @@
         "id": "Meraih juara 2 pada UGP – GBIC Business Plan Competition yang diselenggarakan Universitas Gunadarma."
       },
       "highlights": [],
-      "tags": [
-        "business plan"
-      ],
+      "tags": ["business plan"],
       "proofs": [],
       "featured": true,
       "sortOrder": 5,
@@ -508,11 +537,7 @@
         "id": "Meraih juara 3 dengan menyajikan inovasi berbasis riset untuk tantangan dunia nyata melalui teknologi dan analisis strategis."
       },
       "highlights": [],
-      "tags": [
-        "essay",
-        "research",
-        "innovation"
-      ],
+      "tags": ["essay", "research", "innovation"],
       "proofs": [],
       "featured": false,
       "sortOrder": 6,
@@ -556,11 +581,7 @@
           "id": "Menunjukkan kemampuan pengembangan software, pemecahan masalah, kerja tim, dan presentasi."
         }
       ],
-      "tags": [
-        "hackathon",
-        "teamwork",
-        "innovation"
-      ],
+      "tags": ["hackathon", "teamwork", "innovation"],
       "proofs": [],
       "featured": false,
       "sortOrder": 7,
@@ -604,11 +625,7 @@
           "id": "Menunjukkan kemampuan pengembangan software, pemecahan masalah, kerja tim, dan presentasi."
         }
       ],
-      "tags": [
-        "hackathon",
-        "teamwork",
-        "innovation"
-      ],
+      "tags": ["hackathon", "teamwork", "innovation"],
       "proofs": [],
       "featured": false,
       "sortOrder": 8,
@@ -682,7 +699,10 @@
       "title": { "en": "Project title", "id": "Judul proyek" },
       "role": { "en": "Your role", "id": "Peran kamu" },
       "year": 2026,
-      "summary": { "en": "Replace this card with a real project from the admin app.", "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin." },
+      "summary": {
+        "en": "Replace this card with a real project from the admin app.",
+        "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin."
+      },
       "stack": [],
       "links": [],
       "featured": false,
@@ -695,7 +715,10 @@
       "title": { "en": "Project title", "id": "Judul proyek" },
       "role": { "en": "Your role", "id": "Peran kamu" },
       "year": 2026,
-      "summary": { "en": "Replace this card with a real project from the admin app.", "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin." },
+      "summary": {
+        "en": "Replace this card with a real project from the admin app.",
+        "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin."
+      },
       "stack": [],
       "links": [],
       "featured": false,
@@ -708,7 +731,10 @@
       "title": { "en": "Project title", "id": "Judul proyek" },
       "role": { "en": "Your role", "id": "Peran kamu" },
       "year": 2026,
-      "summary": { "en": "Replace this card with a real project from the admin app.", "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin." },
+      "summary": {
+        "en": "Replace this card with a real project from the admin app.",
+        "id": "Ganti kartu ini dengan proyek asli lewat aplikasi admin."
+      },
       "stack": [],
       "links": [],
       "featured": false,
@@ -718,38 +744,243 @@
   ],
 
   "skills": [
-    { "slug": "skill-fullstack-web", "status": "published", "group": "web", "kind": "hard", "label": { "en": "Full-stack web application development", "id": "Pengembangan aplikasi web full-stack" }, "sortOrder": 0 },
-    { "slug": "skill-database-design", "status": "published", "group": "web", "kind": "hard", "label": { "en": "Database design", "id": "Perancangan basis data" }, "sortOrder": 1 },
-    { "slug": "skill-rest-api", "status": "published", "group": "web", "kind": "hard", "label": { "en": "REST API integration", "id": "Integrasi REST API" }, "sortOrder": 2 },
-    { "slug": "skill-ai-solutions", "status": "published", "group": "ai", "kind": "hard", "label": { "en": "AI-powered solutions", "id": "Solusi berbasis AI" }, "sortOrder": 3 },
-    { "slug": "skill-prompt-engineering", "status": "published", "group": "ai", "kind": "hard", "label": { "en": "Prompt engineering", "id": "Prompt engineering" }, "sortOrder": 4 },
-    { "slug": "skill-rag", "status": "published", "group": "ai", "kind": "hard", "label": { "en": "Retrieval-augmented generation (RAG)", "id": "Retrieval-augmented generation (RAG)" }, "sortOrder": 5 },
-    { "slug": "skill-iot-systems", "status": "published", "group": "iot", "kind": "hard", "label": { "en": "IoT systems", "id": "Sistem IoT" }, "sortOrder": 6 },
-    { "slug": "skill-esp32", "status": "published", "group": "iot", "kind": "hard", "label": { "en": "Embedded systems with ESP32", "id": "Sistem embedded dengan ESP32" }, "sortOrder": 7 },
-    { "slug": "skill-git", "status": "published", "group": "tools", "kind": "hard", "label": { "en": "Version control with Git", "id": "Version control dengan Git" }, "sortOrder": 8 },
-    { "slug": "skill-figma", "status": "published", "group": "tools", "kind": "hard", "label": { "en": "UI prototyping with Figma", "id": "Prototyping UI dengan Figma" }, "sortOrder": 9 },
-    { "slug": "stack-nextjs", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "Next.js", "id": "Next.js" }, "sortOrder": 20, "_note": "Provided by Dimas on 2026-11-16 (not in the CV). No proficiency level given — do not invent one." },
-    { "slug": "stack-php", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "PHP", "id": "PHP" }, "sortOrder": 21 },
-    { "slug": "stack-laravel", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "Laravel", "id": "Laravel" }, "sortOrder": 22 },
-    { "slug": "stack-python", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "Python", "id": "Python" }, "sortOrder": 23 },
-    { "slug": "stack-cpp", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "C++", "id": "C++" }, "sortOrder": 24 },
-    { "slug": "stack-javascript", "status": "published", "group": "stack", "kind": "hard", "label": { "en": "JavaScript", "id": "JavaScript" }, "sortOrder": 25 },
-    { "slug": "skill-leadership", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Leadership", "id": "Kepemimpinan" }, "sortOrder": 11 },
-    { "slug": "skill-collaboration", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Collaboration", "id": "Kolaborasi" }, "sortOrder": 12 },
-    { "slug": "skill-project-planning", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Project planning", "id": "Perencanaan proyek" }, "sortOrder": 13 },
-    { "slug": "skill-communication", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Effective communication", "id": "Komunikasi efektif" }, "sortOrder": 14 },
-    { "slug": "skill-problem-solving", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Problem-solving", "id": "Pemecahan masalah" }, "sortOrder": 15 },
-    { "slug": "skill-strategic-decisions", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Strategic decision-making", "id": "Pengambilan keputusan strategis" }, "sortOrder": 16 },
-    { "slug": "skill-multitasking", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Balancing multiple responsibilities", "id": "Mengelola banyak tanggung jawab" }, "sortOrder": 17 },
-    { "slug": "skill-presentation", "status": "published", "group": "leadership", "kind": "soft", "label": { "en": "Presentation & pitching", "id": "Presentasi & pitching" }, "sortOrder": 18 }
+    {
+      "slug": "skill-fullstack-web",
+      "status": "published",
+      "group": "web",
+      "kind": "hard",
+      "label": { "en": "Full-stack web application development", "id": "Pengembangan aplikasi web full-stack" },
+      "sortOrder": 0
+    },
+    {
+      "slug": "skill-database-design",
+      "status": "published",
+      "group": "web",
+      "kind": "hard",
+      "label": { "en": "Database design", "id": "Perancangan basis data" },
+      "sortOrder": 1
+    },
+    {
+      "slug": "skill-rest-api",
+      "status": "published",
+      "group": "web",
+      "kind": "hard",
+      "label": { "en": "REST API integration", "id": "Integrasi REST API" },
+      "sortOrder": 2
+    },
+    {
+      "slug": "skill-ai-solutions",
+      "status": "published",
+      "group": "ai",
+      "kind": "hard",
+      "label": { "en": "AI-powered solutions", "id": "Solusi berbasis AI" },
+      "sortOrder": 3
+    },
+    {
+      "slug": "skill-prompt-engineering",
+      "status": "published",
+      "group": "ai",
+      "kind": "hard",
+      "label": { "en": "Prompt engineering", "id": "Prompt engineering" },
+      "sortOrder": 4
+    },
+    {
+      "slug": "skill-rag",
+      "status": "published",
+      "group": "ai",
+      "kind": "hard",
+      "label": { "en": "Retrieval-augmented generation (RAG)", "id": "Retrieval-augmented generation (RAG)" },
+      "sortOrder": 5
+    },
+    {
+      "slug": "skill-iot-systems",
+      "status": "published",
+      "group": "iot",
+      "kind": "hard",
+      "label": { "en": "IoT systems", "id": "Sistem IoT" },
+      "sortOrder": 6
+    },
+    {
+      "slug": "skill-esp32",
+      "status": "published",
+      "group": "iot",
+      "kind": "hard",
+      "label": { "en": "Embedded systems with ESP32", "id": "Sistem embedded dengan ESP32" },
+      "sortOrder": 7
+    },
+    {
+      "slug": "skill-git",
+      "status": "published",
+      "group": "tools",
+      "kind": "hard",
+      "label": { "en": "Version control with Git", "id": "Version control dengan Git" },
+      "sortOrder": 8
+    },
+    {
+      "slug": "skill-figma",
+      "status": "published",
+      "group": "tools",
+      "kind": "hard",
+      "label": { "en": "UI prototyping with Figma", "id": "Prototyping UI dengan Figma" },
+      "sortOrder": 9
+    },
+    {
+      "slug": "stack-nextjs",
+      "status": "published",
+      "group": "stack",
+      "kind": "hard",
+      "label": { "en": "Next.js", "id": "Next.js" },
+      "sortOrder": 20,
+      "_note": "Provided by Dimas on 2026-11-16 (not in the CV). No proficiency level given — do not invent one."
+    },
+    {
+      "slug": "stack-php",
+      "status": "published",
+      "group": "stack",
+      "kind": "hard",
+      "label": { "en": "PHP", "id": "PHP" },
+      "sortOrder": 21
+    },
+    {
+      "slug": "stack-laravel",
+      "status": "published",
+      "group": "stack",
+      "kind": "hard",
+      "label": { "en": "Laravel", "id": "Laravel" },
+      "sortOrder": 22
+    },
+    {
+      "slug": "stack-python",
+      "status": "published",
+      "group": "stack",
+      "kind": "hard",
+      "label": { "en": "Python", "id": "Python" },
+      "sortOrder": 23
+    },
+    {
+      "slug": "stack-cpp",
+      "status": "published",
+      "group": "stack",
+      "kind": "hard",
+      "label": { "en": "C++", "id": "C++" },
+      "sortOrder": 24
+    },
+    {
+      "slug": "stack-javascript",
+      "status": "published",
+      "group": "stack",
+      "kind": "hard",
+      "label": { "en": "JavaScript", "id": "JavaScript" },
+      "sortOrder": 25
+    },
+    {
+      "slug": "skill-leadership",
+      "status": "published",
+      "group": "leadership",
+      "kind": "soft",
+      "label": { "en": "Leadership", "id": "Kepemimpinan" },
+      "sortOrder": 11
+    },
+    {
+      "slug": "skill-collaboration",
+      "status": "published",
+      "group": "leadership",
+      "kind": "soft",
+      "label": { "en": "Collaboration", "id": "Kolaborasi" },
+      "sortOrder": 12
+    },
+    {
+      "slug": "skill-project-planning",
+      "status": "published",
+      "group": "leadership",
+      "kind": "soft",
+      "label": { "en": "Project planning", "id": "Perencanaan proyek" },
+      "sortOrder": 13
+    },
+    {
+      "slug": "skill-communication",
+      "status": "published",
+      "group": "leadership",
+      "kind": "soft",
+      "label": { "en": "Effective communication", "id": "Komunikasi efektif" },
+      "sortOrder": 14
+    },
+    {
+      "slug": "skill-problem-solving",
+      "status": "published",
+      "group": "leadership",
+      "kind": "soft",
+      "label": { "en": "Problem-solving", "id": "Pemecahan masalah" },
+      "sortOrder": 15
+    },
+    {
+      "slug": "skill-strategic-decisions",
+      "status": "published",
+      "group": "leadership",
+      "kind": "soft",
+      "label": { "en": "Strategic decision-making", "id": "Pengambilan keputusan strategis" },
+      "sortOrder": 16
+    },
+    {
+      "slug": "skill-multitasking",
+      "status": "published",
+      "group": "leadership",
+      "kind": "soft",
+      "label": { "en": "Balancing multiple responsibilities", "id": "Mengelola banyak tanggung jawab" },
+      "sortOrder": 17
+    },
+    {
+      "slug": "skill-presentation",
+      "status": "published",
+      "group": "leadership",
+      "kind": "soft",
+      "label": { "en": "Presentation & pitching", "id": "Presentasi & pitching" },
+      "sortOrder": 18
+    }
   ],
 
   "gallery": [
-    { "slug": "gallery-placeholder-1", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 0 },
-    { "slug": "gallery-placeholder-2", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 1 },
-    { "slug": "gallery-placeholder-3", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 2 },
-    { "slug": "gallery-placeholder-4", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 3 },
-    { "slug": "gallery-placeholder-5", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 4 },
-    { "slug": "gallery-placeholder-6", "status": "published", "caption": { "en": "Moment", "id": "Momen" }, "isPlaceholder": true, "sortOrder": 5 }
+    {
+      "slug": "gallery-placeholder-1",
+      "status": "published",
+      "caption": { "en": "Moment", "id": "Momen" },
+      "isPlaceholder": true,
+      "sortOrder": 0
+    },
+    {
+      "slug": "gallery-placeholder-2",
+      "status": "published",
+      "caption": { "en": "Moment", "id": "Momen" },
+      "isPlaceholder": true,
+      "sortOrder": 1
+    },
+    {
+      "slug": "gallery-placeholder-3",
+      "status": "published",
+      "caption": { "en": "Moment", "id": "Momen" },
+      "isPlaceholder": true,
+      "sortOrder": 2
+    },
+    {
+      "slug": "gallery-placeholder-4",
+      "status": "published",
+      "caption": { "en": "Moment", "id": "Momen" },
+      "isPlaceholder": true,
+      "sortOrder": 3
+    },
+    {
+      "slug": "gallery-placeholder-5",
+      "status": "published",
+      "caption": { "en": "Moment", "id": "Momen" },
+      "isPlaceholder": true,
+      "sortOrder": 4
+    },
+    {
+      "slug": "gallery-placeholder-6",
+      "status": "published",
+      "caption": { "en": "Moment", "id": "Momen" },
+      "isPlaceholder": true,
+      "sortOrder": 5
+    }
   ]
 }

@@ -1,0 +1,33 @@
+name: backup
+# Weekly snapshot of the published content, kept as a workflow artifact for 90 days.
+on:
+  schedule:
+    - cron: "41 2 * * 0"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Fetch published snapshot
+        env:
+          CONTENT_SOURCE: supabase
+          PUBLIC_SUPABASE_URL: ${{ vars.PUBLIC_SUPABASE_URL }}
+          PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "$PUBLIC_SUPABASE_URL" ]; then echo "Supabase not configured yet; skipping"; exit 0; fi
+          node scripts/fetch-content.ts backup/content.snapshot.json
+      - uses: actions/upload-artifact@v4
+        if: hashFiles('backup/content.snapshot.json') != ''
+        with:
+          name: content-snapshot
+          path: backup/
+          retention-days: 90

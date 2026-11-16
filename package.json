@@ -1,0 +1,30 @@
+{
+  "name": "dimas-portfolio",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.21.0",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @portfolio/web dev",
+    "dev:admin": "pnpm --filter @portfolio/admin dev",
+    "build": "turbo run build",
+    "build:web": "turbo run build --filter=@portfolio/web",
+    "build:admin": "turbo run build --filter=@portfolio/admin",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "content:lint": "node scripts/content-lint.ts",
+    "db:seed": "node scripts/seed-db.ts",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.8",
+    "@types/node": "^24.0.0",
+    "husky": "9.1.7",
+    "turbo": "2.11.11",
+    "typescript": "~6.0.3"
+  }
+}

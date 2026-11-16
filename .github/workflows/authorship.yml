@@ -1,0 +1,26 @@
+name: authorship
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check commit authorship (PRD HR-1)
+        env:
+          AUTHOR_NAME: ${{ vars.AUTHOR_NAME || 'Dimas Panca Pamungkas' }}
+          AUTHOR_EMAIL: ${{ vars.AUTHOR_EMAIL || '97424109+DimasPanca@users.noreply.github.com' }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$AUTHOR_NAME" ] || [ -z "$AUTHOR_EMAIL" ]; then
+            echo "Set the repository variables AUTHOR_NAME and AUTHOR_EMAIL (Settings > Secrets and variables > Actions > Variables)."
+            exit 1
+          fi
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then range="HEAD"; else range="$BASE..HEAD"; fi
+          bash scripts/check-authorship.sh "$range"
