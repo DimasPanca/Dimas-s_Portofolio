@@ -214,7 +214,7 @@ export function initMotion(): void {
       scrub: true,
       onUpdate(self) {
         const at = Math.min(words.length - 1, Math.floor(self.progress * words.length));
-        words.forEach((w, i) => w.classList.toggle('is-active', i === at));
+        for (const [i, w] of words.entries()) w.classList.toggle('is-active', i === at);
       },
     });
   }
