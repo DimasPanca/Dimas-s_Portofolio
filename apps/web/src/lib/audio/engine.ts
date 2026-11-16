@@ -1,24 +1,15 @@
 /**
  * L4 — audio engine (PRD §7.6). Loaded only after the visitor chose sound.
- * UI cues come from one CC0 sprite (Howler); tonal cues and the ambient bed are synthesised with
- * Web Audio in the key of D, so they cost no download and always sit together (PRD §7.4 fallback rule).
+ * Voice: simple, warm and professional — soft glass-bell tones in D major with a touch of room reverb,
+ * short UI cues from a CC0 sprite, and an optional, very quiet high pad. Nothing dark, nothing noisy.
+ * Tonal cues are synthesised with Web Audio, so they cost no download (PRD §7.4 fallback rule).
  */
 import { Howl, Howler } from 'howler';
 import data from '../../data/sfx-sprite.json';
 import type { CueId } from '../bus.ts';
 
-const D = {
-  D2: 73.42,
-  A2: 110,
-  D3: 146.83,
-  F3: 174.61,
-  A3: 220,
-  D5: 587.33,
-  Fs5: 739.99,
-  A5: 880,
-  D6: 1174.66,
-  Fs6: 1479.98,
-};
+/** D major, mid-high register only (bright and friendly; no low rumble). */
+const N = { D4: 293.66, Fs4: 369.99, A4: 440, E5: 659.25, D5: 587.33, Fs5: 739.99, A5: 880, D6: 1174.66 };
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 export type Engine = {
@@ -32,59 +23,74 @@ export function createEngine(): Engine {
   const sfx = new Howl({
     src: isSafari ? files.reverse() : files,
     sprite: data.sprite as unknown as Record<string, [number, number]>,
-    volume: 0.6,
+    volume: 0.5,
     preload: true,
   });
   const ctx = Howler.ctx as AudioContext;
   const master = Howler.masterGain as GainNode;
 
-  // Everything synthesised goes through one bus so the mute switch and the analyser see it.
+  /* One synth bus: dry + a short, soft room (generated impulse, no file). */
   const synth = ctx.createGain();
-  synth.gain.value = 0.5;
+  synth.gain.value = 0.55;
   synth.connect(master);
+  const room = ctx.createConvolver();
+  {
+    const seconds = 1.5;
+    const impulse = ctx.createBuffer(2, Math.ceil(ctx.sampleRate * seconds), ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const ch = impulse.getChannelData(c);
+      for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / ch.length) ** 3.2;
+    }
+    room.buffer = impulse;
+  }
+  const wet = ctx.createGain();
+  wet.gain.value = 0.22;
+  room.connect(wet).connect(master);
+
   const analyser = ctx.createAnalyser();
   analyser.fftSize = 64;
   master.connect(analyser);
   const bins = new Uint8Array(analyser.frequencyBinCount);
 
-  /* ---------------------------------------------------------- ambient bed */
+  /* ------------------------------------------------------------ soft pad */
   const bed = ctx.createGain();
   bed.gain.value = 0;
   const lowpass = ctx.createBiquadFilter();
   lowpass.type = 'lowpass';
-  lowpass.frequency.value = 520;
-  lowpass.Q.value = 0.6;
-  lowpass.connect(bed).connect(synth);
+  lowpass.frequency.value = 1500;
+  lowpass.Q.value = 0.3;
+  lowpass.connect(bed);
+  bed.connect(synth);
+  bed.connect(room);
   let bedStarted = false;
   function startBed() {
     if (bedStarted) return;
     bedStarted = true;
-    const voices: [number, OscillatorType, number, number][] = [
-      [D.D2, 'sawtooth', 0.22, -4],
-      [D.A2, 'sawtooth', 0.14, 5],
-      [D.D3, 'triangle', 0.2, 3],
-      [D.F3, 'sine', 0.12, -6],
-      [D.A3, 'sine', 0.07, 7],
+    // A D-major add9 chord of pure sines, each swelling slowly at its own pace.
+    const voices: [number, number][] = [
+      [N.D4, 0.5],
+      [N.A4, 0.34],
+      [N.Fs5, 0.2],
+      [N.E5, 0.14],
     ];
-    for (const [freq, type, gain, detune] of voices) {
+    for (const [freq, gain] of voices) {
       const osc = ctx.createOscillator();
-      osc.type = type;
+      osc.type = 'sine';
       osc.frequency.value = freq;
-      osc.detune.value = detune;
+      osc.detune.value = (Math.random() - 0.5) * 8;
       const g = ctx.createGain();
-      g.gain.value = gain;
-      // A slow, per-voice tremolo keeps the pad alive without any rhythm.
+      g.gain.value = gain * 0.6;
       const lfo = ctx.createOscillator();
-      lfo.frequency.value = 0.04 + Math.random() * 0.07;
+      lfo.frequency.value = 0.03 + Math.random() * 0.04;
       const depth = ctx.createGain();
-      depth.gain.value = gain * 0.45;
+      depth.gain.value = gain * 0.4;
       lfo.connect(depth).connect(g.gain);
       osc.connect(g).connect(lowpass);
       osc.start();
       lfo.start();
     }
   }
-  const BED_LEVEL = 0.2;
+  const BED_LEVEL = 0.1;
   const fadeBed = (to: number, seconds: number) => {
     const t = ctx.currentTime;
     bed.gain.cancelScheduledValues(t);
@@ -95,11 +101,11 @@ export function createEngine(): Engine {
     const t = ctx.currentTime;
     bed.gain.cancelScheduledValues(t);
     bed.gain.setValueAtTime(bed.gain.value, t);
-    bed.gain.linearRampToValueAtTime(BED_LEVEL * 0.6, t + 0.08);
-    bed.gain.linearRampToValueAtTime(BED_LEVEL, t + 0.9);
+    bed.gain.linearRampToValueAtTime(BED_LEVEL * 0.5, t + 0.1);
+    bed.gain.linearRampToValueAtTime(BED_LEVEL, t + 1.2);
   };
 
-  // The bed "breathes" with scrolling: faster scroll opens the filter (PRD §7.2).
+  // The pad brightens very slightly with scrolling (kept narrow so it never gets harsh).
   let lastY = scrollY;
   let lastT = performance.now();
   let energy = 0;
@@ -110,91 +116,62 @@ export function createEngine(): Engine {
       const v = Math.abs(scrollY - lastY) / Math.max(16, now - lastT);
       lastY = scrollY;
       lastT = now;
-      energy = Math.min(1, energy * 0.8 + v * 0.25);
-      lowpass.frequency.setTargetAtTime(520 + energy * 2600, ctx.currentTime, 0.25);
+      energy = Math.min(1, energy * 0.8 + v * 0.2);
+      lowpass.frequency.setTargetAtTime(1500 + energy * 900, ctx.currentTime, 0.3);
     },
     { passive: true },
   );
   setInterval(() => {
     if (energy < 0.01) return;
     energy *= 0.7;
-    lowpass.frequency.setTargetAtTime(520 + energy * 2600, ctx.currentTime, 0.6);
+    lowpass.frequency.setTargetAtTime(1500 + energy * 900, ctx.currentTime, 0.6);
   }, 400);
 
-  /* ------------------------------------------------------- synthesised cues */
-  function note(freq: number, at: number, dur: number, gain: number, type: OscillatorType = 'triangle') {
+  /* ------------------------------------------------------ synthesised cues */
+  /** A soft bell: sine fundamental + quiet octave and twelfth, quick attack, long smooth decay. */
+  function bell(freq: number, at: number, ring: number, gain: number) {
     const t = ctx.currentTime + at;
-    const osc = ctx.createOscillator();
-    osc.type = type;
-    osc.frequency.value = freq;
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(gain, t + 0.012);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    osc.connect(g).connect(synth);
-    osc.start(t);
-    osc.stop(t + dur + 0.05);
-  }
-  function noiseSwell(dur: number, gain: number, from: number, to: number) {
-    const t = ctx.currentTime;
-    const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * dur), ctx.sampleRate);
-    const ch = buffer.getChannelData(0);
-    for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
-    const src = ctx.createBufferSource();
-    src.buffer = buffer;
-    const band = ctx.createBiquadFilter();
-    band.type = 'bandpass';
-    band.Q.value = 0.8;
-    band.frequency.setValueAtTime(from, t);
-    band.frequency.exponentialRampToValueAtTime(to, t + dur);
-    const g = ctx.createGain();
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(gain, t + dur * 0.45);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    src.connect(band).connect(g).connect(synth);
-    src.start(t);
-  }
-  const synthCues: Partial<Record<CueId, () => void>> = {
-    boot_stinger() {
-      duck();
-      noiseSwell(1.1, 0.16, 180, 4200);
-      const t = ctx.currentTime;
+    const partials: [number, number, number][] = [
+      [1, 1, 1],
+      [2, 0.26, 0.55],
+      [3, 0.08, 0.32],
+    ];
+    for (const [mult, amp, len] of partials) {
       const osc = ctx.createOscillator();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(D.D2, t);
-      osc.frequency.exponentialRampToValueAtTime(D.D3, t + 0.9);
-      const f = ctx.createBiquadFilter();
-      f.type = 'lowpass';
-      f.frequency.setValueAtTime(200, t);
-      f.frequency.exponentialRampToValueAtTime(2400, t + 0.9);
+      osc.type = 'sine';
+      osc.frequency.value = freq * mult;
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(0.22, t + 0.8);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.5);
-      osc.connect(f).connect(g).connect(synth);
+      g.gain.exponentialRampToValueAtTime(gain * amp, t + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + ring * len);
+      osc.connect(g);
+      g.connect(synth);
+      g.connect(room);
       osc.start(t);
-      osc.stop(t + 1.6);
-      note(D.D5, 0.92, 1.3, 0.2);
-      note(D.A5, 0.98, 1.2, 0.12, 'sine');
-      note(D.D6, 1.04, 1.1, 0.08, 'sine');
+      osc.stop(t + ring * len + 0.05);
+    }
+  }
+  const synthCues: Partial<Record<CueId, () => void>> = {
+    // A gentle rising D-major arpeggio: "ready".
+    boot_stinger() {
+      duck();
+      bell(N.D5, 0, 1.2, 0.16);
+      bell(N.A5, 0.13, 1.3, 0.14);
+      bell(N.D6, 0.27, 2.0, 0.14);
     },
+    // A tidy two-note "ding".
     unlock() {
       duck();
-      note(D.D5, 0, 0.5, 0.2);
-      note(D.Fs5, 0.09, 0.5, 0.18);
-      note(D.A5, 0.18, 0.75, 0.2);
+      bell(N.A5, 0, 0.9, 0.15);
+      bell(N.D6, 0.1, 1.5, 0.14);
     },
+    // First places: a slightly fuller arpeggio, still understated.
     unlock_gold() {
       duck();
-      note(D.D5, 0, 0.5, 0.2);
-      note(D.Fs5, 0.08, 0.5, 0.18);
-      note(D.A5, 0.16, 0.6, 0.2);
-      note(D.D6, 0.26, 1.1, 0.2);
-      note(D.Fs6, 0.36, 1.0, 0.07, 'sine');
-      noiseSwell(0.7, 0.05, 5000, 9000);
-    },
-    section_enter() {
-      noiseSwell(0.55, 0.035, 500, 1600);
+      bell(N.D5, 0, 0.9, 0.14);
+      bell(N.Fs5, 0.08, 0.9, 0.13);
+      bell(N.A5, 0.16, 1.0, 0.14);
+      bell(N.D6, 0.26, 2.0, 0.15);
     },
   };
 
@@ -212,12 +189,13 @@ export function createEngine(): Engine {
     if (s) return s();
     if (id === 'hover_tick') {
       const now = performance.now();
-      if (now - lastHover < 70) return;
+      if (now - lastHover < 90) return;
       lastHover = now;
-      return sprite(pick('hover_tick', 3), 0.96 + Math.random() * 0.08);
+      return sprite(pick('hover_tick', 3), 0.98 + Math.random() * 0.06);
     }
     if (id === 'click_soft') return sprite(pick('click_soft', 2));
-    if (id === 'rail_tick') return sprite('hover_tick_2', 0.8);
+    if (id === 'rail_tick') return sprite('hover_tick_2');
+    // section_enter has no sound on purpose: silence between interactions feels calmer.
     if (id in data.sprite) sprite(id);
   }
 
@@ -227,14 +205,14 @@ export function createEngine(): Engine {
     if (on) {
       if (ctx.state === 'suspended') void ctx.resume();
       startBed();
-      fadeBed(BED_LEVEL, 2.5);
+      fadeBed(BED_LEVEL, 3);
     } else fadeBed(0, 0.6);
   }
 
   document.addEventListener('visibilitychange', () => {
     if (!enabled) return;
     if (document.hidden) fadeBed(0, 0.3);
-    else fadeBed(BED_LEVEL, 1.2);
+    else fadeBed(BED_LEVEL, 1.5);
   });
 
   return {
