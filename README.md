@@ -2,7 +2,7 @@
 
 Personal portfolio website of **Dimas Panca Pamungkas** — Informatics student, software · AI · IoT builder, student-organization leader, and 1st-place winner at the International FAPERTA FAIR 2026 (Chiang Mai University, Thailand).
 
-> **Status:** planning complete (PRD v1.1), implementation not started.
+> **Status:** planning complete (PRD v1.2), implementation not started. Default site language: English (Indonesian toggle).
 > The full product spec lives in [`docs/PRD.md`](docs/PRD.md). Content seed: [`docs/seed/content.seed.json`](docs/seed/content.seed.json). Source portrait: [`design/source/Dimas.jpg`](design/source/Dimas.jpg).
 
 ## Plan at a glance

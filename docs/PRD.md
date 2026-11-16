@@ -1,7 +1,7 @@
 # Product Requirements Document — Dimas Panca Pamungkas Portfolio
 
 > **Codename:** `SYSTEMS ONLINE`
-> **Version:** 1.1 · **Date:** 2026-11-16 · **Owner / Author of record:** Dimas Panca Pamungkas
+> **Version:** 1.2 · **Date:** 2026-11-16 · **Owner / Author of record:** Dimas Panca Pamungkas
 > **Audience of this document:** the implementer (an AI agent or an engineer) who will generate the whole product from this file and the files it points to.
 > **Status:** Ready for implementation. Anything not stated here is a decision for the implementer *within the hard rules in §0.3*.
 
@@ -66,7 +66,7 @@ Fitur utama: layar pembuka ala "boot sistem" dengan pilihan **masuk dengan / tan
 | **HR-9** | **Third-party media licensing.** Every audio/font/image/icon taken from the internet MUST be free for commercial use, and MUST be recorded in the license ledger (§7.5, `tools/audio/LEDGER.json`, `/credits` page). Prefer CC0 / no-attribution licenses. |
 | **HR-10** | **PII.** The phone number and any other private identifier from the CV are **not** committed to the public repo. Dimas chose to **show WhatsApp on the site** (Q-8): it is rendered as a `wa.me` link built from `site_settings.contact.whatsappNumber`, which is entered in the admin app or injected at seed time from the git-ignored env var `SEED_WHATSAPP_NUMBER` — never committed. The seed file deliberately omits it. |
 | **HR-11** | **Placeholders are visible to the owner.** Placeholder content is flagged in data, badged in admin, ribboned in preview builds, and listed by `pnpm content:lint`. Production builds warn (and fail when `STRICT_PLACEHOLDERS=1`). |
-| **HR-12** | **Language.** Site copy: Indonesian (default) + English. Code, comments, commit messages, docs: English. |
+| **HR-12** | **Language.** Site copy: **English is the default** (served at `/`) with **Indonesian** at `/id/` via a visible toggle. Code, comments, commit messages and docs: English. |
 
 ### 0.4 Reading order for the implementer
 
@@ -88,6 +88,14 @@ Fitur utama: layar pembuka ala "boot sistem" dengan pilihan **masuk dengan / tan
 | **D-7** | Socials: Email, **Instagram `@dimas_pancapamungkas`**, LinkedIn (+ GitHub from the CV). | §2.1, §5.10 |
 | **D-8** | Next.js is one of Dimas's *skills*, not a requirement for this site. The public site stays **Astro** (lighter); Vercel hosts its static output natively. | §9.2 |
 | **D-9** | Runtime target is **Node 24 LTS** (min 22.23.4): Astro 7 needs ≥ 22.23.4 and Vercel has retired Node 20. | §9.2 |
+| **D-10** | **Default site language = English**, Indonesian secondary (Q-9). Routing: `/` = EN, `/id/` = ID. | HR-12, §5.1, §5.2, §12.1–§12.2 |
+| **D-11** | Degree wording: **Informatics Engineering** (Q-3; A-1 resolved). | §2.3 |
+| **D-12** | The FAPERTA FAIR entry was an **individual** entry → first-person ("I") wording is correct (Q-13). | §2.5, §5.4 |
+| **D-13** | Achievements grew from 5 to **9**, each with month, host institution and type (Q-14). A **writing standard** normalizes how every competition is written. | §2.5, §2.5.1, §5.5, §10.2, Appx B/C |
+| **D-14** | Proof links come **later**; the admin has a dedicated **Proofs** panel and a "missing proof" checklist (Q-6). | §5.5, §10.2, A-3 |
+| **D-15** | Photos (Chiang Mai and others) come **later**; the admin has a **Gallery** screen with albums and bulk upload (Q-11). | §5.9, §10.2 |
+| **D-16** | Professional anti-spam chosen: **Turnstile + honeypot + time-trap + rate limit**, with Resend for owner notifications (Q-10). | §9.2, §11 |
+| **D-17** | Tone = **formal facts, playful interactions** (Q-12). | §4.10 |
 
 
 ---
@@ -101,7 +109,7 @@ A single, memorable website that lets a recruiter, a hackathon organizer or a co
 ### 1.2 Positioning (derived strictly from the CV)
 
 > **Informatics student who builds software, AI and IoT — and leads the teams that ship it.**
-> Student-organization president (HMIF FT UNTIRTA), project manager of an internally-deployed multiplayer game for RedDoorz, and multi-time national competition winner/finalist in 2026.
+> Student-organization president (HMIF FT UNTIRTA), project manager of an internally-deployed multiplayer game for RedDoorz, and a multi-award competitor in 2026 — nine placements across essay, business, machine-learning and hackathon competitions, including an **international 1st place in Thailand**.
 
 Interests stated in the CV: **software engineering, IoT, AI**. Hard skills stated: full-stack web apps, AI-powered solutions, IoT systems, database design, REST API integration, prompt engineering, RAG, ESP32 embedded systems, Git, Figma prototyping. Soft skills stated: leadership, collaboration, planning, communication, problem-solving, strategic decision-making.
 
@@ -109,7 +117,7 @@ Interests stated in the CV: **software engineering, IoT, AI**. Hard skills state
 
 | ID | Audience | What they need | Design consequence |
 |---|---|---|---|
-| A1 | **HR / recruiter** (Indonesia first) | Scan in seconds: role, education + GPA, experience, proof (awards), CV download, contact | Gate is skippable in ≤1 action; stats strip; Indonesian-first copy; `/cv` + PDF; no friction |
+| A1 | **HR / recruiter** (Indonesia first) | Scan in seconds: role, education + GPA, experience, proof (awards), CV download, contact | Gate is skippable in ≤1 action; stats strip; English copy with a one-click Indonesian toggle; `/cv` + PDF; no friction |
 | A2 | **Hackathon / competition organizers & judges** | Evidence of achievements & teamwork | Achievements rail with proof links |
 | A3 | **Collaborators / clients** | Projects, stack, how to contact | Works + case studies + contact form |
 | A4 | **Peers / juniors (HMIF)** | Personality, leadership | Journey/organization section, gallery |
@@ -171,7 +179,7 @@ The site MUST show a first-person rewrite (flagged `needs_review`) *and* keep th
 
 | Institution | Program (as written in CV) | Period | GPA |
 |---|---|---|---|
-| Universitas Sultan Ageng Tirtayasa — Banten, Indonesia | "Bachelor of Informatic System" (summary says *Informatics Engineering* — see A-1) | 2024-07 → 2027-11 (expected) | **3.89 / 4.00** |
+| Universitas Sultan Ageng Tirtayasa — Banten, Indonesia | **Bachelor of Informatics Engineering** (the CV degree line says "Informatic System"; Dimas chose *Informatics Engineering* — A-1 resolved) | 2024-07 → 2027-11 (expected) | **3.89 / 4.00** |
 
 ### 2.4 Experience (work + organization)
 
@@ -184,15 +192,51 @@ The site MUST show a first-person rewrite (flagged `needs_review`) *and* keep th
 
 Bullets for each are in the seed (verbatim). Highlights worth surfacing: RedDoorz — *"Successfully delivered a production-ready application adopted for internal use by RedDoorz"*; HMIF — led the association, directed the executive board and multiple divisions, managed planning/budgeting, represented the association to university, external orgs and industry partners.
 
-### 2.5 Achievements (all 2026)
+### 2.5 Achievements (2026) — 9 records
 
-| Slug | Placement | Event | Category / scope | Description (from CV) |
-|---|---|---|---|---|
-| `faperta-fair-2026-1st` | **1st Place Winner** | 10th International **FAPERTA FAIR** 2026 (Research, Technology, and Art) — won in **Thailand, at Chiang Mai University** (per Dimas) | competition · international | Won with the Edge-AI + IoT oyster-mushroom system (§2.6) — link **confirmed** by Dimas (resolves A-2) |
-| `bmc-industrial-2026-1st` | **1st Place** | Industrial Competitions — **Business Model Canvas Competition** | business · (scope not stated) | Developed an innovative business model and commercialization strategy for a technology-driven solution; market analysis, value-proposition design, business validation; presented to judges |
-| `geteksi-v3-2026-3rd` | **3rd Place** | **GETEKSI Vol. 3** National Essay Competition | essay · national | Research-based innovation addressing real-world challenges through technology and strategic analysis |
-| `innovate-astra-2026-top4` | **Top 4 Finalist** | **IN:NOVATE** National Hackathon by **Astra** | hackathon · national | Multidisciplinary team; designed and developed a technology-based solution |
-| `bncc-binus-2026-top10` | **Top 10 Finalist** | National Hackathon Competition by **BNCC–Binus** (Bina Nusantara Computer Club) | hackathon · national | Multidisciplinary team; designed and developed an innovative technology solution |
+> **Sources:** rows 1, 4, 7, 8, 9 appear in the CV; rows 2, 3, 5, 6 were added by Dimas in chat on 2026-11-16 (not yet in the CV). Months and host institutions were supplied by Dimas on 2026-11-16 (Q-14). The year is stated only for CV items; for rows 2, 3, 5, 6 it is **assumed to be 2026 and flagged** (A-8 / Q-15).
+
+| # | Slug | Rank | Event (official name) | Organizer (host) | Type · scope | When | Notes |
+|---|---|---|---|---|---|---|---|
+| 1 | `faperta-fair-2026-1st` | **1st Place** | 10th International **FAPERTA FAIR** 2026 (Research, Technology, and Art) | Chiang Mai University — *Chiang Mai, Thailand* | Essay Competition · international | Aug 2026 | **Individual** entry (D-12). The entry is the Edge-AI + IoT oyster-mushroom system (§2.6) — link confirmed |
+| 2 | `ipb-agri-volution-2026-1st` | **1st Place** | Agri-Volution: Redefining the Ordinary, Cultivating the Next Gen Agri-System | IPB University | Essay Competition | Oct 2026 | chat only; year assumed |
+| 3 | `brawijaya-sustainable-innovation-2026-1st` | **1st Place** | Brawijaya Sustainable Strategic Innovation Contest | Universitas Brawijaya | Essay Competition | Sep 2026 | chat only; year assumed |
+| 4 | `bmc-industrial-2026-1st` | **1st Place** | Industrial Competitions — Business Model Canvas Competition | Universitas Serang Raya | Business Model Canvas Competition | Jun 2026 | CV: innovative business model + commercialization strategy; market analysis, value-proposition design, business validation; pitched to the judges |
+| 5 | `agridata-telepati-8-2026-2nd` | **2nd Place** | Agridata Telepati 8.0 | Politeknik Negeri Bandung (Polban) | Machine Learning Competition | Nov 2026 | chat only; year assumed; "Politeknik Bandung" expanded to the official name |
+| 6 | `gbic-gunadarma-2026-2nd` | **2nd Place** | UGP – GBIC Business Plan Competition | Universitas Gunadarma | Business Plan Competition | Oct 2026 | chat only; year assumed |
+| 7 | `geteksi-v3-2026-3rd` | **3rd Place** | GETEKSI Vol. 3 National Essay Competition | Institut Teknologi dan Bisnis STIKOM Bali | Essay Competition · national | Jul 2026 | CV: research-based innovation addressing real-world challenges through technology and strategic analysis |
+| 8 | `innovate-astra-2026-top4` | **Top 4 Finalist** | IN:NOVATE National Hackathon | Astra University | Hackathon · national | Jun 2026 | CV: multidisciplinary team (team entry) |
+| 9 | `bncc-binus-2026-top10` | **Top 10 Finalist** | National Hackathon Competition | BNCC — Bina Nusantara Computer Club (Binus) | Hackathon · national | Jul 2026 | CV: multidisciplinary team (team entry) |
+
+The order above is the **default display order**: international first → rank → date (newest first); Dimas can override it by drag-reorder in the admin. **Derived stats (computed from data, never hard-coded):** 9 achievements · 4× 1st place · 2× 2nd place · 7 podium finishes.
+
+#### 2.5.1 Writing standard — how every achievement is written (Dimas asked for a tidy, consistent structure)
+
+Dimas supplied the list in free text (placement, event, month and organizer mixed together). Every record MUST be stored in the same structured shape, and the UI composes the display line from the fields:
+
+`{Rank} — {Event} · {Organizer} · {Mon YYYY}` with chips `{Type}` · `{Scope}` · `{Location}`
+
+| Field | Standard |
+|---|---|
+| **Rank label** | One of the canonical set: **1st Place · 2nd Place · 3rd Place · Top N Finalist** (ID: *Juara 1/2/3 · Finalis Top N*). Extra words such as "Winner" / "Essay Winner" are dropped — the **type** chip already says "Essay". |
+| **Event title** | The **official event name only**: no placement, no "by <organizer>", no trailing year in parentheses unless the year is part of the official name (e.g. *FAPERTA FAIR 2026*). ALL CAPS → Title Case; keep acronyms and punctuation (*IN:NOVATE*, *UGP – GBIC*). |
+| **Organizer (host)** | Full official institution name. Expand a shortened name only when certain (*Gunadarma* → Universitas Gunadarma, *IPB* → IPB University, *Polban* → Politeknik Negeri Bandung (Polban)); otherwise keep as written and flag `needs_review`. |
+| **Type label + category** | Type label from a controlled list (*Essay Competition, Business Model Canvas Competition, Business Plan Competition, Machine Learning Competition, Hackathon, …*); `category` enum drives the filter chips: `essay · business · hackathon · ai-ml · research · certification · other`. |
+| **When** | Month precision, stored ISO `YYYY-MM-01` (Dimas wrote months in Indonesian — *Agustus, Oktober …* — store ISO; display with `Intl` per locale: "Aug 2026" / "Agu 2026"). |
+| **Location / scope** | Only when stated (city + country when outside Indonesia). **Never guess** scope: unknown ⇒ empty. |
+| **Entry type / work title** | `individual\|team` and the title of the submitted work, when known. |
+| **Summary** | ≤ 280 chars, factual, first person allowed (D-12). When Dimas has not described a result, use one neutral sentence composed from the structured fields — no extra claims. |
+
+Examples (as written by Dimas → standard form):
+
+| As written | Standard form |
+|---|---|
+| *1st Place Winner – 10th International FAPERTA FAIR 2026 (Research, Technology, and Art) (Agustus) (Essay Competition) (Chang Mai University)* | **1st Place** — 10th International FAPERTA FAIR 2026 (Research, Technology, and Art) · Chiang Mai University · Aug 2026 · *Essay Competition* · international · Chiang Mai, Thailand |
+| *1st Place Essay Winner - Agri-Volution: Redefining the Ordinary, Cultivating the Next Gen Agri-System (IPB) (Oktober) (Essay Competition)* | **1st Place** — Agri-Volution: Redefining the Ordinary, Cultivating the Next Gen Agri-System · IPB University · Oct 2026 · *Essay Competition* |
+| *2nd Bisnis Plan Competition - UGP - GBIC Gunadarma (Oktober) (Gunadarma) (Bisnis Plan Competition)* | **2nd Place** — UGP – GBIC Business Plan Competition · Universitas Gunadarma · Oct 2026 · *Business Plan Competition* |
+
+The admin form (§10.2) enforces this with **lint hints** (warns on placement words inside the title, ALL-CAPS titles, trailing "(2026)", missing organizer) and a **live preview of the display line**.
+
 
 ### 2.6 Projects (real items only)
 
@@ -211,13 +255,15 @@ Bullets for each are in the seed (verbatim). Highlights worth surfacing: RedDoor
 
 | ID | Issue | Default applied | Resolve by |
 |---|---|---|---|
-| **A-1** | Degree line says "Bachelor of Informatic System", summary says "Informatics Engineering". | Use **"Informatics Engineering"** in prose; keep the degree line verbatim in the Education record. | Q-3 |
+| **A-1** | **Resolved 2026-11-16:** Dimas chose **Informatics Engineering**. | Education record: "Bachelor of Informatics Engineering"; the CV degree-line typo is not reproduced | closed |
 | **A-2** | **Resolved 2026-11-16:** Dimas confirmed the Edge-AI oyster-mushroom system is the FAPERTA FAIR 2026 winning entry, won in Thailand at Chiang Mai University. | Records linked (`linkConfirmed: true`); achievement `location` = *Chiang Mai University, Thailand* | closed |
-| **A-3** | CV contains two Google Drive proof links (not mapped to specific achievements). | Not copied to the repo; Dimas adds `proof_url` per achievement in admin. | Q-6 |
+| **A-3** | CV contains two Google Drive proof links (not mapped to specific achievements); Dimas will supply proofs **later** (Q-6). | Not copied to the repo; every achievement has a **Proofs** panel in the admin (§10.2) and a "missing proof" checklist | Q-6 |
 | **A-4** | RedDoorz period is only "Jul 2026". | Display "Jul 2026"; `end` omitted. | — |
 | **A-5** | "Available for …" status not stated. | `[PLACEHOLDER: availability text]` e.g. "Open to internships & collaborations" shown in ticker/badge, editable in admin. | Q-7 |
 | **A-6** | No photo of competitions/events, no project screenshots/links. | Generated placeholder art + `is_placeholder`. | Dimas uploads in admin |
 | **A-7** | Dimas wrote the venue as "Chang Mai University"; the institution's official name is **Chiang Mai University** (Thailand). | Official spelling used | tell me if the venue wording should differ |
+| **A-8** | Dimas gave months but no year for achievements 2, 3, 5, 6 (§2.5). | Year **assumed 2026** (all other achievements and the current date, 2026-11-16, are consistent), flagged `needs_review` | Q-15 |
+| **A-9** | Four of the nine achievements are **not in the CV** supplied on 2026-11-16 (the CV lists five). | Site uses the full list; no description invented for the four | update the CV; Q-16 |
 
 ### 2.9 Placeholder register (everything *not* in the CV)
 
@@ -280,7 +326,7 @@ Dark hero: small nav (**Home · About · Karir · Keahlian · Portofolio · Laya
 
 | Feature (section) | Source reference(s) |
 |---|---|
-| Sound-choice gate "Masuk dengan suara / tanpa suara" (§5.2) | R0 |
+| Sound-choice gate "Enter with sound / without sound" (§5.2) | R0 |
 | Interaction-sound taxonomy + ambient bed (§7) | R0 |
 | Cut-out portrait hero + giant layered name (§5.3) | R1, R2, R3, R5, R6 |
 | Stroke-only (outline) marquee text (§5.3) | R3 |
@@ -299,7 +345,7 @@ Dark hero: small nav (**Home · About · Karir · Keahlian · Portofolio · Laya
 | Contact glow + form card (§5.10) | R4 |
 | Giant footer CTA + live clock + round back-to-top (§5.10) | R5 |
 | Large stacked social links (§5.10) | R0 |
-| Indonesian IA: Karir / Keahlian / Portofolio / Galeri (§5) | R6 |
+| Section set: career (Karir), skills (Keahlian), portfolio (Portofolio), gallery (Galeri) — labels English by default, Indonesian via the toggle (§5) | R6 |
 | Dark ink + single accent + interleaved light "paper" sections (§4) | R0, R1, R5 |
 | Spring easing, Lenis smooth scroll (§6) | R0 |
 | Works view toggle grid/list/rail (P2) | R0 ("spiral"/"list") |
@@ -322,7 +368,7 @@ The visitor *boots* Dimas. The story arc of the page mirrors his profile — **b
 
 `BOOT` (gate) → `IDENTITY` (hero) → `WHO` (about) → `PROOF` (achievements = "Achievement Unlocked") → `PATH` (journey) → `BUILD` (works) → `TOOLKIT` (skills) → `CREDO` (Build · Lead · Win) → `MOMENTS` (gallery) → `CONNECT` (contact).
 
-Why this works for *this* person: his CV is literally a list of unlocks (five 2026 placements), a game project (RedDoorz Team Run), IoT/embedded work and leadership. The HUD/"system" motif is a natural, non-childish wrapper: mono labels, counters, status dots, a boot log — over **giant condensed typography** and a **cut-out formal portrait** (R1–R3, R5, R6) with a **single electric accent**.
+Why this works for *this* person: his record is literally a list of unlocks (nine 2026 placements, four of them 1st places), a game project (RedDoorz Team Run), IoT/embedded work and leadership. The HUD/"system" motif is a natural, non-childish wrapper: mono labels, counters, status dots, a boot log — over **giant condensed typography** and a **cut-out formal portrait** (R1–R3, R5, R6) with a **single electric accent**.
 
 **Mood words:** precise · electric · confident · playful-but-professional · tactile (sound) · cinematic (light).
 **Anti-mood:** childish game UI, neon-cyberpunk cliché, template look, clutter.
@@ -428,6 +474,31 @@ Monogram **"DP."** — "DP" in Anton + a volt dot that doubles as the *signal in
 
 Dark by default with **interleaved paper (light) sections** (About card, Journey, certificate/proof area) per R1/R5. No user theme toggle in v1.0 (P2). `color-scheme: dark light` set per section so native controls match.
 
+### 4.10 Tone & voice — formal facts, playful interactions (D-17)
+
+Dimas asked to **combine both**: the *content* is formal and precise; the *interaction layer* is light and witty.
+
+| Zone | Voice | Where |
+|---|---|---|
+| **Formal** — precise, first person, no slang, no emoji | confident, concrete, understated; numbers as digits; past tense for achievements, present tense for current roles | hero pitch, About, achievements and experience content, education, skills, project case studies, `/cv`, privacy, form validation messages |
+| **Playful** — short, HUD/mono voice, subtle humour | dry and brief; never at anyone's expense | gate + boot log, hover labels/tooltips, unlock toasts, copy/send confirmations, loading states, 404, tab title when away, easter egg |
+
+**Rules:** never joke about people, other competitors, results or institutions; never trivialise an achievement; no emoji in factual copy (and ≤ 1 in playful microcopy, optional); every playful line must still be understandable at a glance; microcopy lives in `i18n/{en,id}.json` so Dimas can edit it. Sound follows the same rule: tactile and tasteful, not cartoonish (§7).
+
+| Moment | EN (default) | ID |
+|---|---|---|
+| Boot log | `> booting dimas.sys …… ok` | `> memuat dimas.sys …… ok` |
+| Gate buttons | Enter with sound / Enter without sound | Masuk dengan suara / Masuk tanpa suara |
+| Achievement unlock toast | Achievement unlocked — 1st Place · FAPERTA FAIR 2026 | Pencapaian terbuka — Juara 1 · FAPERTA FAIR 2026 |
+| Email copied | Copied. Go ahead, paste it. | Tersalin. Silakan tempel. |
+| Form sent | Message sent. I'll get back to you soon. | Pesan terkirim. Saya akan segera membalas. |
+| Form failed | That didn't go through. Try again or email me directly. | Gagal terkirim. Coba lagi atau email saya langsung. |
+| 404 | `> route not found …… this page didn't ship.` | `> rute tidak ditemukan …… halaman ini belum dirilis.` |
+| Tab title when away | Still here — Dimas Panca Pamungkas | Masih di sini — Dimas Panca Pamungkas |
+| Explorer badge | Explorer unlocked — you saw it all. | Penjelajah terbuka — kamu sudah lihat semuanya. |
+
+Do **not** promise response times in microcopy (no data); do not claim anything not in §2.
+
 ---
 
 ## 5. Information architecture & page specifications
@@ -436,19 +507,19 @@ Dark by default with **interleaved paper (light) sections** (About card, Journey
 
 | Route | Purpose | Priority |
 |---|---|---|
-| `/` (ID, default) and `/en/` | Single long page, sections below | P0 |
-| `/works/[slug]` · `/en/works/[slug]` | Project case study | P0 |
-| `/achievements/[slug]` · `/en/achievements/[slug]` | Shareable achievement detail (own OG image) | P1 |
-| `/cv` · `/en/cv` | Print-optimized CV generated from the same data (+ link to uploaded PDF) | P1 |
+| `/` (**EN, default**) and `/id/` | Single long page, sections below | P0 |
+| `/works/[slug]` · `/id/works/[slug]` | Project case study | P0 |
+| `/achievements/[slug]` · `/id/achievements/[slug]` | Shareable achievement detail (own OG image) | P1 |
+| `/cv` · `/id/cv` | Print-optimized CV generated from the same data (+ link to uploaded PDF) | P1 |
 | `/credits` | Third-party license ledger (fonts, audio, libs) | P0 |
 | `/privacy` | Privacy notice (contact form, analytics, localStorage) | P0 |
-| `/thanks` · `/en/thanks` | Static, `noindex` confirmation after a no-JS contact post (§11) | P0 |
+| `/thanks` · `/id/thanks` | Static, `noindex` confirmation after a no-JS contact post (§11) | P0 |
 | `/404` | Playful not-found | P0 |
 | `/sitemap-index.xml`, `/robots.txt`, `/manifest.webmanifest` | SEO/PWA metadata | P0 |
 
 Admin lives at a **different origin** (§10), never as a route here.
 
-Section order on `/` (HUD index in brackets): **Gate** → `[01]` Hero (+ ticker) → `[02]` Tentang/About (+ stats) → `[03]` Pencapaian/Achievements → `[04]` Perjalanan/Journey → `[05]` Karya/Works → `[06]` Keahlian/Skills (+ Credo interstitial) → `[07]` Galeri/Moments → `[08]` Kontak/Contact (+ footer).
+Section order on `/` (HUD index in brackets; labels are English by default — Indonesian equivalents live in `i18n/id.json`: *Tentang, Pencapaian, Perjalanan, Karya, Keahlian, Galeri, Kontak*): **Gate** → `[01]` Hero (+ ticker) → `[02]` About (+ stats) → `[03]` Achievements → `[04]` Journey → `[05]` Works → `[06]` Skills (+ Credo interstitial) → `[07]` Gallery / Moments → `[08]` Contact (+ footer).
 
 ### 5.2 Global UI
 
@@ -458,16 +529,16 @@ Section order on `/` (HUD index in brackets): **Gate** → `[01]` Hero (+ ticker
 |---|---|
 | Presence | Full-screen overlay (`role="dialog"`, `aria-modal`), rendered in static HTML (no flash). Page content underneath is present in the DOM but `inert` until dismissed (crawlers still read it). |
 | Stage 1 (≤ 1.2 s, skippable) | Mono boot log types line by line, values **derived from data**: `> booting dimas.sys …… ok` · `> profile · Informatics · UNTIRTA …… ok` · `> mounting achievements …… {N} found` · `> compiling projects …… ok` · `> signal …… online`. A counter 000→100 is tied to *real* readiness (fonts + hero image decoded + critical JS), minimum display 900 ms. |
-| Stage 2 | Monogram "DP." morph + two large buttons: **"Masuk dengan suara" / "Masuk tanpa suara"** (EN: *Enter with sound / without sound*). Optional checkbox "Ingat pilihan saya". |
+| Stage 2 | Monogram "DP." morph + two large buttons: **"Enter with sound" / "Enter without sound"** (ID: *Masuk dengan suara / Masuk tanpa suara*). Optional checkbox "Remember my choice" (ID: *Ingat pilihan saya*). |
 | Keyboard / skip | `Tab` order: with-sound → without-sound. `Esc`, wheel, touch-move or any scroll key ⇒ treated as *without sound* + dismiss (HR/recruiter friendliness, R6). `?mute=1` skips the gate entirely, sound off. |
-| Returning visitor | Same session → gate not shown. New session + "remembered" choice → gate skipped; if the choice was *with sound*, ambient waits for the first gesture and an unobtrusive chip "Ketuk untuk menyalakan suara" appears (autoplay policy). |
+| Returning visitor | Same session → gate not shown. New session + "remembered" choice → gate skipped; if the choice was *with sound*, ambient waits for the first gesture and an unobtrusive chip "Tap to turn sound on" (ID: *Ketuk untuk menyalakan suara*) appears (autoplay policy). |
 | Exit | Clip-path circle expands from the pressed button (700–900 ms, `--ease-out-expo`); hero intro timeline starts at 40 % overlap. *With sound* plays `boot_stinger`. |
 | Fallbacks | No-JS: gate hidden via `<noscript>` CSS. Reduced motion: no typing/morph; fade 200 ms. |
 | AC | Gate can be dismissed in **≤ 1 action**; total time-to-content ≤ 2.4 s on a mid-range phone; no CLS; LCP measured with and without `?mute=1`. |
 
 #### FR-NAV — floating pill navbar (P0) · R2, R3, R0
 
-* Desktop: blurred pill centered at top: monogram · links (**Tentang, Pencapaian, Perjalanan, Karya, Keahlian, Kontak**) · language toggle `ID | EN` · **sound toggle** (round, with a 3-bar level visualizer fed by the audio analyser) · **CTA "Unduh CV"** (dark pill, volt hover).
+* Desktop: blurred pill centered at top: monogram · links (**About, Achievements, Journey, Works, Skills, Contact**) · language toggle `EN | ID` · **sound toggle** (round, with a 3-bar level visualizer fed by the audio analyser) · **CTA "Download CV"** (dark pill, volt hover).
 * Active-section indicator: underline that slides with spring easing. Hides on scroll-down, reveals on scroll-up.
 * Mobile (< 768): pill with "Menu •" → fullscreen overlay (R0): large links, email, socials, language + sound toggles; **focus trap**, `Esc` closes, scroll lock; the sound toggle is also a persistent **round FAB bottom-right** (R0).
 * **Scroll progress** bar (2 px, volt) top edge; **section HUD** vertical on the left edge (desktop): `03 / 08` + section name.
@@ -476,7 +547,7 @@ Section order on `/` (HUD index in brackets): **Gate** → `[01]` Hero (+ ticker
 
 #### FR-CURSOR — custom cursor (P1, desktop `pointer: fine` only)
 
-Dot 8 px + ring 36 px (lerp 0.18, `mix-blend-mode: difference`). States: default · link (ring 64 px) · **view** (label "LIHAT" on cards) · **drag** (label "GESER" on the rail) · press (scale .9). Never replaces the native cursor in text inputs; disabled under reduced-motion and on touch. Implemented with a single `rAF`-driven `quickTo`, no layout reads.
+Dot 8 px + ring 36 px (lerp 0.18, `mix-blend-mode: difference`). States: default · link (ring 64 px) · **view** (label "VIEW" on cards) · **drag** (label "DRAG" on the rail) · press (scale .9). Never replaces the native cursor in text inputs; disabled under reduced-motion and on touch. Implemented with a single `rAF`-driven `quickTo`, no layout reads.
 
 #### FR-HUD — explorer progress (P1)
 
@@ -491,7 +562,7 @@ Tiny HUD (bottom-left, above the badge on desktop): `EXPLORED 3/8`. Visiting all
 | Eyebrow (mono) | `INFORMATICS ENGINEERING · UNTIRTA · SERANG, BANTEN` (from education/location) |
 | Name | Three stacked lines **DIMAS / PANCA / PAMUNGKAS** in Anton `--fs-hero`; line 1 solid `--fg`, line 2 **stroke-only** (1.5 px `--fg`, transparent fill), line 3 solid; the portrait overlaps the right ends of lines 2–3 (R5/R1). SplitText: letters rise from `y:110%` with 0.04 s stagger, `power4.out`, 0.9 s. |
 | Pitch | EN: *"I build software, AI & IoT — and lead the teams that ship them."* ID: *"Saya membangun software, AI & IoT — dan memimpin tim yang merilisnya."* (draft, `needs_review`) |
-| CTAs | Primary **"Lihat Pencapaian"** (volt fill) · secondary **"Hubungi Saya"** (outlined pill, R6) · tertiary text link **"Unduh CV"** |
+| CTAs | Primary **"See achievements"** (volt fill) · secondary **"Contact me"** (outlined pill, R6) · tertiary text link **"Download CV"** |
 | Stats strip | Four counters **derived from data, never hard-coded**: GPA `3.89/4.00` · `{n}` achievements (2026) · `{n}`× 1st place · `{n}` roles. Count-up 1.2 s `expo.out`, final values present in HTML (no-JS), `tabular-nums`. |
 | Marquee | Stroke text behind portrait: `SOFTWARE ENGINEERING ◆ AI & RAG ◆ IoT & ESP32 ◆ PROJECT MANAGEMENT ◆ STUDENT LEADER ◆`; base speed 40 px/s, **scroll-velocity coupled** (speeds up + skews ≤ 6° on fast scroll, eases back). CSS-animated; velocity only adjusts `animation-duration`/transform via one tween. |
 | Ticker band (R2) | Bottom edge, ink band, volt text, two **data-derived** items alternating: (1) `1ST PLACE ◆ INTERNATIONAL FAPERTA FAIR 2026 ◆ CHIANG MAI UNIVERSITY, THAILAND` — generated from the highest-ranked international achievement (rank label + short title + `location`); (2) `{availability}` ([PLACEHOLDER: availability]). |
@@ -502,7 +573,7 @@ Tiny HUD (bottom-left, above the badge on desktop): `EXPLORED 3/8`. Visiting all
 | Sound | `boot_stinger` (at gate), `hover_tick` on CTAs, `click_soft`. |
 | AC | LCP element is the portrait `<img>`; LCP ≤ 2.0 s (mobile, throttled); the page is fully legible with WebGL off; no layout shift when the canvas mounts. |
 
-### 5.4 `[02]` Tentang / About (P0) · R0, R5
+### 5.4 `[02]` About (P0) · R0, R5
 
 **A. Statement (scroll-scrubbed words, R0).** Centered paragraph; every word goes `--ink-500 → --fg` scrubbed to scroll (`scrub: 0.6`); **inline stickers** pop in at marked words with spring easing (+ tiny `hover_tick`). Draft copy (first-person, flagged `needs_review`):
 
@@ -512,64 +583,66 @@ Tiny HUD (bottom-left, above the badge on desktop): `EXPLORED 3/8`. Visiting all
 Sticker anchors: chip → "software, AI, IoT", gamepad → "multiplayer", people → "tim/teams", trophy → "menang/win".
 No-JS: all words at full opacity.
 
-**B. "About me" card-stack (R5).** A **paper** card (`--paper-100`, radius 28) slides up over the dark page (pinned 100 vh scrub, ≤ 0.8 s) with: facts list (Education + GPA, Location, Focus: *Software Eng · IoT · AI*, Now: *President HMIF · PM RedDoorz*), **"Unduh CV"** button (ink pill), and the **tech tile grid** (soft rounded tiles with monochrome glyphs, R5) built from `skills` (placeholder tile "Stack [PLACEHOLDER]"). Tile hover: lift 4 px + `hover_tick`.
+**B. "About me" card-stack (R5).** A **paper** card (`--paper-100`, radius 28) slides up over the dark page (pinned 100 vh scrub, ≤ 0.8 s) with: facts list (Education + GPA, Location, Focus: *Software Eng · IoT · AI*, Now: *President HMIF · PM RedDoorz*), **"Download CV"** button (ink pill), and the **tech tile grid** (soft rounded tiles with monochrome glyphs, R5) built from `skills` (placeholder tile "Stack [PLACEHOLDER]"). Tile hover: lift 4 px + `hover_tick`.
 
 **C. Stats** (if not already in hero on mobile): same counters.
 
 AC: scrub is smooth at 60 fps on mid-range laptop; reduced-motion = static paragraph, card without pin.
 
-### 5.5 `[03]` Pencapaian / Achievements (P0) — *the showpiece* · R1, R5, R4
+### 5.5 `[03]` Achievements (P0) — *the showpiece* · R1, R5, R4
 
 | Element | Spec |
 |---|---|
-| Header | `03 / PENCAPAIAN` mono label · huge title · live counter **"{unlocked}/{total} UNLOCKED"** · filter chips **All · Competition · Hackathon · Essay · Business** (P1; derived from `category`). |
-| Layout ≥ 1024 px, fine pointer, motion OK | **Pinned horizontal rail** (GSAP ScrollTrigger, `scrub: 0.6`, snap to card centers). Each card 420×540 at 1440 w. |
+| Header | `03 / ACHIEVEMENTS` mono label · huge title · live counter **"{unlocked}/{total} UNLOCKED"** · filter chips **All · Essay · Business · Hackathon · AI/ML** (P1; derived from `category`). |
+| Layout ≥ 1024 px, fine pointer, motion OK | **Pinned horizontal rail** (GSAP ScrollTrigger, `scrub: 0.6`, snap to card centers) showing the **featured** achievements (default: the first 6 by sort order — §2.5). **Pin length ≤ 3× viewport height** so recruiters are never trapped in a long pin. Each card 420×540 at 1440 w. |
 | Layout otherwise | Native `scroll-snap-x` carousel (touch) or vertical stack (reduced-motion). No JS required for the stack fallback. |
-| Card | Big rank numeral in Anton (`1ST`, `3RD`, `TOP 4`, `TOP 10`) · event title (h3) · organizer · year · **location** (when set, e.g. *Chiang Mai University, Thailand*) · scope chip · 2–3-line summary · expandable highlights · **"Lihat bukti ↗"** if `proof_url` · cover image if provided else generated pattern art (SVG concentric rings + rank). |
-| Featured | `rank_tier = 1` cards use the **accent-highlighted middle-card pattern** (R4): volt border + soft glow + `unlock_gold`. |
+| Card | Big rank numeral in Anton (`1ST`, `2ND`, `3RD`, `TOP 4`, `TOP 10`) · event title (h3) · **type chip** (e.g. *Essay Competition*) · organizer · **Mon YYYY** · **location** (when set, e.g. *Chiang Mai, Thailand*) · scope chip · 2–3-line summary · expandable highlights · **"View proof ↗"** only when `proofs[]` is non-empty · cover image if provided else generated pattern art (SVG concentric rings + rank). **Podium tints:** tier 1 = volt, tier 2 = `--ink-200` ring, tier 3 = `--flare-400` tint. |
+| Featured | `rank_tier = 1` cards use the **accent-highlighted middle-card pattern** (R4): volt border + soft glow + `unlock_gold`; tiers 2–3 use `unlock`. |
 | Unlock moment | When a card crosses 60 % of the viewport width in the rail: ring-burst (CSS, 400 ms) + **`unlock`** cue (or `unlock_gold` for tier 1) + counter increments with a tick. Once per card per session. |
 | Hover/focus | Tilt ±6° (pointer only) with glare highlight; focus ring 2 px volt. Click/Enter → `/achievements/[slug]` (view-transition morph) or dialog if JS-only. |
-| Keyboard | `←/→` move between cards; `Tab` reaches links; rail has `role="region"` + `aria-label`; live-region announces "Achievement 3 of 5". |
-| Data | Published `achievements` ordered by `sort_order`, then `achieved_on` desc. New items appear automatically after publish. |
+| Keyboard | `←/→` move between cards; `Tab` reaches links; rail has `role="region"` + `aria-label`; live-region announces "Achievement {i} of {n}". |
+| Data | Published `achievements` in the default order (§2.5) unless overridden by `sort_order`; the rail uses `featured = true` items. New items appear automatically after publish. |
+| Archive | Directly after the rail: **"All achievements"** — a filterable grid/list (chips by category, "Load more"; mobile shows the same list vertically) containing **every** published achievement, so nothing is hidden when there are more than 6. Archive cards have hover/focus tilt but **no unlock sound** (only rail cards unlock). |
+| Proofs | Dimas adds proofs **later** (certificate image, photo, PDF or external link — e.g. Drive). Until then the card simply omits "View proof ↗"; the admin dashboard lists achievements with **missing proof** (non-blocking). On the detail page, certificate images render in the certificate-style carousel and links as buttons. |
 | Detail page (P1) | Hero with rank numeral, meta grid (organizer, date, **location**, scope, category), **linked project card** (e.g. the oyster-mushroom system → `/works/edge-ai-oyster-mushroom`), description + highlights, proof image/PDF link, **certificate-style carousel** of proof images (center focused, sides dimmed/perspective — R5) when media exists, "Next achievement" link. |
-| AC | All 5 seeded achievements render with correct ranks/labels; rail works with keyboard; zero CLS; unlock fires once; reduced-motion shows a static vertical stack. |
+| AC | All **9** seeded achievements render with correct ranks/labels/months; the rail shows the 6 featured, the archive shows all 9; rail works with keyboard; zero CLS; unlock fires once per rail card; reduced-motion shows a static vertical stack. |
 
-### 5.6 `[04]` Perjalanan / Journey (P0) · R6 ("Karir")
+### 5.6 `[04]` Journey (P0) · R6 ("Karir")
 
 * **Vertical timeline**: sticky year label (Anton) on the left (desktop), center line drawn by an SVG path scrubbed to scroll; nodes pulse (volt) when active; **"NOW"** marker on current roles.
-* **Filter tabs:** All · Work · Organization · Education.
-* **Card** (paper or ink alternating): organization, role, period, location, 2–3 *featured* bullets + `<details>` "Lihat semua" for the rest (accessible expander).
+* **Filter tabs:** All · Work · Organization · Education · **Achievements**. Achievements appear as compact **milestone markers** on the same timeline (from `achieved_on`, month precision), clustered per month (e.g. "Oct 2026 · 2 wins") to avoid clutter; a marker links to its card in §5.5.
+* **Card** (paper or ink alternating): organization, role, period, location, 2–3 *featured* bullets + `<details>` "Show all" for the rest (accessible expander).
 * **Spotlight:** HMIF President card uses the accent-highlight pattern + live dot ("Currently").
 * Education card last: UNTIRTA · program · period · **GPA 3.89/4.00**.
-* Order: by `start` desc. Data from `experiences` + `education`.
+* Order: by `start` / `achieved_on` desc (experiences, education and achievement milestones interleaved). Data from `experiences` + `education` + `achievements`.
 * Sound: `hover_tick` on cards, `section_enter` once.
 * AC: content order identical with JS off; `details` works without JS.
 
-### 5.7 `[05]` Karya / Works (P0) · R2, R5
+### 5.7 `[05]` Works (P0) · R2, R5
 
-* Slash-prefixed title **`/KARYA`**, intro line, arrows + `01/05` counter (R2).
-* **Numbered horizontal slider** (native scroll-snap + arrow buttons; GSAP only for the number/parallax polish). Cards: cover, title, role, year, stack chips, short description, "Lihat studi kasus" CTA; the **featured** cards (RedDoorz Team Run, and the Edge-AI mushroom system with a "1ST PLACE · FAPERTA FAIR 2026" award chip pulled from its linked achievement) use the accent pattern (R4).
-* Hover (pointer): image scale 1.04 + clip-reveal of the CTA, cursor label "LIHAT", `hover_tick`; click → `/works/[slug]` with **native cross-document view transition** (shared `view-transition-name`).
-* **Placeholders** show a "SEGERA / COMING SOON" ribbon, no fake links, and a generated cover (§4.6). They are counted in admin.
-* If > 6 projects: **archive grid + "Muat lebih banyak"** (R5).
+* Slash-prefixed title **`/WORKS`**, intro line, arrows + `01/05` counter (R2).
+* **Numbered horizontal slider** (native scroll-snap + arrow buttons; GSAP only for the number/parallax polish). Cards: cover, title, role, year, stack chips, short description, "View case study" CTA; the **featured** cards (RedDoorz Team Run, and the Edge-AI mushroom system with a "1ST PLACE · FAPERTA FAIR 2026" award chip pulled from its linked achievement) use the accent pattern (R4).
+* Hover (pointer): image scale 1.04 + clip-reveal of the CTA, cursor label "VIEW", `hover_tick`; click → `/works/[slug]` with **native cross-document view transition** (shared `view-transition-name`).
+* **Placeholders** show a "COMING SOON" ribbon, no fake links, and a generated cover (§4.6). They are counted in admin.
+* If > 6 projects: **archive grid + "Load more"** (R5).
 * **Detail page**: cover hero, meta grid (role, year, team size *[only if known]*, stack, links), *Context → Approach → Outcome* (markdown from admin), media gallery, "Next project". For `reddoorz-team-run`: use only CV facts (PM role; planning, sprints, QA/UAT, delivered for internal RedDoorz use). **No invented metrics.** For `edge-ai-oyster-mushroom` use only confirmed facts: a proposal for a fully automated, near-zero-waste oyster-mushroom cultivation system with Edge AI + IoT; Dimas designed the architecture, wiring and hardware selection; it won 1st place at FAPERTA FAIR 2026 (Chiang Mai University, Thailand). **No invented technical details** (sensors, models, accuracy).
 * View toggle **grid / list / rail** (R0 "spiral/list" idea) — P2.
 
-### 5.8 `[06]` Keahlian / Skills + Credo (P0/P1) · R5, R2
+### 5.8 `[06]` Skills + Credo (P0/P1) · R5, R2
 
 * **Tile groups** (R5): *AI & Data* (AI-powered solutions, prompt engineering, RAG) · *Web & Backend* (full-stack web apps, database design, REST API integration) · *IoT & Embedded* (IoT systems, ESP32) · *Tools & Design* (Git, Figma) · **Languages & frameworks** (Next.js · PHP · Laravel · Python · C++ · JavaScript — provided by Dimas) · *Leadership* (soft skills).
 * **Two marquee rows** (opposite directions) of skill chips, velocity-coupled, pause on hover/focus; a static list exists for AT users (`aria-hidden` on the marquee).
 * **Credo interstitial (R2):** dark block with stacked words **BUILD / LEAD / WIN** (greyed, the active word highlights as you scroll) + one sentence + the **full** portrait crop (seated figure, §4.7) as the visual anchor. (Words derived from CV: builds software/AI/IoT; leads HMIF & projects; wins competitions.)
 * No proficiency bars/percentages (HR-2).
 
-### 5.9 `[07]` Galeri / Moments (P1) · R6 ("Galeri")
+### 5.9 `[07]` Gallery / Moments (P1) · R6 ("Galeri")
 
-Masonry/auto-marquee of event & team photos from `gallery_items` (AVIF, lazy, blurhash LQIP). Click → accessible lightbox (focus trap, arrow keys, `Esc`, swipe). **v1.0 ships 6 placeholder tiles** (gradient + caption "[PLACEHOLDER]") until Dimas uploads real photos. Alt text is required in admin.
+Albums (e.g. *Chiang Mai 2026*) of event & team photos from `gallery_items`: masonry/auto-marquee, AVIF, lazy, blurhash LQIP, filter chips per album (P1). Click → accessible lightbox (focus trap, arrow keys, `Esc`, swipe). A photo can also be attached to an achievement (`achievement_id` / `gallery_media_ids`) and then appears on that achievement's detail page. **v1.0 ships 6 placeholder tiles** (gradient + caption "[PLACEHOLDER]") **and a ready-to-use admin Gallery screen for Dimas's later uploads** (bulk multi-select upload, drag-reorder, album, caption, **required alt text**, link to an achievement). Placeholder tiles only render to fill up to 6 slots and disappear as real photos are published.
 
-### 5.10 `[08]` Kontak / Contact + Footer (P0) · R4, R5, R0
+### 5.10 `[08]` Contact + Footer (P0) · R4, R5, R0
 
 * **Glow background** (warm→volt gradient) + **form card** (R4): name, email, message, honeypot, Turnstile (invisible/managed). Optional "Topic" select (Internship / Collaboration / Competition / Other).
-* **Giant headline** (R5 pattern, own words): ID *"AYO BIKIN SESUATU YANG BERDAMPAK."* · EN *"LET'S BUILD SOMETHING THAT MATTERS."* Letters respond to cursor proximity (≤ 24 letters, `quickTo`).
+* **Giant headline** (R5 pattern, own words): EN *"LET'S BUILD SOMETHING THAT MATTERS."* (default) · ID *"AYO BIKIN SESUATU YANG BERDAMPAK."* Letters respond to cursor proximity (≤ 24 letters, `quickTo`).
 * **Direct channels** as **very large stacked links** (R0): email (click = copy + toast + `copy_ok`), **WhatsApp** (`wa.me/<number>` — **shown**, per D-6; rendered only when `site_settings.contact.whatsappNumber` is set), **Instagram** (`@dimas_pancapamungkas`), LinkedIn, GitHub.
 * **Live clock** `SERANG · WIB HH:MM:SS` (Asia/Jakarta, `Intl.DateTimeFormat`, 1 s tick, paused when tab hidden) (R5) and a **round back-to-top** button (R5) with `click_soft`.
 * **Footer:** sticky-reveal; `© 2026 Dimas Panca Pamungkas`; links: Credits · Privacy · Lite-mode toggle · language · sound. **No AI/tooling credit** (HR-1).
@@ -578,7 +651,7 @@ Masonry/auto-marquee of event & team photos from `gallery_items` (AVIF, lazy, bl
 
 ### 5.11 Other pages
 
-* **FR-CV (P1)** `/cv`: single-column, print stylesheet (A4, ink on white, ≤ 2 pages), generated from published data; buttons "Cetak / Simpan PDF" and "Unduh PDF resmi" (uploaded file). Always in sync with admin data.
+* **FR-CV (P1)** `/cv`: single-column, print stylesheet (A4, ink on white, ≤ 2 pages), generated from published data; buttons "Print / Save as PDF" and "Download official PDF" (uploaded file). Always in sync with admin data.
 * **FR-404 (P0):** boot-log style: `> route not found … ` with a link home and one tiny playful interaction (the monogram dot bounces; `error` cue only if sound on).
 * **FR-LEGAL (P0):** `/privacy` + `/credits` (reads `tools/audio/LEDGER.json` + font/library licenses).
 * **Konami / 5-click logo easter egg (P2):** "GOD MODE" — palette inversion for 6 s + `unlock_gold`.
@@ -644,7 +717,7 @@ Prefer **native cross-document View Transitions** (`@view-transition { navigatio
 
 ### 6.5 Reduced motion & user control
 
-`@media (prefers-reduced-motion: reduce)`: disable Lenis, WebGL, marquees, scrubs, parallax, cursor, count-up (show final numbers), pinned rails (→ vertical), confetti/burst; keep **opacity fades ≤ 200 ms** and focus states. A footer **"Mode hemat / Lite mode"** switch forces `static` tier regardless of device (persisted).
+`@media (prefers-reduced-motion: reduce)`: disable Lenis, WebGL, marquees, scrubs, parallax, cursor, count-up (show final numbers), pinned rails (→ vertical), confetti/burst; keep **opacity fades ≤ 200 ms** and focus states. A footer **"Lite mode"** switch (ID: *Mode hemat*) forces `static` tier regardless of device (persisted).
 
 ---
 
@@ -849,8 +922,8 @@ Override with `?tier=static|low|mid|high` (also used by tests) and the footer **
 | **Admin app** | **Vite + React + TypeScript** | Vite 8.3 · React 19.3 · `@vitejs/plugin-react` 6.3 | SPA, separate deployment |
 | Admin libs | `react-router` (v7), **TanStack Query** 5.107, **react-hook-form** 7.92 + `@hookform/resolvers`, **@dnd-kit** (core 6.3, sortable 10), Tailwind 4 + **shadcn/ui** (Radix), `sonner`, `browser-image-compression` 2.0, `vite-plugin-pwa` 2.0 | | installable PWA for quick-add from a phone |
 | Backend | **Supabase**: Postgres + Auth + Storage + Edge Functions (Deno) | supabase-js 2.119 · CLI 3.1 | RLS-first; free tier suffices. ⚠ Free projects **pause after ~7 days of low activity** → keep-alive workflow (§9.8). |
-| Email | **Resend** (from an Edge Function) | resend 6.38 | contact notifications |
-| Anti-spam | **Cloudflare Turnstile** (free; needs a free Cloudflare account — *not* Cloudflare hosting) + honeypot + time-trap + rate limit | — | no cookies/CAPTCHA puzzles; if Dimas prefers no extra account, drop Turnstile and keep honeypot + time-trap + rate limit (weaker) |
+| Email | **Resend** (from an Edge Function) | resend 6.38 | owner notifications only — the database is the source of truth. Without a verified domain, Resend's sandbox sender can only email the account owner's own address, which is exactly this use case (verify current rules); add a domain later for a branded sender. |
+| Anti-spam | **Cloudflare Turnstile** (free; needs a free Cloudflare account — *not* Cloudflare hosting) + honeypot + time-trap + rate limit — **the professional default (D-16)** | — | invisible, no cookies, no CAPTCHA puzzles; layered defence so a single bypass is not enough |
 | Hosting | **Vercel (Hobby, free)** — two projects (web, admin) from this repo | Vercel Git integration | global CDN, PR preview deployments, **Deploy Hooks**, `*.vercel.app` domains. Hobby is **personal / non-commercial only** (no ads, paid services or pricing on the site — §1.5). Quotas change: read the current Hobby plan page. |
 | Analytics | **Vercel Web Analytics** (cookie-less page views; Hobby quota ≈ 50k events/mo — verify) + **Vercel Speed Insights** (Web Vitals; free tier ≈ 10k events/30 days — verify) + tiny first-party event counter (§12) | — | no consent banner; custom events do **not** depend on Vercel |
 | Tests | **Vitest** 5.1 · **Playwright** 1.65 · `@axe-core/playwright` 4.14 · **Lighthouse CI** 0.16 · `size-limit` | | §14 |
@@ -956,10 +1029,10 @@ Dimas MUST be able to add or edit **achievements, projects, experience, educatio
 | ID | Pri | Requirement |
 |---|---|---|
 | FR-ADM-01 | P0 | **Auth:** email OTP/magic link to the owner address only; enroll **TOTP MFA** on first login; all writes need `aal2`; "sign out everywhere". |
-| FR-ADM-02 | P0 | **Dashboard:** counts per collection (published/draft/archived), **placeholder count** with a "fix these" list, last publish run, unread messages, event counters (§12.4), quick-add buttons. |
-| FR-ADM-03 | P0 | **Achievements CRUD** (fields below), drag-to-reorder, duplicate, archive (soft delete), hard-delete with typed confirmation. |
-| FR-ADM-04 | P0 | **Experience / Education / Projects / Skills / Gallery CRUD** with the same list UX (search, filter by status, bulk publish/archive). |
-| FR-ADM-05 | P0 | **Localized fields:** each text field has ID/EN tabs; "copy EN → ID" helper; `needs_review` toggle; missing ID falls back to EN on the site. |
+| FR-ADM-02 | P0 | **Dashboard:** counts per collection (published/draft/archived), **placeholder count** with a "fix these" list, **achievements missing proof**, **unreviewed Indonesian texts** (`needs_review`), last publish run, unread messages, event counters (§12.4), quick-add buttons. |
+| FR-ADM-03 | P0 | **Achievements CRUD** (fields below) with the **writing-standard lint + live display-line preview** (§2.5.1), a **Proofs panel** (add certificate image / photo / PDF / link later), drag-to-reorder, **Featured** toggle, duplicate, archive (soft delete), hard-delete with typed confirmation. |
+| FR-ADM-04 | P0 | **Experience / Education / Projects / Skills / Gallery CRUD** with the same list UX (search, filter by status, bulk publish/archive). **Gallery:** bulk multi-select upload, albums, drag-reorder, caption, required alt text, link to an achievement. |
+| FR-ADM-05 | P0 | **Localized fields:** each text field has **EN / ID** tabs (EN is the source and default site language; ID optional); "copy EN → ID" helper; `needs_review` toggle; a missing ID falls back to EN on the site. |
 | FR-ADM-06 | P0 | **Image upload pipeline:** pick/take photo → crop (aspect presets) → client WebP/AVIF re-encode, **EXIF stripped**, ≤ 1600 px → upload to Storage → create `media` row with **required alt text (ID/EN)**, dimensions, blurhash. |
 | FR-ADM-07 | P0 | **Draft/Publish:** `draft → published → archived`; autosave drafts (1.5 s debounce) with dirty-state guard; only `published` rows are public (RLS). |
 | FR-ADM-08 | P0 | **Publish screen:** diff summary since last run, placeholder warning, confirm → triggers rebuild; shows history from `publish_runs`. |
@@ -972,32 +1045,39 @@ Dimas MUST be able to add or edit **achievements, projects, experience, educatio
 | FR-ADM-15 | P1 | **PWA:** installable, offline shell, **mobile-first** forms, camera capture for certificate photos. |
 | FR-ADM-16 | P2 | Revision history per record; scheduled publish; Vercel build-status polling. |
 
-**Quick-Add Achievement (mobile FAB, P0)** — the flow Dimas will use right after an event: *Title (ID/EN) → Placement preset (1st / 2nd / 3rd / Finalist / Top N / Other) → Organizer → Month-year → Category → Photo or certificate (optional) → Save draft → Publish.* **AC: ≤ 2 minutes from phone.**
+**Quick-Add Achievement (mobile FAB, P0)** — the flow Dimas will use right after an event: *Event title (EN/ID) → Placement preset (1st / 2nd / 3rd / Top N Finalist) → Type (preset list) → Organizer (host) → Month & year → Photo or certificate (optional) → Save draft → Publish.* **AC: ≤ 2 minutes from phone.**
 
 #### Achievement form (fields → columns)
 
 | Field | Type | Rules |
 |---|---|---|
-| Placement label | localized text | e.g. *"1st Place" / "Juara 1"*; required |
-| Placement tier | int 1–99 or empty | 1/2/3 = podium (1 ⇒ featured styling); 4+ = finalist; empty = other |
-| Title | localized text | event name; required |
-| Organizer | text | required |
-| Category | select | competition · hackathon · essay · business · research · certification · other |
-| Scope | select | international · national · regional · campus (optional) |
-| Location | text | optional, e.g. *Chiang Mai University, Thailand* (shown on card, ticker and detail page) |
-| Achieved on | date + precision (year/month/day) | required |
-| Summary | localized text (≤ 280 chars) | shown on card |
-| Highlights | list of localized bullets | shown on detail/expander |
+| Placement label | preset → localized text | canonical set (§2.5.1): 1st / 2nd / 3rd Place, Top N Finalist; required |
+| Placement tier | int | derived from the preset (1, 2, 3, N) |
+| Event title | localized text | **official event name only** (lint hints per §2.5.1); required |
+| Type label | preset list + custom (localized) | e.g. *Essay Competition*, *Hackathon* |
+| Category | select | `essay · business · hackathon · ai-ml · research · certification · other` (drives filter chips) |
+| Organizer (host) | text | full official institution name; required |
+| Scope | select | international · national · regional · campus — **optional, never guessed** |
+| Location | text | optional, e.g. *Chiang Mai, Thailand* |
+| Month & year | month picker | required; stored `YYYY-MM-01`, precision `month` |
+| Entry type | individual · team · unknown | optional |
+| Work title | localized text | optional — title of the essay/project submitted |
+| Summary | localized text (≤ 280 chars) | shown on the card |
+| Highlights | list of localized bullets | detail page / expander |
 | Tags | chips | optional |
 | Cover | media picker | optional (generated art if empty) |
-| Proof URL | URL | optional ("Lihat bukti ↗") |
-| Linked project | select | optional |
+| **Proofs** | repeatable: kind (certificate · photo · pdf · link) + upload **or** URL + label | **where Dimas adds certificate / Drive links later (Q-6)**; optional; the item shows a "missing proof" badge until one exists |
+| Event photos | multi-image picker | optional; shown on the detail page and in a gallery album |
+| Linked project | select | optional (e.g. the oyster-mushroom system) |
+| Featured | toggle | appears in the pinned rail (default: first 6 by sort order) |
 | Status / placeholder / needs-review | enums/bools | |
+
 
 ### 10.3 Data model (summary — full DDL in Appendix C)
 
 `owner` · `media` · `projects` · `achievements` · `experiences` · `education` · `skills` · `gallery_items` · `site_settings` (singleton) · `messages` · `contact_rate` · `events` · `audit_log` · `publish_runs`.
 Shared columns on content tables: `id uuid`, `slug`, `status content_status`, `is_placeholder`, `needs_review`, `sort_order`, `created_at`, `updated_at`, `published_at`. Localized fields are `jsonb` `{ "id": "…", "en": "…" }` validated by Zod (`Localized`). Storage buckets: `media` (public, images ≤ 5 MB), `docs` (public, PDFs ≤ 10 MB); writes owner-only.
+Achievements additionally carry `type_label`, `entry_type`, `work_title`, `featured`, `proofs jsonb` (filled later by Dimas) and `gallery_media_ids`; gallery items carry `album` and `achievement_id`.
 
 ### 10.4 Public content contract (`ContentSnapshot`)
 
@@ -1051,7 +1131,7 @@ Only `published` rows; placeholders included but flagged. The build computes **d
 
 ### 12.1 SEO
 
-* Per-route `<title>`, description, canonical, `hreflang` (`id`, `en`, `x-default`), Open Graph + Twitter cards, `theme-color`, favicons (SVG + 180 apple-touch), `manifest.webmanifest`.
+* Per-route `<title>`, description, canonical, `hreflang` (`en`, `id`, `x-default` → `en`), `<html lang>` per locale, JSON-LD `inLanguage`, Open Graph + Twitter cards, `theme-color`, favicons (SVG + 180 apple-touch), `manifest.webmanifest`.
 * **JSON-LD:** `Person` (name, jobTitle *"Informatics Engineering student"*, alumniOf/affiliation UNTIRTA, address *Serang, Banten, ID*, `sameAs` LinkedIn + GitHub, `email`, `image`) and `WebSite`; `BreadcrumbList` on detail pages. Use `schema-dts` types. **Do not** put the phone number in structured data.
 * **OG images** 1200×630: one designed static image for home (portrait on ink with the name); per-project/achievement images generated at build with satori + resvg (or a static fallback).
 * `sitemap-index.xml` (via `@astrojs/sitemap`, both languages), `robots.txt` (allow all on the public site; the admin origin serves `Disallow: /` + `noindex`).
@@ -1059,8 +1139,8 @@ Only `published` rows; placeholders included but flagged. The build computes **d
 
 ### 12.2 i18n
 
-* **Astro i18n routing:** default `id` at `/`, `en` at `/en/`; **no automatic redirect by browser language** (SEO/predictability) — a visible toggle remembers the choice (`dp:lang`).
-* UI strings in `apps/web/src/i18n/{id,en}.json`; content strings are `Localized` fields from the data (EN verbatim from CV; ID drafted, `needs_review`). Missing ID ⇒ EN fallback (a dev-only warning lists them).
+* **Astro i18n routing:** default **`en` at `/`**, `id` at `/id/` (D-10); **no automatic redirect by browser language** (SEO/predictability) — a visible toggle remembers the choice (`dp:lang`).
+* UI strings in `apps/web/src/i18n/{en,id}.json` (including all microcopy, §4.10); content strings are `Localized` fields from the data (**EN is the source** — verbatim from the CV/Dimas; ID drafted, `needs_review`). Missing ID ⇒ EN fallback (a dev-only warning lists them).
 * Dates/numbers via `Intl` with the page locale; the live clock is always `Asia/Jakarta`.
 
 ### 12.3 Privacy
@@ -1136,7 +1216,7 @@ Target **WCAG 2.2 AA** (Lighthouse a11y = 100 is the *floor*, not the goal).
 | # | Milestone | Deliverables | Acceptance |
 |---|---|---|---|
 | **M0** | **Foundations** | pnpm+Turborepo workspace, TS ~6.0.3 base, Biome, `.nvmrc`(24)/`engines`(≥ 22.23.4), husky `commit-msg`, `.editorconfig`, `.env.example`, CI skeleton (`ci`, `authorship`, `keepalive`, `backup`), PR template, CODEOWNERS, README | `pnpm i && pnpm lint && pnpm typecheck && pnpm test` green on Node 24; a commit with a `Co-authored-by:` trailer is **rejected** locally and in CI |
-| **M1** | **Design system + static site** (no motion) | Astro 7 app; tokens, fonts, layouts; **all sections rendered from the seed via `content-client`**; ID/EN routing; SEO basics; portrait pipeline outputs; placeholder art; `/credits`, `/privacy`, `/thanks`, 404; `/cv` | Fully readable with JS off; Lighthouse desktop ≥ 95/100/100/100; 5 achievements + 4 roles + 2 projects render; no facts hard-coded in templates |
+| **M1** | **Design system + static site** (no motion) | Astro 7 app; tokens, fonts, layouts; **all sections rendered from the seed via `content-client`**; ID/EN routing; SEO basics; portrait pipeline outputs; placeholder art; `/credits`, `/privacy`, `/thanks`, 404; `/cv` | Fully readable with JS off; Lighthouse desktop ≥ 95/100/100/100; 9 achievements (6 in the rail, 9 in the archive) + 4 roles + 2 real projects render; no facts hard-coded in templates |
 | **M2** | **Motion & WebGL** | Lenis+GSAP engine, gate, hero timeline, marquees, About scrub + card-stack, Achievements rail + unlock, Journey line, Works slider + native view transitions, Skills marquee, Contact headline, cursor, HUD; WebGL hero; tiers + governor; `?tier=` override | 60 fps on mid tier; §8.2 budgets; reduced-motion + each tier verified; WebGL context-loss fallback proven |
 | **M3** | **Sound** | Sources picked, processed, **ledger**; sprite + ambient; engine, gate flow, delegated bindings, scroll-reactive filter, toggles, `/credits` from ledger | No audio before gesture (e2e); mute persists; sprite ≤ 120 KB, ambient ≤ 450 KB; CI license check passes |
 | **M4** | **Backend + Admin** | Supabase migrations + RLS, `db:seed`, Edge Functions (`contact`, `trigger-deploy`, `track`), admin app (auth+MFA, CRUD, uploads, reorder, preview, publish, inbox, audit, export, placeholders view, PWA), `content-client` Supabase source, deploy-hook wiring | AC-ADM-1…6; add-from-phone ≤ 2 min; publish → live ≤ 90 s |
@@ -1184,20 +1264,22 @@ Nothing below blocks the build; defaults are in force until Dimas answers.
 
 | ID | Question | Status | Answer / default applied |
 |---|---|---|---|
-| **Q-1** | Higher-resolution portrait? | **Answered** | New 1792×2400 studio photo (D-1); no upscaling needed |
+| **Q-1** | Higher-resolution portrait? | **Answered** | New 1792×2400 studio photo (D-1) |
 | **Q-2** | Domain? | **Answered** | Vercel free (Hobby), `*.vercel.app` (D-2) |
-| **Q-3** | Degree wording: "Informatics Engineering" or "Informatic System"? | Open | "Informatics Engineering" in prose; the degree line stays verbatim (A-1) |
+| **Q-3** | Degree wording? | **Answered** | **Informatics Engineering** (D-11) |
 | **Q-4** | Languages/frameworks to list? | **Answered** | Next.js, PHP, Laravel, Python, C++, JavaScript (D-3) |
-| **Q-5** | Is the oyster-mushroom system the FAPERTA FAIR entry? | **Answered** | Yes — won 1st place in Thailand at Chiang Mai University (D-4) |
-| **Q-6** | Which Drive link proves which achievement? | Open | Not copied; add `proofUrl` per item in admin (A-3) |
-| **Q-7** | Availability wording and date range? | **Answered (placeholder)** | Keep the placeholder for now (D-5) |
-| **Q-8** | Show phone/WhatsApp publicly? | **Answered** | Yes, shown; number via admin or git-ignored `SEED_WHATSAPP_NUMBER` (D-6) |
-| **Q-9** | Default language Indonesian or English? Who reviews the Indonesian drafts? | Open | Indonesian default; all ID text `needs_review` |
-| **Q-10** | OK to use free tiers of Vercel, Supabase and Resend, plus a free Cloudflare account for Turnstile only? | Open (assumed yes) | If no extra Cloudflare account is wanted: honeypot + time-trap + rate limit only |
-| **Q-11** | Event/team photos (e.g. from Chiang Mai), project screenshots/links, and any testimonial (with permission)? | Open | Placeholders; testimonials not rendered |
-| **Q-12** | Tone dial: strictly formal or a bit playful ("Achievement Unlocked", easter egg)? | Open | Professional with restrained playfulness |
-| **Q-13** | Was the FAPERTA FAIR entry individual or a team (names to credit)? | Open | Wording stays neutral ("won 1st place"); no team claims |
-| **Q-14** | Exact months of each achievement (for ordering/precision)? | Open | Year precision, ordered by rank then `sortOrder` |
+| **Q-5** | Is the oyster-mushroom system the FAPERTA FAIR entry? | **Answered** | Yes — 1st place at Chiang Mai University, Thailand (D-4) |
+| **Q-6** | Which Drive link proves which achievement? | **Answered (deferred)** | Dimas will add proofs later; the admin **Proofs** panel and "missing proof" checklist are ready (D-14) |
+| **Q-7** | Availability wording? | **Answered (placeholder)** | Placeholder kept (D-5) |
+| **Q-8** | Show phone/WhatsApp? | **Answered** | Yes; number via admin or git-ignored `SEED_WHATSAPP_NUMBER` (D-6) |
+| **Q-9** | Default language? | **Answered** | **English** default, Indonesian secondary (D-10) |
+| **Q-10** | Cloudflare account for Turnstile? ("what is most professional?") | **Answered** | Yes — Turnstile + honeypot + time-trap + rate limit, Resend for owner notifications (D-16). Dimas needs a free Cloudflare account **for Turnstile only** |
+| **Q-11** | Photos (Chiang Mai etc.) for the gallery? | **Answered (deferred)** | Dimas uploads later; admin Gallery with albums + bulk upload is ready (D-15) |
+| **Q-12** | Tone? | **Answered** | Combine both: formal facts, playful interactions (D-17, §4.10) |
+| **Q-13** | FAPERTA FAIR entry individual or team? | **Answered** | **Individual** → first-person wording (D-12) |
+| **Q-14** | Months of each achievement? | **Answered** | Supplied; 9 achievements, writing standard applied (D-13, §2.5) |
+| **Q-15** | Is 2026 the right year for the four achievements that had only a month (IPB, Brawijaya, GBIC Gunadarma, Agridata)? | Open | Assumed 2026, flagged (A-8) |
+| **Q-16** | For each achievement: the title of your work (essay/project) and a one-line result description? Do you want the four newer ones added to your CV too? | Open | Neutral one-line summaries composed from the structured fields (A-9); no claims invented |
 
 ---
 
@@ -1226,24 +1308,38 @@ const Base = z.object({
 });
 const Precision = z.enum(['year', 'month', 'day']);
 
+export const AchievementCategory = z.enum(['essay', 'business', 'hackathon', 'ai-ml', 'research', 'certification', 'other']);
+export const Proof = z.object({
+  kind: z.enum(['certificate', 'photo', 'pdf', 'link']),
+  label: Localized.optional(),
+  url: z.url().optional(),               // Drive / PDF / external link
+  mediaId: z.uuid().optional(),          // uploaded image
+}).refine((p) => p.url || p.mediaId, 'url or mediaId is required');
+
 export const Achievement = Base.extend({
-  rankLabel: Localized,                  // "1st Place" / "Juara 1"
+  rankLabel: Localized,                  // canonical: "1st Place" | "2nd Place" | "3rd Place" | "Top 4 Finalist" | "Top 10 Finalist"
   rankTier: z.number().int().min(1).max(99).nullable(),
-  title: Localized,
-  organizer: z.string().min(1),
-  category: z.enum(['competition', 'hackathon', 'essay', 'business', 'research', 'certification', 'other']),
+  title: Localized,                      // official event name only (PRD §2.5.1)
+  typeLabel: Localized.optional(),       // "Essay Competition", "Hackathon", …
+  category: AchievementCategory,
+  organizer: z.string().min(1),          // host institution, full official name
   scope: z.enum(['international', 'national', 'regional', 'campus']).nullable(),
-  location: z.string().nullable().optional(),          // e.g. "Chiang Mai University, Thailand"
-  achievedOn: z.string(),                // ISO date; precision below
-  datePrecision: Precision.default('year'),
+  location: z.string().nullable().optional(),          // e.g. "Chiang Mai, Thailand"
+  achievedOn: z.string(),                // ISO date, YYYY-MM-01 for month precision
+  datePrecision: Precision.default('month'),
+  entryType: z.enum(['individual', 'team']).nullable().optional(),
+  workTitle: Localized.optional(),       // title of the submitted essay/project
   summary: Localized.optional(),
   highlights: z.array(Localized).default([]),
   tags: z.array(z.string()).default([]),
   coverMediaId: z.uuid().nullable().optional(),
-  proofUrl: z.url().nullable().optional(),
+  proofs: z.array(Proof).default([]),    // Dimas adds these later (Q-6)
+  galleryMediaIds: z.array(z.uuid()).default([]),
   projectSlug: z.string().nullable().optional(),
   linkConfirmed: z.boolean().optional(),
+  featured: z.boolean().default(false),  // shown in the pinned rail
 });
+
 
 export const Experience = Base.extend({
   kind: z.enum(['work', 'organization']),
@@ -1278,7 +1374,7 @@ export const Skill = Base.extend({
   kind: z.enum(['hard', 'soft']), label: Localized, icon: z.string().optional(),
 });
 
-export const GalleryItem = Base.extend({ mediaId: z.uuid().nullable().optional(), caption: Localized.optional(), event: z.string().optional(), takenOn: z.string().optional() });
+export const GalleryItem = Base.extend({ mediaId: z.uuid().nullable().optional(), caption: Localized.optional(), album: z.string().optional(), achievementSlug: z.string().nullable().optional(), event: z.string().optional(), takenOn: z.string().optional() });
 
 export const ContactInput = z.object({
   name: z.string().trim().min(2).max(80), email: z.email(),
@@ -1341,20 +1437,25 @@ create table public.achievements (
   id uuid primary key default gen_random_uuid(), slug text not null unique,
   status public.content_status not null default 'draft',
   is_placeholder boolean not null default false, needs_review boolean not null default false,
-  sort_order int not null default 0,
+  sort_order int not null default 0, featured boolean not null default false,
   rank_label jsonb not null, rank_tier smallint,
-  title jsonb not null, organizer text not null,
-  category text not null check (category in ('competition','hackathon','essay','business','research','certification','other')),
+  title jsonb not null, type_label jsonb,
+  category text not null check (category in ('essay','business','hackathon','ai-ml','research','certification','other')),
+  organizer text not null,
   scope text check (scope in ('international','national','regional','campus')),
   location text,
-  achieved_on date not null, date_precision text not null default 'year' check (date_precision in ('year','month','day')),
+  achieved_on date not null, date_precision text not null default 'month' check (date_precision in ('year','month','day')),
+  entry_type text check (entry_type in ('individual','team')),
+  work_title jsonb,
   summary jsonb, highlights jsonb not null default '[]', tags text[] not null default '{}',
   cover_media_id uuid references public.media (id) on delete set null,
-  proof_url text,
+  proofs jsonb not null default '[]',                -- [{kind,label?,url?,mediaId?}] — added later by Dimas (Q-6)
+  gallery_media_ids uuid[] not null default '{}',
   project_id uuid references public.projects (id) on delete set null,
   link_confirmed boolean,
   created_at timestamptz not null default now(), updated_at timestamptz not null default now(), published_at timestamptz
 );
+
 
 create table public.experiences (
   id uuid primary key default gen_random_uuid(), slug text not null unique,
@@ -1397,9 +1498,11 @@ create table public.gallery_items (
   is_placeholder boolean not null default false, needs_review boolean not null default false,
   sort_order int not null default 0,
   media_id uuid references public.media (id) on delete set null,
-  caption jsonb, event text, taken_on date,
+  caption jsonb, album text, event text, taken_on date,
+  achievement_id uuid references public.achievements (id) on delete set null,
   created_at timestamptz not null default now(), updated_at timestamptz not null default now(), published_at timestamptz
 );
+
 
 -- Singleton; everything in it is public by design (no private notes here).
 create table public.site_settings (
@@ -1668,4 +1771,4 @@ Add the `Content-Security-Policy` from §9.7 to the first block. Audio files mus
 
 ---
 
-*End of PRD v1.1.*
+*End of PRD v1.2.*

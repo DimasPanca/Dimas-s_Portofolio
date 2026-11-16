@@ -3,23 +3,27 @@
     "version": 1,
     "generatedOn": "2026-11-16",
     "source": "CV_Dimas Panca Pamungkas.pdf + design/source/Dimas.jpg + Dimas's written answers (see sources[])",
-    "revision": 2,
+    "revision": 3,
     "revisedOn": "2026-11-16",
     "sources": [
       "CV_Dimas Panca Pamungkas.pdf (provided by Dimas on 2026-11-16)",
       "design/source/Dimas.jpg (studio portrait, 1792x2400, replaced 2026-11-16)",
-      "Dimas's written answers of 2026-11-16: languages/frameworks, Instagram handle, FAPERTA FAIR venue and link to the mushroom project, WhatsApp shown on site"
+      "Dimas's written answers of 2026-11-16: languages/frameworks, Instagram handle, FAPERTA FAIR venue/individual entry and link to the mushroom project, WhatsApp shown on site, default language English, degree wording, and the full list of 9 achievements with months and host institutions"
     ],
     "rules": [
       "English strings are verbatim or near-verbatim from the CV.",
       "Indonesian strings are drafts: needsReview=true until Dimas approves them in the admin app.",
       "Anything not stated by Dimas is a placeholder: isPlaceholder=true. Never invent facts (PRD HR-2).",
+      "Achievements follow the writing standard in PRD §2.5.1: canonical rank label, official event name only, full host institution, month-precision ISO date, scope/location only when stated. proofs[] is empty on purpose: Dimas adds certificates/links later via the admin Proofs panel (Q-6).",
+      "Achievements 2, 3, 5, 6 (IPB, Brawijaya, Agridata, GBIC Gunadarma) have a month but no stated year: 2026 is assumed and flagged (PRD A-8 / Q-15).",
       "The phone number from the CV is intentionally NOT stored here (PRD HR-10); WhatsApp IS shown on the site, so inject the number at seed time from the git-ignored env SEED_WHATSAPP_NUMBER or set settings.contact.whatsappNumber in the admin app.",
       "The two Google Drive proof links from the CV are intentionally NOT stored here; add proofUrl per achievement via the admin app (PRD A-3)."
     ]
   },
 
   "settings": {
+    "defaultLocale": "en",
+    "locales": ["en", "id"],
     "profile": {
       "name": "Dimas Panca Pamungkas",
       "location": "Serang, Banten, Indonesia",
@@ -89,8 +93,8 @@
     "seo": {
       "title": { "en": "Dimas Panca Pamungkas — Software, AI & IoT builder", "id": "Dimas Panca Pamungkas — Pembangun Software, AI & IoT" },
       "description": {
-        "en": "Informatics Engineering student at UNTIRTA, President of HMIF, project manager and 1st-place winner at the International FAPERTA FAIR 2026 in Thailand. Software, AI and IoT.",
-        "id": "Mahasiswa Teknik Informatika UNTIRTA, Ketua HMIF, project manager, dan juara 1 International FAPERTA FAIR 2026 di Thailand. Software, AI, dan IoT."
+        "en": "Informatics Engineering student at UNTIRTA, President of HMIF and project manager, with multiple 1st-place wins in 2026 including the International FAPERTA FAIR in Thailand. Software, AI and IoT.",
+        "id": "Mahasiswa Teknik Informatika UNTIRTA, Ketua HMIF dan project manager, dengan beberapa juara 1 di 2026 termasuk International FAPERTA FAIR di Thailand. Software, AI, dan IoT."
       }
     },
     "cvPath": null
@@ -103,8 +107,8 @@
       "institution": "Universitas Sultan Ageng Tirtayasa",
       "location": "Banten, Indonesia",
       "program": {
-        "en": "Bachelor of Informatic System",
-        "id": "Bachelor of Informatic System",
+        "en": "Bachelor of Informatics Engineering",
+        "id": "Sarjana Teknik Informatika",
         "needsReview": true
       },
       "startOn": "2024-07-01",
@@ -114,7 +118,7 @@
       "gpaScale": 4,
       "sortOrder": 0,
       "needsReview": true,
-      "_note": "CV degree line says 'Bachelor of Informatic System' while the summary says 'Informatics Engineering' (PRD A-1 / Q-3)."
+      "_note": "Resolved 2026-11-16: Dimas chose 'Informatics Engineering' (the CV degree line said 'Bachelor of Informatic System'; PRD A-1 / Q-3)."
     }
   ],
 
@@ -231,135 +235,389 @@
     {
       "slug": "faperta-fair-2026-1st",
       "status": "published",
-      "rankLabel": { "en": "1st Place Winner", "id": "Juara 1" },
+      "rankLabel": {
+        "en": "1st Place",
+        "id": "Juara 1"
+      },
       "rankTier": 1,
       "title": {
         "en": "10th International FAPERTA FAIR 2026 (Research, Technology, and Art)",
         "id": "10th International FAPERTA FAIR 2026 (Penelitian, Teknologi, dan Seni)"
       },
-      "organizer": "FAPERTA FAIR",
-      "category": "competition",
-      "scope": "international",
-      "location": "Chiang Mai University, Thailand",
-      "achievedOn": "2026-01-01",
-      "datePrecision": "year",
-      "summary": {
-        "en": "Won 1st place at the 10th International FAPERTA FAIR 2026 (Research, Technology, and Art), held at Chiang Mai University, Thailand, with an Edge-AI and IoT oyster-mushroom cultivation system.",
-        "id": "Meraih juara 1 di 10th International FAPERTA FAIR 2026 (Penelitian, Teknologi, dan Seni) di Chiang Mai University, Thailand, dengan sistem budidaya jamur tiram berbasis Edge AI dan IoT."
+      "typeLabel": {
+        "en": "Essay Competition",
+        "id": "Lomba Esai"
       },
-      "highlights": [],
-      "tags": ["international", "thailand", "research", "technology", "art", "edge ai", "iot"],
+      "category": "essay",
+      "organizer": "Chiang Mai University",
+      "scope": "international",
+      "location": "Chiang Mai, Thailand",
+      "achievedOn": "2026-08-01",
+      "datePrecision": "month",
+      "entryType": "individual",
+      "workTitle": {
+        "en": "Fully automated, near-zero-waste oyster mushroom cultivation system powered by Edge AI and IoT",
+        "id": "Sistem budidaya jamur tiram otomatis penuh dan nyaris tanpa limbah berbasis Edge AI dan IoT"
+      },
+      "summary": {
+        "en": "Won 1st place in the essay competition of the 10th International FAPERTA FAIR 2026 at Chiang Mai University, Thailand, with a fully automated, near-zero-waste oyster mushroom cultivation system powered by Edge AI and IoT.",
+        "id": "Meraih juara 1 pada lomba esai 10th International FAPERTA FAIR 2026 di Chiang Mai University, Thailand, dengan sistem budidaya jamur tiram otomatis penuh dan nyaris tanpa limbah berbasis Edge AI dan IoT."
+      },
+      "highlights": [
+        {
+          "en": "Designed the system architecture, wiring, and hardware selection.",
+          "id": "Merancang arsitektur sistem, pengkabelan, dan pemilihan perangkat keras."
+        }
+      ],
+      "tags": [
+        "international",
+        "thailand",
+        "essay",
+        "edge ai",
+        "iot"
+      ],
       "projectSlug": "edge-ai-oyster-mushroom",
       "linkConfirmed": true,
-      "proofUrl": null,
+      "proofs": [],
+      "featured": true,
       "sortOrder": 0,
       "needsReview": true,
-      "_note": "Confirmed by Dimas on 2026-11-16: the mushroom Edge-AI/IoT system is the winning entry; won in Thailand at Chiang Mai University (Dimas wrote 'Chang Mai'; official spelling used). The CV names no organizer, so 'FAPERTA FAIR' is used as written. Individual vs team entry is unknown (Q-13) — keep wording neutral."
+      "_note": "Confirmed by Dimas on 2026-11-16: individual entry (Q-13); the Edge-AI/IoT mushroom system is the winning entry; hosted at Chiang Mai University, Thailand (Dimas wrote \"Chang Mai\"; official spelling used); type = Essay Competition. Month = August (Dimas)."
+    },
+    {
+      "slug": "ipb-agri-volution-2026-1st",
+      "status": "published",
+      "rankLabel": {
+        "en": "1st Place",
+        "id": "Juara 1"
+      },
+      "rankTier": 1,
+      "title": {
+        "en": "Agri-Volution: Redefining the Ordinary, Cultivating the Next Gen Agri-System",
+        "id": "Agri-Volution: Redefining the Ordinary, Cultivating the Next Gen Agri-System"
+      },
+      "typeLabel": {
+        "en": "Essay Competition",
+        "id": "Lomba Esai"
+      },
+      "category": "essay",
+      "organizer": "IPB University",
+      "scope": null,
+      "location": null,
+      "achievedOn": "2026-10-01",
+      "datePrecision": "month",
+      "entryType": null,
+      "summary": {
+        "en": "Won 1st place in the Agri-Volution essay competition organized by IPB University.",
+        "id": "Meraih juara 1 pada lomba esai Agri-Volution yang diselenggarakan IPB University."
+      },
+      "highlights": [],
+      "tags": [
+        "essay",
+        "agriculture"
+      ],
+      "proofs": [],
+      "featured": true,
+      "sortOrder": 1,
+      "needsReview": true,
+      "_note": "Not in the CV; supplied in chat 2026-11-16 as \"1st Place Essay Winner\" (\"IPB\" expanded to IPB University). Year not stated by Dimas; assumed 2026 (PRD A-8 / Q-15). Work title and description not provided (Q-16)."
+    },
+    {
+      "slug": "brawijaya-sustainable-innovation-2026-1st",
+      "status": "published",
+      "rankLabel": {
+        "en": "1st Place",
+        "id": "Juara 1"
+      },
+      "rankTier": 1,
+      "title": {
+        "en": "Brawijaya Sustainable Strategic Innovation Contest",
+        "id": "Brawijaya Sustainable Strategic Innovation Contest"
+      },
+      "typeLabel": {
+        "en": "Essay Competition",
+        "id": "Lomba Esai"
+      },
+      "category": "essay",
+      "organizer": "Universitas Brawijaya",
+      "scope": null,
+      "location": null,
+      "achievedOn": "2026-09-01",
+      "datePrecision": "month",
+      "entryType": null,
+      "summary": {
+        "en": "Won 1st place in the essay competition of the Brawijaya Sustainable Strategic Innovation Contest, organized by Universitas Brawijaya.",
+        "id": "Meraih juara 1 pada lomba esai Brawijaya Sustainable Strategic Innovation Contest yang diselenggarakan Universitas Brawijaya."
+      },
+      "highlights": [],
+      "tags": [
+        "essay",
+        "sustainability",
+        "innovation"
+      ],
+      "proofs": [],
+      "featured": true,
+      "sortOrder": 2,
+      "needsReview": true,
+      "_note": "Not in the CV; supplied in chat 2026-11-16 as \"1st Place Winner\" (title converted from ALL CAPS). Year not stated by Dimas; assumed 2026 (PRD A-8 / Q-15). Work title and description not provided (Q-16)."
     },
     {
       "slug": "bmc-industrial-2026-1st",
       "status": "published",
-      "rankLabel": { "en": "1st Place", "id": "Juara 1" },
+      "rankLabel": {
+        "en": "1st Place",
+        "id": "Juara 1"
+      },
       "rankTier": 1,
       "title": {
         "en": "Industrial Competitions — Business Model Canvas Competition",
         "id": "Industrial Competitions — Kompetisi Business Model Canvas"
       },
-      "organizer": "Industrial Competitions",
+      "typeLabel": {
+        "en": "Business Model Canvas Competition",
+        "id": "Kompetisi Business Model Canvas"
+      },
       "category": "business",
+      "organizer": "Universitas Serang Raya",
       "scope": null,
-      "achievedOn": "2026-01-01",
-      "datePrecision": "year",
+      "location": null,
+      "achievedOn": "2026-06-01",
+      "datePrecision": "month",
+      "entryType": null,
       "summary": {
         "en": "Won 1st place by developing an innovative business model and commercialization strategy for a technology-driven solution.",
         "id": "Meraih juara 1 dengan mengembangkan model bisnis dan strategi komersialisasi inovatif untuk solusi berbasis teknologi."
       },
       "highlights": [
-        { "en": "Conducted market analysis, value proposition design, and business validation.", "id": "Melakukan analisis pasar, perancangan value proposition, dan validasi bisnis." },
-        { "en": "Presented the project to the competition judges.", "id": "Mempresentasikan proyek kepada para juri kompetisi." }
+        {
+          "en": "Conducted market analysis, value proposition design, and business validation.",
+          "id": "Melakukan analisis pasar, perancangan value proposition, dan validasi bisnis."
+        },
+        {
+          "en": "Presented the project to the competition judges.",
+          "id": "Mempresentasikan proyek kepada para juri kompetisi."
+        }
       ],
-      "tags": ["business model canvas", "commercialization", "pitching"],
-      "proofUrl": null,
-      "sortOrder": 1,
-      "needsReview": true
+      "tags": [
+        "business model canvas",
+        "commercialization",
+        "pitching"
+      ],
+      "proofs": [],
+      "featured": true,
+      "sortOrder": 3,
+      "needsReview": true,
+      "_note": "CV item (2026); month = June and host = Universitas Serang Raya supplied by Dimas on 2026-11-16."
+    },
+    {
+      "slug": "agridata-telepati-8-2026-2nd",
+      "status": "published",
+      "rankLabel": {
+        "en": "2nd Place",
+        "id": "Juara 2"
+      },
+      "rankTier": 2,
+      "title": {
+        "en": "Agridata Telepati 8.0",
+        "id": "Agridata Telepati 8.0"
+      },
+      "typeLabel": {
+        "en": "Machine Learning Competition",
+        "id": "Kompetisi Machine Learning"
+      },
+      "category": "ai-ml",
+      "organizer": "Politeknik Negeri Bandung (Polban)",
+      "scope": null,
+      "location": null,
+      "achievedOn": "2026-11-01",
+      "datePrecision": "month",
+      "entryType": null,
+      "summary": {
+        "en": "Placed 2nd in Agridata Telepati 8.0, a machine learning competition organized by Politeknik Negeri Bandung (Polban).",
+        "id": "Meraih juara 2 pada Agridata Telepati 8.0, kompetisi machine learning yang diselenggarakan Politeknik Negeri Bandung (Polban)."
+      },
+      "highlights": [],
+      "tags": [
+        "machine learning",
+        "agridata"
+      ],
+      "proofs": [],
+      "featured": true,
+      "sortOrder": 4,
+      "needsReview": true,
+      "_note": "Not in the CV; supplied in chat 2026-11-16 (\"Politeknik Bandung\" expanded to the official name Politeknik Negeri Bandung). Year not stated by Dimas; assumed 2026 (PRD A-8 / Q-15). Work title and description not provided (Q-16)."
+    },
+    {
+      "slug": "gbic-gunadarma-2026-2nd",
+      "status": "published",
+      "rankLabel": {
+        "en": "2nd Place",
+        "id": "Juara 2"
+      },
+      "rankTier": 2,
+      "title": {
+        "en": "UGP – GBIC Business Plan Competition",
+        "id": "UGP – GBIC Business Plan Competition"
+      },
+      "typeLabel": {
+        "en": "Business Plan Competition",
+        "id": "Lomba Rencana Bisnis"
+      },
+      "category": "business",
+      "organizer": "Universitas Gunadarma",
+      "scope": null,
+      "location": null,
+      "achievedOn": "2026-10-01",
+      "datePrecision": "month",
+      "entryType": null,
+      "summary": {
+        "en": "Placed 2nd in the UGP – GBIC Business Plan Competition organized by Universitas Gunadarma.",
+        "id": "Meraih juara 2 pada UGP – GBIC Business Plan Competition yang diselenggarakan Universitas Gunadarma."
+      },
+      "highlights": [],
+      "tags": [
+        "business plan"
+      ],
+      "proofs": [],
+      "featured": true,
+      "sortOrder": 5,
+      "needsReview": true,
+      "_note": "Not in the CV; supplied in chat 2026-11-16 (\"Bisnis Plan\" corrected to \"Business Plan\"; \"Gunadarma\" expanded to Universitas Gunadarma; \"UGP\"/\"GBIC\" kept exactly as written — expansions unknown). Year not stated by Dimas; assumed 2026 (PRD A-8 / Q-15). Work title and description not provided (Q-16)."
     },
     {
       "slug": "geteksi-v3-2026-3rd",
       "status": "published",
-      "rankLabel": { "en": "3rd Place", "id": "Juara 3" },
+      "rankLabel": {
+        "en": "3rd Place",
+        "id": "Juara 3"
+      },
       "rankTier": 3,
       "title": {
         "en": "GETEKSI Vol. 3 National Essay Competition",
         "id": "GETEKSI Vol. 3 — Lomba Esai Nasional"
       },
-      "organizer": "GETEKSI",
+      "typeLabel": {
+        "en": "Essay Competition",
+        "id": "Lomba Esai"
+      },
       "category": "essay",
+      "organizer": "Institut Teknologi dan Bisnis STIKOM Bali",
       "scope": "national",
-      "achievedOn": "2026-01-01",
-      "datePrecision": "year",
+      "location": null,
+      "achievedOn": "2026-07-01",
+      "datePrecision": "month",
+      "entryType": null,
       "summary": {
         "en": "Achieved 3rd place by presenting a research-based innovation addressing real-world challenges through technology and strategic analysis.",
         "id": "Meraih juara 3 dengan menyajikan inovasi berbasis riset untuk tantangan dunia nyata melalui teknologi dan analisis strategis."
       },
       "highlights": [],
-      "tags": ["essay", "research", "innovation"],
-      "proofUrl": null,
-      "sortOrder": 2,
-      "needsReview": true
+      "tags": [
+        "essay",
+        "research",
+        "innovation"
+      ],
+      "proofs": [],
+      "featured": false,
+      "sortOrder": 6,
+      "needsReview": true,
+      "_note": "CV item (2026); month = July and host = Institut Teknologi dan Bisnis STIKOM Bali supplied by Dimas on 2026-11-16."
     },
     {
       "slug": "innovate-astra-2026-top4",
       "status": "published",
-      "rankLabel": { "en": "Top 4 Finalist", "id": "Finalis Top 4" },
+      "rankLabel": {
+        "en": "Top 4 Finalist",
+        "id": "Finalis Top 4"
+      },
       "rankTier": 4,
       "title": {
         "en": "IN:NOVATE National Hackathon",
         "id": "IN:NOVATE — Hackathon Nasional"
       },
-      "organizer": "Astra",
+      "typeLabel": {
+        "en": "Hackathon",
+        "id": "Hackathon"
+      },
       "category": "hackathon",
+      "organizer": "Astra University",
       "scope": "national",
-      "achievedOn": "2026-01-01",
-      "datePrecision": "year",
+      "location": null,
+      "achievedOn": "2026-06-01",
+      "datePrecision": "month",
+      "entryType": "team",
       "summary": {
         "en": "Selected as a Top 4 finalist among national participants in Astra's innovation hackathon.",
         "id": "Terpilih sebagai finalis Top 4 di antara peserta nasional pada hackathon inovasi Astra."
       },
       "highlights": [
-        { "en": "Collaborated with a multidisciplinary team to design and develop a technology-based solution.", "id": "Berkolaborasi dengan tim multidisiplin untuk merancang dan mengembangkan solusi berbasis teknologi." },
-        { "en": "Demonstrated software development, problem-solving, teamwork, and presentation skills.", "id": "Menunjukkan kemampuan pengembangan software, pemecahan masalah, kerja tim, dan presentasi." }
+        {
+          "en": "Collaborated with a multidisciplinary team to design and develop a technology-based solution.",
+          "id": "Berkolaborasi dengan tim multidisiplin untuk merancang dan mengembangkan solusi berbasis teknologi."
+        },
+        {
+          "en": "Demonstrated software development, problem-solving, teamwork, and presentation skills.",
+          "id": "Menunjukkan kemampuan pengembangan software, pemecahan masalah, kerja tim, dan presentasi."
+        }
       ],
-      "tags": ["hackathon", "teamwork", "innovation"],
-      "proofUrl": null,
-      "sortOrder": 3,
-      "needsReview": true
+      "tags": [
+        "hackathon",
+        "teamwork",
+        "innovation"
+      ],
+      "proofs": [],
+      "featured": false,
+      "sortOrder": 7,
+      "needsReview": true,
+      "_note": "CV item (2026); month = June and host = Astra University supplied by Dimas on 2026-11-16. Team entry per CV."
     },
     {
       "slug": "bncc-binus-2026-top10",
       "status": "published",
-      "rankLabel": { "en": "Top 10 Finalist", "id": "Finalis Top 10" },
+      "rankLabel": {
+        "en": "Top 10 Finalist",
+        "id": "Finalis Top 10"
+      },
       "rankTier": 10,
       "title": {
         "en": "National Hackathon Competition",
         "id": "Kompetisi Hackathon Nasional"
       },
-      "organizer": "BNCC — Bina Nusantara Computer Club (Binus)",
+      "typeLabel": {
+        "en": "Hackathon",
+        "id": "Hackathon"
+      },
       "category": "hackathon",
+      "organizer": "BNCC — Bina Nusantara Computer Club (Binus)",
       "scope": "national",
-      "achievedOn": "2026-01-01",
-      "datePrecision": "year",
+      "location": null,
+      "achievedOn": "2026-07-01",
+      "datePrecision": "month",
+      "entryType": "team",
       "summary": {
         "en": "Selected as a Top 10 finalist in a national hackathon organized by Bina Nusantara Computer Club (BNCC).",
         "id": "Terpilih sebagai finalis Top 10 pada hackathon nasional yang diselenggarakan Bina Nusantara Computer Club (BNCC)."
       },
       "highlights": [
-        { "en": "Collaborated with a multidisciplinary team to design and develop an innovative technology solution.", "id": "Berkolaborasi dengan tim multidisiplin untuk merancang dan mengembangkan solusi teknologi inovatif." },
-        { "en": "Demonstrated software development, problem-solving, teamwork, and presentation skills.", "id": "Menunjukkan kemampuan pengembangan software, pemecahan masalah, kerja tim, dan presentasi." }
+        {
+          "en": "Collaborated with a multidisciplinary team to design and develop an innovative technology solution.",
+          "id": "Berkolaborasi dengan tim multidisiplin untuk merancang dan mengembangkan solusi teknologi inovatif."
+        },
+        {
+          "en": "Demonstrated software development, problem-solving, teamwork, and presentation skills.",
+          "id": "Menunjukkan kemampuan pengembangan software, pemecahan masalah, kerja tim, dan presentasi."
+        }
       ],
-      "tags": ["hackathon", "teamwork", "innovation"],
-      "proofUrl": null,
-      "sortOrder": 4,
-      "needsReview": true
+      "tags": [
+        "hackathon",
+        "teamwork",
+        "innovation"
+      ],
+      "proofs": [],
+      "featured": false,
+      "sortOrder": 8,
+      "needsReview": true,
+      "_note": "CV item (2026); month = July supplied by Dimas on 2026-11-16. Team entry per CV."
     }
   ],
 
