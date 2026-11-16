@@ -1,0 +1,156 @@
+[
+  {
+    "id": "hover_tick_1",
+    "file": "tick_001.wav",
+    "title": "Interface Sounds — tick_001.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.35"
+  },
+  {
+    "id": "hover_tick_2",
+    "file": "tick_002.wav",
+    "title": "Interface Sounds — tick_002.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.35"
+  },
+  {
+    "id": "hover_tick_3",
+    "file": "tick_004.wav",
+    "title": "Interface Sounds — tick_004.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.35"
+  },
+  {
+    "id": "click_soft_1",
+    "file": "click_001.wav",
+    "title": "Interface Sounds — click_001.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.55"
+  },
+  {
+    "id": "click_soft_2",
+    "file": "click_003.wav",
+    "title": "Interface Sounds — click_003.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.55"
+  },
+  {
+    "id": "nav_link",
+    "file": "select_002.wav",
+    "title": "Interface Sounds — select_002.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.5"
+  },
+  {
+    "id": "toggle_on",
+    "file": "toggle_001.wav",
+    "title": "Interface Sounds — toggle_001.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.55"
+  },
+  {
+    "id": "toggle_off",
+    "file": "toggle_002.wav",
+    "title": "Interface Sounds — toggle_002.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.55"
+  },
+  {
+    "id": "menu_open",
+    "file": "open_001.wav",
+    "title": "Interface Sounds — open_001.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.5"
+  },
+  {
+    "id": "menu_close",
+    "file": "close_001.wav",
+    "title": "Interface Sounds — close_001.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.5"
+  },
+  {
+    "id": "card_open",
+    "file": "maximize_006.wav",
+    "title": "Interface Sounds — maximize_006.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.45"
+  },
+  {
+    "id": "copy_ok",
+    "file": "confirmation_001.wav",
+    "title": "Interface Sounds — confirmation_001.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.55"
+  },
+  {
+    "id": "send_ok",
+    "file": "confirmation_003.wav",
+    "title": "Interface Sounds — confirmation_003.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.6"
+  },
+  {
+    "id": "error",
+    "file": "error_004.wav",
+    "title": "Interface Sounds — error_004.wav",
+    "author": "Kenney (kenney.nl)",
+    "url": "https://kenney.nl/assets/interface-sounds",
+    "mirror": "https://github.com/Calinou/kenney-interface-sounds",
+    "license": "CC0-1.0",
+    "retrievedAt": "2026-11-16",
+    "edits": "mono, 48000 Hz, trimmed, high-pass 40 Hz, normalised to -3 dB, gain 0.5"
+  }
+]

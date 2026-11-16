@@ -1,0 +1,19 @@
+{
+  "version": "ea62fc88",
+  "sprite": {
+    "hover_tick_1": [0, 45],
+    "hover_tick_2": [165, 24],
+    "hover_tick_3": [308, 56],
+    "click_soft_1": [483, 115],
+    "click_soft_2": [718, 19],
+    "nav_link": [857, 63],
+    "toggle_on": [1039, 159],
+    "toggle_off": [1317, 141],
+    "menu_open": [1578, 145],
+    "menu_close": [1843, 149],
+    "card_open": [2111, 388],
+    "copy_ok": [2618, 295],
+    "send_ok": [3033, 324],
+    "error": [3476, 105]
+  }
+}
