@@ -1,16 +1,15 @@
 /**
- * L4 — audio engine (PRD §7.6). Loaded only after the visitor chose sound.
- * Voice: simple, warm and professional — soft glass-bell tones in D major with a touch of room reverb,
- * short UI cues from a CC0 sprite, and an optional, very quiet high pad. Nothing dark, nothing noisy.
- * Tonal cues are synthesised with Web Audio, so they cost no download (PRD §7.4 fallback rule).
+ * L4 — audio engine (PRD §7). Pure Web Audio, no files: everything is synthesised, so it costs no
+ * download and every sound shares one key (D major pentatonic) and one room.
+ *
+ * Voice: calm and tactile.
+ *  - Music: sparse, soft "felt" notes that wander slowly through the pentatonic scale with long
+ *    silences and a warm reverb (generative, never loops, no drones or tremolo).
+ *  - UI: rounded pops and small glass notes with slight random variation, so nothing sounds mechanical.
+ *  - Air: gentle filtered-noise whooshes for section changes, menus and page moves.
+ * A soft limiter and conservative levels keep it comfortable; frequent sounds are the quietest.
  */
-import { Howl, Howler } from 'howler';
-import data from '../../data/sfx-sprite.json';
 import type { CueId } from '../bus.ts';
-
-/** D major, mid-high register only (bright and friendly; no low rumble). */
-const N = { D4: 293.66, Fs4: 369.99, A4: 440, E5: 659.25, D5: 587.33, Fs5: 739.99, A5: 880, D6: 1174.66 };
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
 export type Engine = {
   play: (id: CueId) => void;
@@ -18,202 +17,303 @@ export type Engine = {
   level: () => number;
 };
 
-export function createEngine(): Engine {
-  const files = [`/audio/sfx.sprite.webm?v=${data.version}`, `/audio/sfx.sprite.m4a?v=${data.version}`];
-  const sfx = new Howl({
-    src: isSafari ? files.reverse() : files,
-    sprite: data.sprite as unknown as Record<string, [number, number]>,
-    volume: 0.5,
-    preload: true,
-  });
-  const ctx = Howler.ctx as AudioContext;
-  const master = Howler.masterGain as GainNode;
+/** D major pentatonic, A3–F#5: no semitones, so any two notes sound good together. */
+const SCALE = [220, 246.94, 293.66, 329.63, 369.99, 440, 493.88, 587.33, 659.25, 739.99];
+const ROOT = 146.83; // D3
+const rnd = (min: number, max: number) => min + Math.random() * (max - min);
 
-  /* One synth bus: dry + a short, soft room (generated impulse, no file). */
-  const synth = ctx.createGain();
-  synth.gain.value = 0.55;
-  synth.connect(master);
-  const room = ctx.createConvolver();
-  {
-    const seconds = 1.5;
-    const impulse = ctx.createBuffer(2, Math.ceil(ctx.sampleRate * seconds), ctx.sampleRate);
-    for (let c = 0; c < 2; c++) {
-      const ch = impulse.getChannelData(c);
-      for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * (1 - i / ch.length) ** 3.2;
-    }
-    room.buffer = impulse;
-  }
-  const wet = ctx.createGain();
-  wet.gain.value = 0.22;
-  room.connect(wet).connect(master);
-
+export function createEngine(ctx: AudioContext): Engine {
+  /* ------------------------------------------------------------------ routing */
+  const master = ctx.createGain();
+  master.gain.value = 0;
+  const limiter = ctx.createDynamicsCompressor();
+  limiter.threshold.value = -16;
+  limiter.knee.value = 12;
+  limiter.ratio.value = 4;
+  limiter.attack.value = 0.004;
+  limiter.release.value = 0.25;
+  master.connect(limiter).connect(ctx.destination);
   const analyser = ctx.createAnalyser();
   analyser.fftSize = 64;
   master.connect(analyser);
   const bins = new Uint8Array(analyser.frequencyBinCount);
 
-  /* ------------------------------------------------------------ soft pad */
-  const bed = ctx.createGain();
-  bed.gain.value = 0;
-  const lowpass = ctx.createBiquadFilter();
-  lowpass.type = 'lowpass';
-  lowpass.frequency.value = 1500;
-  lowpass.Q.value = 0.3;
-  lowpass.connect(bed);
-  bed.connect(synth);
-  bed.connect(room);
-  let bedStarted = false;
-  function startBed() {
-    if (bedStarted) return;
-    bedStarted = true;
-    // A D-major add9 chord of pure sines, each swelling slowly at its own pace.
-    const voices: [number, number][] = [
-      [N.D4, 0.5],
-      [N.A4, 0.34],
-      [N.Fs5, 0.2],
-      [N.E5, 0.14],
-    ];
-    for (const [freq, gain] of voices) {
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      osc.detune.value = (Math.random() - 0.5) * 8;
-      const g = ctx.createGain();
-      g.gain.value = gain * 0.6;
-      const lfo = ctx.createOscillator();
-      lfo.frequency.value = 0.03 + Math.random() * 0.04;
-      const depth = ctx.createGain();
-      depth.gain.value = gain * 0.4;
-      lfo.connect(depth).connect(g.gain);
-      osc.connect(g).connect(lowpass);
-      osc.start();
-      lfo.start();
+  // One shared room. The impulse is generated: decaying noise, darkened so the tail is warm, not hissy.
+  const room = ctx.createConvolver();
+  {
+    const seconds = 3.2;
+    const length = Math.ceil(ctx.sampleRate * seconds);
+    const impulse = ctx.createBuffer(2, length, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const ch = impulse.getChannelData(c);
+      let lp = 0;
+      for (let i = 0; i < length; i++) {
+        const t = i / length;
+        const white = Math.random() * 2 - 1;
+        lp += (white - lp) * (0.5 - 0.42 * t); // the filter closes as the tail decays
+        ch[i] = lp * (1 - t) ** 2.6;
+      }
     }
+    room.buffer = impulse;
   }
-  const BED_LEVEL = 0.1;
-  const fadeBed = (to: number, seconds: number) => {
-    const t = ctx.currentTime;
-    bed.gain.cancelScheduledValues(t);
-    bed.gain.setValueAtTime(bed.gain.value, t);
-    bed.gain.linearRampToValueAtTime(to, t + seconds);
-  };
-  const duck = () => {
-    const t = ctx.currentTime;
-    bed.gain.cancelScheduledValues(t);
-    bed.gain.setValueAtTime(bed.gain.value, t);
-    bed.gain.linearRampToValueAtTime(BED_LEVEL * 0.5, t + 0.1);
-    bed.gain.linearRampToValueAtTime(BED_LEVEL, t + 1.2);
-  };
+  const wet = ctx.createGain();
+  wet.gain.value = 0.9;
+  room.connect(wet).connect(master);
 
-  // The pad brightens very slightly with scrolling (kept narrow so it never gets harsh).
-  let lastY = scrollY;
-  let lastT = performance.now();
-  let energy = 0;
-  addEventListener(
-    'scroll',
-    () => {
-      const now = performance.now();
-      const v = Math.abs(scrollY - lastY) / Math.max(16, now - lastT);
-      lastY = scrollY;
-      lastT = now;
-      energy = Math.min(1, energy * 0.8 + v * 0.2);
-      lowpass.frequency.setTargetAtTime(1500 + energy * 900, ctx.currentTime, 0.3);
-    },
-    { passive: true },
-  );
-  setInterval(() => {
-    if (energy < 0.01) return;
-    energy *= 0.7;
-    lowpass.frequency.setTargetAtTime(1500 + energy * 900, ctx.currentTime, 0.6);
-  }, 400);
+  const bus = (dry: number, send: number) => {
+    const input = ctx.createGain();
+    const d = ctx.createGain();
+    d.gain.value = dry;
+    const s = ctx.createGain();
+    s.gain.value = send;
+    input.connect(d).connect(master);
+    input.connect(s).connect(room);
+    return input;
+  };
+  const ui = bus(0.9, 0.12);
+  const air = bus(2.4, 0.5);
+  const music = bus(0.95, 0.75);
 
-  /* ------------------------------------------------------ synthesised cues */
-  /** A soft bell: sine fundamental + quiet octave and twelfth, quick attack, long smooth decay. */
-  function bell(freq: number, at: number, ring: number, gain: number) {
+  // Pink-ish noise (soft, like wind) for the whooshes.
+  const noise = (() => {
+    const length = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    const ch = buffer.getChannelData(0);
+    let b0 = 0;
+    let b1 = 0;
+    let b2 = 0;
+    for (let i = 0; i < length; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99765 * b0 + white * 0.099046;
+      b1 = 0.963 * b1 + white * 0.2965164;
+      b2 = 0.57 * b2 + white * 1.0526913;
+      ch[i] = (b0 + b1 + b2 + white * 0.1848) * 0.2;
+    }
+    return buffer;
+  })();
+
+  /* ---------------------------------------------------------------- voices */
+  /** Soft tone: sine + quiet overtones, gentle attack, smooth exponential tail. */
+  function tone(
+    out: AudioNode,
+    freq: number,
+    at: number,
+    opts: { gain: number; ring: number; attack?: number; pan?: number; bright?: number },
+  ) {
     const t = ctx.currentTime + at;
+    const { gain, ring, attack = 0.012, pan = 0, bright = 0.2 } = opts;
+    const panner = ctx.createStereoPanner();
+    panner.pan.value = pan;
+    panner.connect(out);
     const partials: [number, number, number][] = [
       [1, 1, 1],
-      [2, 0.26, 0.55],
-      [3, 0.08, 0.32],
+      [2, bright, 0.5],
+      [3, bright * 0.3, 0.28],
     ];
     for (const [mult, amp, len] of partials) {
       const osc = ctx.createOscillator();
       osc.type = 'sine';
       osc.frequency.value = freq * mult;
+      osc.detune.value = rnd(-4, 4);
       const g = ctx.createGain();
       g.gain.setValueAtTime(0.0001, t);
-      g.gain.exponentialRampToValueAtTime(gain * amp, t + 0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + ring * len);
-      osc.connect(g);
-      g.connect(synth);
-      g.connect(room);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0002, gain * amp), t + attack);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + attack + ring * len);
+      osc.connect(g).connect(panner);
       osc.start(t);
-      osc.stop(t + ring * len + 0.05);
+      osc.stop(t + attack + ring * len + 0.05);
     }
   }
-  const synthCues: Partial<Record<CueId, () => void>> = {
-    // A gentle rising D-major arpeggio: "ready".
-    boot_stinger() {
-      duck();
-      bell(N.D5, 0, 1.2, 0.16);
-      bell(N.A5, 0.13, 1.3, 0.14);
-      bell(N.D6, 0.27, 2.0, 0.14);
+
+  /** Rounded "pop": a sine that drops in pitch — the tactile part of a click. */
+  function pop(from: number, to: number, dur: number, gain: number, at = 0) {
+    const t = ctx.currentTime + at;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(from * rnd(0.97, 1.03), t);
+    osc.frequency.exponentialRampToValueAtTime(to, t + dur * 0.7);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain * 0.5, t + 0.004); // pops sit below the music
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(g).connect(ui);
+    osc.start(t);
+    osc.stop(t + dur + 0.03);
+  }
+
+  /** Wind: band-passed noise that swells and glides, drifting across the stereo field. */
+  function whoosh(opts: {
+    dur: number;
+    gain: number;
+    from: number;
+    to: number;
+    q?: number;
+    at?: number;
+    pan?: [number, number];
+  }) {
+    const { dur, gain, from, to, q = 0.9, at = 0, pan = [rnd(-0.5, -0.2), rnd(0.2, 0.5)] } = opts;
+    const t = ctx.currentTime + at;
+    const src = ctx.createBufferSource();
+    src.buffer = noise;
+    src.loop = true;
+    const band = ctx.createBiquadFilter();
+    band.type = 'bandpass';
+    band.Q.value = q;
+    band.frequency.setValueAtTime(from, t);
+    band.frequency.exponentialRampToValueAtTime(to, t + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + dur * 0.42);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    const panner = ctx.createStereoPanner();
+    const flip = Math.random() < 0.5 ? 1 : -1;
+    panner.pan.setValueAtTime(pan[0] * flip, t);
+    panner.pan.linearRampToValueAtTime(pan[1] * flip, t + dur);
+    src.connect(band).connect(g).connect(panner).connect(air);
+    src.start(t, rnd(0, 1.5));
+    src.stop(t + dur + 0.05);
+  }
+
+  /* ----------------------------------------------------------------- music */
+  let enabled = false;
+  let musicTimer = 0;
+  let step = 4;
+  let count = 0;
+  function playMusicNote() {
+    // A slow random walk through the scale: mostly steps, sometimes a small leap, never a jump.
+    const moves = [-2, -1, -1, 1, 1, 2, 3, -3];
+    step = Math.max(0, Math.min(SCALE.length - 1, step + (moves[Math.floor(Math.random() * moves.length)] ?? 1)));
+    const freq = SCALE[step] ?? 440;
+    const pan = rnd(-0.35, 0.35);
+    tone(music, freq, 0, { gain: rnd(0.05, 0.075), ring: rnd(3.6, 5.2), attack: 0.03, pan, bright: 0.14 });
+    // Sometimes a second voice a third or fifth above, softer and a little late (a "broken" interval).
+    if (Math.random() < 0.3) {
+      const upper = SCALE[Math.min(SCALE.length - 1, step + (Math.random() < 0.5 ? 2 : 3))] ?? freq;
+      tone(music, upper, rnd(0.12, 0.3), { gain: 0.035, ring: 4, attack: 0.04, pan: -pan, bright: 0.1 });
+    }
+    // Every few notes, a very soft root underneath for warmth.
+    if (++count % 5 === 0) tone(music, ROOT, rnd(0, 0.2), { gain: 0.04, ring: 6.5, attack: 0.08, bright: 0.05 });
+  }
+  function scheduleMusic(first = false) {
+    window.clearTimeout(musicTimer);
+    if (!enabled) return;
+    musicTimer = window.setTimeout(
+      () => {
+        if (enabled && !document.hidden) playMusicNote();
+        scheduleMusic();
+      },
+      first ? 1400 : rnd(2600, 5200),
+    );
+  }
+
+  /* ------------------------------------------------------------------ cues */
+  let hoverStep = 5;
+  let lastHover = 0;
+  let lastAir = 0;
+  const cues: Record<CueId, () => void> = {
+    // Hovers walk up the scale while you sweep across items, then settle back: small glass notes.
+    hover_tick() {
+      const now = performance.now();
+      if (now - lastHover < 60) return;
+      hoverStep = now - lastHover < 900 ? (hoverStep + 1) % SCALE.length : Math.floor(rnd(4, 8));
+      lastHover = now;
+      tone(ui, (SCALE[hoverStep] ?? 440) * 2, 0, {
+        gain: 0.036,
+        ring: 0.22,
+        attack: 0.005,
+        pan: rnd(-0.2, 0.2),
+        bright: 0.08,
+      });
     },
-    // A tidy two-note "ding".
+    click_soft() {
+      pop(420, 150, 0.1, 0.16);
+    },
+    nav_link() {
+      pop(480, 170, 0.1, 0.14);
+      tone(ui, 880, 0.02, { gain: 0.035, ring: 0.5, bright: 0.1 });
+    },
+    toggle_on() {
+      pop(360, 200, 0.07, 0.1);
+      tone(ui, 880, 0.01, { gain: 0.045, ring: 0.45 });
+      tone(ui, 1174.66, 0.09, { gain: 0.045, ring: 0.7 });
+    },
+    toggle_off() {
+      pop(300, 140, 0.08, 0.1);
+      tone(ui, 1174.66, 0.01, { gain: 0.04, ring: 0.4 });
+      tone(ui, 880, 0.09, { gain: 0.04, ring: 0.6 });
+    },
+    menu_open() {
+      whoosh({ dur: 0.45, gain: 0.07, from: 420, to: 2200 });
+      pop(300, 180, 0.08, 0.08);
+    },
+    menu_close() {
+      whoosh({ dur: 0.4, gain: 0.06, from: 2000, to: 380 });
+    },
+    // A soft breath of wind when a new section arrives (rate-limited so fast scrolling stays quiet).
+    section_enter() {
+      const now = performance.now();
+      if (now - lastAir < 1400) return;
+      lastAir = now;
+      whoosh({ dur: 1.15, gain: 0.05, from: rnd(320, 420), to: rnd(900, 1300), q: 0.7 });
+    },
+    rail_tick() {
+      pop(980, 620, 0.045, 0.06);
+    },
+    card_open() {
+      whoosh({ dur: 0.55, gain: 0.075, from: 380, to: 1900 });
+      pop(360, 160, 0.1, 0.1, 0.05);
+    },
     unlock() {
-      duck();
-      bell(N.A5, 0, 0.9, 0.15);
-      bell(N.D6, 0.1, 1.5, 0.14);
+      tone(ui, 880, 0, { gain: 0.07, ring: 1.0, pan: -0.15 });
+      tone(ui, 1174.66, rnd(0.08, 0.11), { gain: 0.065, ring: 1.6, pan: 0.15 });
     },
-    // First places: a slightly fuller arpeggio, still understated.
     unlock_gold() {
-      duck();
-      bell(N.D5, 0, 0.9, 0.14);
-      bell(N.Fs5, 0.08, 0.9, 0.13);
-      bell(N.A5, 0.16, 1.0, 0.14);
-      bell(N.D6, 0.26, 2.0, 0.15);
+      whoosh({ dur: 0.7, gain: 0.035, from: 900, to: 3200, q: 1.2 });
+      const notes = [587.33, 739.99, 880, 1174.66];
+      notes.forEach((f, i) => {
+        tone(ui, f, i * rnd(0.07, 0.09), { gain: 0.06, ring: i === 3 ? 2.2 : 1.1, pan: -0.3 + i * 0.2 });
+      });
+    },
+    copy_ok() {
+      pop(420, 190, 0.08, 0.12);
+      tone(ui, 1174.66, 0.05, { gain: 0.05, ring: 0.9 });
+    },
+    send_ok() {
+      whoosh({ dur: 0.6, gain: 0.05, from: 500, to: 2600 });
+      [880, 1174.66, 1479.98].forEach((f, i) => {
+        tone(ui, f, 0.1 + i * 0.09, { gain: 0.055, ring: 1.3, pan: -0.2 + i * 0.2 });
+      });
+    },
+    // Errors stay gentle: two soft low taps, no buzz.
+    error() {
+      pop(230, 170, 0.1, 0.14);
+      pop(210, 150, 0.12, 0.12, 0.13);
+    },
+    // Opening: a breath of wind, then a slow rising arpeggio that hands over to the music.
+    boot_stinger() {
+      whoosh({ dur: 1.5, gain: 0.085, from: 260, to: 1700, q: 0.6, pan: [-0.6, 0.6] });
+      [293.66, 440, 587.33, 739.99].forEach((f, i) => {
+        tone(music, f, 0.55 + i * 0.16, { gain: 0.07, ring: 3.2, attack: 0.03, pan: -0.3 + i * 0.2 });
+      });
     },
   };
 
-  /* --------------------------------------------------------------- playback */
-  let enabled = false;
-  let lastHover = 0;
-  const pick = (base: string, n: number) => `${base}_${1 + Math.floor(Math.random() * n)}`;
-  function sprite(id: string, rate = 1) {
-    const h = sfx.play(id);
-    if (rate !== 1) sfx.rate(rate, h);
-  }
   function play(id: CueId) {
     if (!enabled || document.hidden) return;
-    const s = synthCues[id];
-    if (s) return s();
-    if (id === 'hover_tick') {
-      const now = performance.now();
-      if (now - lastHover < 90) return;
-      lastHover = now;
-      return sprite(pick('hover_tick', 3), 0.98 + Math.random() * 0.06);
-    }
-    if (id === 'click_soft') return sprite(pick('click_soft', 2));
-    if (id === 'rail_tick') return sprite('hover_tick_2');
-    // section_enter has no sound on purpose: silence between interactions feels calmer.
-    if (id in data.sprite) sprite(id);
+    cues[id]?.();
   }
 
   function setEnabled(on: boolean) {
     enabled = on;
-    Howler.mute(!on);
+    const t = ctx.currentTime;
+    master.gain.cancelScheduledValues(t);
+    master.gain.setValueAtTime(master.gain.value, t);
+    master.gain.linearRampToValueAtTime(on ? 0.9 : 0, t + (on ? 0.25 : 0.4));
     if (on) {
       if (ctx.state === 'suspended') void ctx.resume();
-      startBed();
-      fadeBed(BED_LEVEL, 3);
-    } else fadeBed(0, 0.6);
+      scheduleMusic(true);
+    } else window.clearTimeout(musicTimer);
   }
-
-  document.addEventListener('visibilitychange', () => {
-    if (!enabled) return;
-    if (document.hidden) fadeBed(0, 0.3);
-    else fadeBed(BED_LEVEL, 1.5);
-  });
 
   return {
     play,
@@ -222,7 +322,7 @@ export function createEngine(): Engine {
       analyser.getByteFrequencyData(bins);
       let sum = 0;
       for (const b of bins) sum += b;
-      return Math.min(1, sum / bins.length / 110);
+      return Math.min(1, sum / bins.length / 90);
     },
   };
 }

@@ -1,7 +1,7 @@
 /**
  * L2 — motion layer (PRD §6). Loaded on idle, never on the static tier.
- * One clock: gsap.ticker drives Lenis, ScrollTrigger and (through an event) the WebGL hero.
- * Only transform/opacity are animated; every effect has a static fallback in CSS.
+ * One clock: gsap.ticker drives Lenis, ScrollTrigger, the cursor and the WebGL hero, so nothing
+ * drifts out of step. Only transform/opacity are animated; every effect has a static CSS fallback.
  */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -19,13 +19,15 @@ export function initMotion(): void {
   const tier = getTier();
   if (tier === 'static') return;
   const fine = finePointer();
+  const rich = tier === 'mid' || tier === 'high';
   gsap.registerPlugin(ScrollTrigger);
   gsap.ticker.lagSmoothing(0);
+  gsap.defaults({ ease: 'power3.out', duration: 0.6 });
 
   /* ------------------------------------------------ smooth scroll (desktop) */
   let lenis: Lenis | null = null;
-  if (fine && (tier === 'mid' || tier === 'high')) {
-    lenis = new Lenis({ autoRaf: false, lerp: 0.11, anchors: true });
+  if (fine && rich) {
+    lenis = new Lenis({ autoRaf: false, lerp: 0.1, wheelMultiplier: 0.95, anchors: true });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis?.raf(time * 1000));
     window.addEventListener('dp:scroll-lock', (e) =>
@@ -36,35 +38,40 @@ export function initMotion(): void {
       window.addEventListener('dp:gate-done', () => lenis?.start(), { once: true });
     }
   }
+  // With Lenis the page position is already eased, so scrubs track it 1:1 (a second smoothing layer
+  // is what makes pinned sections feel uneven). Without Lenis a short scrub smooths native scrolling.
+  const scrub = lenis ? true : 0.5;
 
   /* ----------------------------------- velocity-coupled marquees (PRD §5.3) */
   const marquees = $$('[data-velocity-marquee]').map((el) => ({
     el,
     skew: el.classList.contains('hero__marquee'),
     anims: [] as Animation[],
+    rate: 1,
   }));
   let lastY = scrollY;
   gsap.ticker.add(() => {
     const raw = lenis ? lenis.velocity : scrollY - lastY;
     lastY = scrollY;
-    velocity += (raw - velocity) * 0.12;
-    const speed = Math.min(6, 1 + Math.abs(velocity) * 0.09);
+    velocity += (raw - velocity) * 0.1;
+    const speed = Math.min(5, 1 + Math.abs(velocity) * 0.08);
     for (const m of marquees) {
       if (m.el.hasAttribute('data-paused')) continue;
       if (!m.anims.length) m.anims = $$('.marquee__track', m.el).flatMap((t) => t.getAnimations());
-      for (const a of m.anims) a.playbackRate = speed;
-      if (m.skew) m.el.style.transform = `skewX(${Math.max(-6, Math.min(6, -velocity * 0.12)).toFixed(2)}deg)`;
+      // Only touch the animations when the rate really changed (avoids needless style work).
+      if (Math.abs(speed - m.rate) > 0.01) {
+        m.rate = speed;
+        for (const a of m.anims) a.playbackRate = speed;
+      }
+      if (m.skew) m.el.style.transform = `skewX(${Math.max(-5, Math.min(5, -velocity * 0.1)).toFixed(2)}deg)`;
     }
   });
 
   /* ----------------------------------------------------- hero scroll parallax */
   const hero = $('[data-hero]');
   if (hero) {
-    gsap.to('.hero__name', {
-      yPercent: -8,
-      ease: 'none',
-      scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
-    });
+    const st = { trigger: hero, start: 'top top', end: 'bottom top', scrub };
+    gsap.to('.hero__name', { yPercent: -10, ease: 'none', scrollTrigger: st });
   }
 
   /* -------------------------------- about: scroll-scrubbed words (PRD §5.4) */
@@ -75,17 +82,16 @@ export function initMotion(): void {
     let lit = -1;
     ScrollTrigger.create({
       trigger: statement,
-      start: 'top 78%',
-      end: 'bottom 45%',
-      scrub: 0.6,
+      start: 'top 80%',
+      end: 'bottom 50%',
       onUpdate(self) {
         const n = Math.round(self.progress * words.length);
         if (n === lit) return;
-        words.forEach((w, i) => {
+        for (const [i, w] of words.entries()) {
           const on = i < n;
           if (on && !w.classList.contains('is-lit') && w.querySelector('.sticker')) cue('hover_tick');
           w.classList.toggle('is-lit', on);
-        });
+        }
         lit = n;
       },
     });
@@ -118,6 +124,15 @@ export function initMotion(): void {
     const mm = gsap.matchMedia();
     mm.add('(min-width: 1024px) and (hover: hover) and (pointer: fine)', () => {
       const distance = () => Math.max(0, track.scrollWidth - window.innerWidth);
+      // Card centres are measured once per refresh, so the scroll handler never reads layout.
+      let centres: number[] = [];
+      const measure = () => {
+        const x = Number(gsap.getProperty(track, 'x')) || 0;
+        centres = cards.map((c) => {
+          const r = c.getBoundingClientRect();
+          return r.left + r.width / 2 - x;
+        });
+      };
       rail.setAttribute('data-pinned', '');
       rail.scrollLeft = 0;
       const tween = gsap.to(track, {
@@ -129,18 +144,17 @@ export function initMotion(): void {
           // Pin length is capped so nobody is trapped in a long pin (PRD §5.5).
           end: () => `+=${Math.min(distance(), window.innerHeight * 3)}`,
           pin: true,
-          scrub: 0.6,
+          scrub,
           invalidateOnRefresh: true,
-          anticipatePin: 1,
-          onUpdate() {
-            const edge = window.innerWidth * 0.6;
-            for (const [i, c] of cards.entries()) {
-              const r = c.getBoundingClientRect();
-              if (r.left + r.width / 2 < edge) unlock(i);
-            }
+          onRefresh: measure,
+          onUpdate(self) {
+            const x = -distance() * self.progress;
+            const edge = window.innerWidth * 0.62;
+            for (const [i, c] of centres.entries()) if (c + x < edge) unlock(i);
           },
         },
       });
+      measure();
       return () => {
         tween.scrollTrigger?.kill();
         tween.kill();
@@ -172,17 +186,22 @@ export function initMotion(): void {
       cue('rail_tick');
     });
 
-    // Tilt + glare on pointer devices (high tier only).
+    // Tilt on pointer devices (high tier only).
     if (fine && tier === 'high') {
       for (const card of $$('[data-tilt]', track)) {
-        const rx = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3.out' });
-        const ry = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3.out' });
+        const rx = gsap.quickTo(card, 'rotationX', { duration: 0.6, ease: 'power3.out' });
+        const ry = gsap.quickTo(card, 'rotationY', { duration: 0.6, ease: 'power3.out' });
+        let box: DOMRect | null = null;
+        card.addEventListener('pointerenter', () => {
+          box = card.getBoundingClientRect();
+        });
         card.addEventListener('pointermove', (e) => {
-          const r = card.getBoundingClientRect();
-          ry(((e.clientX - r.left) / r.width - 0.5) * 10);
-          rx(-((e.clientY - r.top) / r.height - 0.5) * 8);
+          box ??= card.getBoundingClientRect();
+          ry(((e.clientX - box.left) / box.width - 0.5) * 9);
+          rx(-((e.clientY - box.top) / box.height - 0.5) * 7);
         });
         card.addEventListener('pointerleave', () => {
+          box = null;
           rx(0);
           ry(0);
         });
@@ -198,7 +217,6 @@ export function initMotion(): void {
       trigger: timeline,
       start: 'top 70%',
       end: 'bottom 60%',
-      scrub: 1,
       onUpdate: (self) => timeline.style.setProperty('--fill', self.progress.toFixed(3)),
     });
   }
@@ -207,16 +225,74 @@ export function initMotion(): void {
   const credo = $('[data-credo]');
   if (credo) {
     const words = $$('[data-credo-word]', credo);
+    let active = -1;
     ScrollTrigger.create({
       trigger: credo,
       start: 'top 65%',
       end: 'bottom 55%',
-      scrub: true,
       onUpdate(self) {
         const at = Math.min(words.length - 1, Math.floor(self.progress * words.length));
+        if (at === active) return;
+        active = at;
         for (const [i, w] of words.entries()) w.classList.toggle('is-active', i === at);
       },
     });
+  }
+
+  /* ------------------------ works slider: drag with the mouse (PRD §5.7) */
+  const works = $('[data-slider-track]');
+  if (works && fine) {
+    let down = false;
+    let moved = 0;
+    let startX = 0;
+    let startLeft = 0;
+    let v = 0;
+    let lastX = 0;
+    let raf = 0;
+    const glide = () => {
+      if (Math.abs(v) < 0.4) {
+        works.classList.remove('is-dragging');
+        return;
+      }
+      works.scrollLeft -= v;
+      v *= 0.94;
+      raf = requestAnimationFrame(glide);
+    };
+    works.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      down = true;
+      moved = 0;
+      startX = lastX = e.clientX;
+      startLeft = works.scrollLeft;
+      v = 0;
+      cancelAnimationFrame(raf);
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(dx));
+      if (moved > 6) works.classList.add('is-dragging');
+      works.scrollLeft = startLeft - dx;
+      v = e.clientX - lastX;
+      lastX = e.clientX;
+    });
+    window.addEventListener('pointerup', () => {
+      if (!down) return;
+      down = false;
+      if (moved > 6) raf = requestAnimationFrame(glide);
+    });
+    // A drag must not also count as a click on the card underneath.
+    works.addEventListener(
+      'click',
+      (e) => {
+        if (moved > 6) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      },
+      true,
+    );
+    works.addEventListener('dragstart', (e) => e.preventDefault());
   }
 
   /* --------------------- contact headline reacts to the cursor (PRD §5.10) */
@@ -235,17 +311,26 @@ export function initMotion(): void {
     );
     const parts = $$('.ch', headline).map((el) => ({
       el,
-      x: gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3.out' }),
-      y: gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3.out' }),
+      cx: 0,
+      cy: 0,
+      x: gsap.quickTo(el, 'x', { duration: 0.7, ease: 'power3.out' }),
+      y: gsap.quickTo(el, 'y', { duration: 0.7, ease: 'power3.out' }),
     }));
-    headline.addEventListener('pointermove', (e) => {
+    const measure = () => {
       for (const p of parts) {
         const r = p.el.getBoundingClientRect();
-        const dx = e.clientX - (r.left + r.width / 2);
-        const dy = e.clientY - (r.top + r.height / 2);
-        const pull = Math.max(0, 1 - Math.hypot(dx, dy) / 420);
-        p.x(-dx * 0.06 * pull);
-        p.y(-dy * 0.1 * pull);
+        p.cx = r.left + r.width / 2 + window.scrollX - (Number(gsap.getProperty(p.el, 'x')) || 0);
+        p.cy = r.top + r.height / 2 + window.scrollY - (Number(gsap.getProperty(p.el, 'y')) || 0);
+      }
+    };
+    headline.addEventListener('pointerenter', measure);
+    headline.addEventListener('pointermove', (e) => {
+      for (const p of parts) {
+        const dx = e.pageX - p.cx;
+        const dy = e.pageY - p.cy;
+        const pull = Math.max(0, 1 - Math.hypot(dx, dy) / 460);
+        p.x(-dx * 0.07 * pull);
+        p.y(-dy * 0.11 * pull);
       }
     });
     headline.addEventListener('pointerleave', () => {
@@ -256,52 +341,14 @@ export function initMotion(): void {
     });
   }
 
-  /* --------------------------------------------- custom cursor (PRD FR-CURSOR) */
-  if (fine && (tier === 'mid' || tier === 'high')) {
-    const cursor = document.createElement('div');
-    cursor.className = 'cursor';
-    cursor.setAttribute('aria-hidden', 'true');
-    cursor.innerHTML = '<i class="cursor__dot"></i><i class="cursor__ring"><b></b></i>';
-    document.body.append(cursor);
-    const dot = cursor.firstElementChild as HTMLElement;
-    const ring = cursor.lastElementChild as HTMLElement;
-    const label = ring.firstElementChild as HTMLElement;
-    const dx = gsap.quickTo(dot, 'x', { duration: 0.08 });
-    const dy = gsap.quickTo(dot, 'y', { duration: 0.08 });
-    const rx = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3.out' });
-    const ry = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3.out' });
-    const labels: Record<string, string> = {
-      view: root.lang === 'id' ? 'LIHAT' : 'VIEW',
-      drag: root.lang === 'id' ? 'GESER' : 'DRAG',
-    };
-    window.addEventListener(
-      'pointermove',
-      (e) => {
-        if (e.pointerType !== 'mouse') return;
-        cursor.classList.add('is-on');
-        dx(e.clientX);
-        dy(e.clientY);
-        rx(e.clientX);
-        ry(e.clientY);
-        const target = e.target as HTMLElement;
-        const kind = target.closest<HTMLElement>('[data-cursor]')?.dataset.cursor ?? '';
-        const state = kind || (target.closest('a, button, summary, label, [role="button"]') ? 'link' : '');
-        const field = Boolean(target.closest('input, textarea, select'));
-        if (cursor.dataset.state !== state) {
-          cursor.dataset.state = state;
-          label.textContent = labels[kind] ?? '';
-        }
-        cursor.classList.toggle('is-hidden', field);
-      },
-      { passive: true },
-    );
-    document.addEventListener('pointerleave', () => cursor.classList.remove('is-on'));
-    window.addEventListener('pointerdown', () => cursor.classList.add('is-down'));
-    window.addEventListener('pointerup', () => cursor.classList.remove('is-down'));
+  /* --------------------------------------------------------- cursor + WebGL */
+  if (fine && rich) {
+    const id = root.lang === 'id';
+    import('../lib/cursor.ts')
+      .then((m) => m.initCursor({ view: id ? 'LIHAT' : 'VIEW', drag: id ? 'GESER' : 'DRAG' }))
+      .catch(() => {});
   }
-
-  /* ------------------------------------------------------------ WebGL hero (L3) */
-  if ((tier === 'mid' || tier === 'high') && $('[data-portrait]')) {
+  if (rich && $('[data-portrait]')) {
     import('../lib/webgl/hero.ts')
       .then((m) => m.initHeroGL({ tier, velocity: scrollVelocity, ticker: gsap.ticker }))
       .catch(() => {});

@@ -24,7 +24,7 @@ export default defineConfig({
           manualChunks(id) {
             if (id.includes('node_modules/gsap') || id.includes('node_modules/lenis')) return 'motion';
             if (id.includes('node_modules/ogl')) return 'webgl';
-            if (id.includes('node_modules/howler')) return 'audio';
+            if (id.includes('/lib/audio/')) return 'audio';
           },
         },
       },

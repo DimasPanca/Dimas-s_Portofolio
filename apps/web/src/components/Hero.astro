@@ -2,7 +2,7 @@
 import { Picture } from 'astro:assets';
 import { formatMonth, type Locale, tr } from '@portfolio/schema';
 import portrait from '../assets/portrait/hero.webp';
-import depth from '../assets/portrait/hero-depth.webp';
+import edge from '../assets/portrait/hero-edge.webp';
 import { href, ui } from '../i18n';
 import { headlineAchievement, settings, stats } from '../lib/content';
 import Icon from './Icon.astro';
@@ -54,7 +54,7 @@ const statItems = [
 ].filter((s) => s !== false && s !== null);
 ---
 
-<section class="hero texture" id="top" data-hero>
+<section class="hero texture" id="top" data-hero data-cursor="light">
   <div class="hero__glow" aria-hidden="true"></div>
 
   <div class="hero__marquee marquee display stroke" aria-hidden="true" data-velocity-marquee>
@@ -87,7 +87,7 @@ const statItems = [
       }
     </h1>
 
-    <div class="hero__portrait" data-portrait data-depth={depth.src}>
+    <div class="hero__portrait" data-portrait data-edge={edge.src}>
       <Picture
         src={portrait}
         formats={['avif', 'webp']}
@@ -106,10 +106,10 @@ const statItems = [
     <div class="hero__copy">
       <p class="hero__pitch" data-hero-fade>{tr(settings.hero.pitch, locale)}</p>
       <div class="hero__cta" data-hero-fade>
-        <a class="btn btn--volt" href={`${home}#achievements`} data-sound="hover click">
+        <a class="btn btn--volt" href={`${home}#achievements`} data-sound="hover click whoosh">
           {t.hero.ctaPrimary}<Icon name="arrow-down" size={18} />
         </a>
-        <a class="btn btn--ghost" href={`${home}#contact`} data-sound="hover click">{t.hero.ctaSecondary}</a>
+        <a class="btn btn--ghost" href={`${home}#contact`} data-sound="hover click whoosh">{t.hero.ctaSecondary}</a>
         <a class="hero__cv link-u" href={href(locale, '/cv')} data-sound="hover click" data-track="cv_download">
           {t.nav.cv}<Icon name="download" size={16} />
         </a>
@@ -236,7 +236,6 @@ const statItems = [
   .hero__portrait :global(img) {
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 30px 60px rgb(0 0 0 / 0.55));
   }
   .hero__portrait :global(canvas) {
     position: absolute;

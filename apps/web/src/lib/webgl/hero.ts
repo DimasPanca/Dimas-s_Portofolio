@@ -1,7 +1,15 @@
 /**
- * L3 — WebGL hero portrait (PRD §5.3, §8.5). One canvas, one program, rendered on demand.
- * Adds: pointer-following volt rim light, depth parallax, film grain, scroll-velocity RGB split.
- * The <img> stays as the LCP element and as the fallback; the canvas only takes over after its first frame.
+ * L3 — WebGL hero portrait (PRD §5.3, §8.5). One canvas, one program.
+ *
+ * Lighting model (kept deliberately simple so it behaves the same everywhere on the outline):
+ *  - an edge map gives, per pixel, the signed distance to the silhouette and the outward normal;
+ *  - a single point light lives in the portrait's own coordinate space. It follows the cursor while the
+ *    pointer is over the hero and otherwise drifts on a slow orbit, so the rim never switches off;
+ *  - rim = uniform-width band along the outline × wrapped N·L × smooth distance falloff, plus a soft
+ *    spill of the same light just outside the silhouette and a very light relight of the figure.
+ * Every input is eased with frame-rate-independent smoothing, so nothing pops.
+ *
+ * The <img> stays as the LCP element and as the fallback; the canvas takes over after its first frame.
  */
 import { Mesh, Program, Renderer, Texture, Triangle } from 'ogl';
 import { setTier, type Tier } from '../bus.ts';
@@ -19,43 +27,61 @@ void main() {
 }`;
 
 const fragment = /* glsl */ `
-precision mediump float;
+precision highp float;
 uniform sampler2D tMap;
-uniform sampler2D tDepth;
-uniform vec2 uMouse;
+uniform sampler2D tEdge;
+uniform vec2 uLight;      // light position in portrait uv space (y up); may lie outside 0..1
+uniform vec2 uParallax;   // eased pointer offset, -1..1
 uniform vec2 uRes;
+uniform float uAspect;    // plane width / height
+uniform float uPower;     // 0.45 idle orbit .. 1.0 pointer engaged
 uniform float uTime;
 uniform float uVel;
 varying vec2 vUv;
+
+const vec3 VOLT = vec3(0.83, 1.0, 0.25);
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
 void main() {
-  float d = texture2D(tDepth, vUv).r;
-  vec2 uv = vUv + uMouse * d * 0.011 + vec2(0.0, sin(uTime * 0.7) * 0.0012 * d);
+  // Parallax is weighted by distance from the outline, so the silhouette itself stays put.
+  float inner = smoothstep(0.5, 1.0, texture2D(tEdge, vUv).b);
+  vec2 uv = vUv + uParallax * inner * 0.010 + vec2(0.0, sin(uTime * 0.6) * 0.0010 * inner);
 
-  float split = clamp(uVel, -1.0, 1.0) * 0.004;
+  float split = clamp(uVel, -1.0, 1.0) * 0.0035;
   vec4 c = texture2D(tMap, uv);
   c.r = texture2D(tMap, uv + vec2(split, 0.0)).r;
   c.b = texture2D(tMap, uv - vec2(split, 0.0)).b;
 
-  // The depth map is a blurred silhouette, so its gradient points inward: -gradient is the outward normal.
-  float e = 0.014;
-  vec2 g = vec2(
-    texture2D(tDepth, uv + vec2(e, 0.0)).r - texture2D(tDepth, uv - vec2(e, 0.0)).r,
-    texture2D(tDepth, uv + vec2(0.0, e)).r - texture2D(tDepth, uv - vec2(0.0, e)).r
-  );
-  vec2 n = -normalize(g + vec2(0.00001));
-  vec2 l = normalize(uMouse * 1.4 - (uv * 2.0 - 1.0) + vec2(0.00001));
-  float edge = smoothstep(0.02, 0.16, length(g)) * (1.0 - smoothstep(0.45, 0.92, d));
-  float rim = pow(max(dot(n, l), 0.0), 2.0) * edge;
-  c.rgb += vec3(0.83, 1.0, 0.25) * rim * 0.42 * c.a;
+  vec4 e = texture2D(tEdge, uv);
+  float sd = (e.b - 0.5) * 2.0;                                  // -1 outside .. 0 edge .. +1 inside
+  vec2 n = normalize(vec2(e.r - 0.5, 0.5 - e.g) + vec2(1e-4));   // outward normal in uv space
+
+  vec2 toLight = (uLight - uv) * vec2(uAspect, 1.0);
+  float dist = length(toLight);
+  vec2 l = toLight / max(dist, 1e-3);
+  float facing = smoothstep(-0.25, 0.9, dot(n, l));              // wrapped: no hard terminator
+  float falloff = 1.0 / (1.0 + dist * dist * 2.6);               // smooth, never reaches zero
+
+  // Rim: a band of constant width along the whole outline.
+  float band = 1.0 - smoothstep(0.0, 0.34, sd);
+  band *= band;
+  float rim = band * facing * (0.25 + 0.75 * falloff) * uPower;
+  c.rgb += VOLT * rim * 0.62 * c.a;
+
+  // A gentle relight of the figure on the lit side (keeps the edge light from looking pasted on).
+  c.rgb *= 1.0 + 0.10 * falloff * uPower * facing;
 
   float grain = hash(vUv * uRes + floor(uTime * 12.0)) - 0.5;
-  c.rgb += grain * 0.045 * c.a;
-  gl_FragColor = c;
+  c.rgb += grain * 0.04 * c.a;
+
+  // Light spill just outside the silhouette (premultiplied, additive).
+  float halo = smoothstep(-0.62, 0.0, sd) * (1.0 - c.a) * facing * falloff * uPower;
+  halo *= halo;
+  vec4 outColor = c + vec4(VOLT * halo * 0.5, halo * 0.5);
+  gl_FragColor = min(outColor, vec4(1.0));
 }`;
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -68,11 +94,16 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
+/** Exponential smoothing that behaves the same at 30, 60 or 144 fps. */
+const ease = (current: number, target: number, rate: number, dt: number) =>
+  current + (target - current) * (1 - Math.exp(-rate * dt));
+
 export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<void> {
   const host = document.querySelector<HTMLElement>('[data-portrait]');
   const found = host?.querySelector<HTMLImageElement>('[data-portrait-img]');
-  const depthSrc = host?.dataset.depth;
-  if (!host || !found || !depthSrc) return;
+  const edgeSrc = host?.dataset.edge;
+  const zone = document.querySelector<HTMLElement>('[data-hero]');
+  if (!host || !found || !edgeSrc || !zone) return;
   const img: HTMLImageElement = found;
   if (!img.complete) await img.decode().catch(() => undefined);
 
@@ -95,17 +126,20 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
   }
   const gl = renderer.gl;
 
-  const [mapImg, depthImg] = await Promise.all([loadImage(img.currentSrc || img.src), loadImage(depthSrc)]);
+  const [mapImg, edgeImg] = await Promise.all([loadImage(img.currentSrc || img.src), loadImage(edgeSrc)]);
   const tMap = new Texture(gl, { image: mapImg, generateMipmaps: false, premultiplyAlpha: true });
-  const tDepth = new Texture(gl, { image: depthImg, generateMipmaps: false });
+  const tEdge = new Texture(gl, { image: edgeImg, generateMipmaps: false });
   const program = new Program(gl, {
     vertex,
     fragment,
     uniforms: {
       tMap: { value: tMap },
-      tDepth: { value: tDepth },
-      uMouse: { value: [0, 0] },
+      tEdge: { value: tEdge },
+      uLight: { value: [1.2, 0.8] },
+      uParallax: { value: [0, 0] },
       uRes: { value: [1, 1] },
+      uAspect: { value: 0.8 },
+      uPower: { value: 0.45 },
       uTime: { value: 0 },
       uVel: { value: 0 },
     },
@@ -114,6 +148,10 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
   });
   const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
 
+  let rect = host.getBoundingClientRect();
+  const measure = () => {
+    rect = host.getBoundingClientRect();
+  };
   const resize = () => {
     const w = host.clientWidth;
     const h = host.clientHeight;
@@ -121,26 +159,34 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
     renderer.dpr = dpr;
     renderer.setSize(w, h);
     program.uniforms.uRes.value = [w, h];
-    dirty = true;
+    program.uniforms.uAspect.value = w / h;
+    measure();
   };
 
   let visible = true;
   let disposed = false;
-  let dirty = true;
-  let lastMove = performance.now();
-  let lastFrame = 0;
-  let lastIdle = 0;
   let shown = false;
-  const target: [number, number] = [0, 0];
-  const mouse: [number, number] = [0, 0];
+  let engaged = false; // pointer is over the hero
+  let px = 0;
+  let py = 0;
+  const light: [number, number] = [1.2, 0.8];
+  const parallax: [number, number] = [0, 0];
+  let power = 0.45;
+  let last = performance.now();
+  let lastRender = 0;
+  let lastScrollY = window.scrollY;
   let ema = 16.7;
   let slow = 0;
 
   const onMove = (e: PointerEvent) => {
-    const r = host.getBoundingClientRect();
-    target[0] = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (window.innerWidth * 0.5)));
-    target[1] = Math.max(-1, Math.min(1, -(e.clientY - (r.top + r.height / 2)) / (window.innerHeight * 0.5)));
-    lastMove = performance.now();
+    if (e.pointerType !== 'mouse') return;
+    px = e.clientX;
+    py = e.clientY;
+    const z = zone.getBoundingClientRect();
+    engaged = py >= z.top && py <= z.bottom && px >= z.left && px <= z.right;
+  };
+  const onLeave = () => {
+    engaged = false;
   };
 
   const dispose = () => {
@@ -148,6 +194,7 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
     disposed = true;
     ticker.remove(frame);
     window.removeEventListener('pointermove', onMove);
+    document.documentElement.removeEventListener('pointerleave', onLeave);
     ro.disconnect();
     io.disconnect();
     img.style.visibility = '';
@@ -156,19 +203,47 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
   };
 
   function frame() {
-    if (disposed || !visible || document.hidden) return;
+    if (disposed || !visible || document.hidden) {
+      last = performance.now();
+      return;
+    }
     const now = performance.now();
+    const dt = Math.min(0.1, (now - last) / 1000);
+    last = now;
     const vel = velocity();
-    const active = now - lastMove < 2000 || Math.abs(vel) > 0.05;
-    // Idle "breathing" is capped at 30 fps; nothing renders at all when off-screen (PRD §8.5 rule 3).
-    if (!active && !dirty && now - lastIdle < 33) return;
-    lastIdle = now;
-    dirty = false;
+    if (window.scrollY !== lastScrollY) {
+      lastScrollY = window.scrollY;
+      measure();
+    }
 
-    mouse[0] += (target[0] - mouse[0]) * 0.08;
-    mouse[1] += (target[1] - mouse[1]) * 0.08;
-    program.uniforms.uMouse.value = mouse;
-    program.uniforms.uTime.value = now / 1000;
+    // Idle: the light drifts on a slow orbit around the head and shoulders.
+    const t = now / 1000;
+    let tx = 0.5 + Math.cos(t * 0.32) * 0.85;
+    let ty = 0.66 + Math.sin(t * 0.32) * 0.42;
+    let tParX = 0;
+    let tParY = 0;
+    if (engaged) {
+      tx = (px - rect.left) / rect.width;
+      ty = 1 - (py - rect.top) / rect.height;
+      tParX = Math.max(-1, Math.min(1, (px - (rect.left + rect.width / 2)) / (window.innerWidth * 0.5)));
+      tParY = Math.max(-1, Math.min(1, -(py - (rect.top + rect.height / 2)) / (window.innerHeight * 0.5)));
+    }
+    light[0] = ease(light[0], tx, engaged ? 7 : 1.6, dt);
+    light[1] = ease(light[1], ty, engaged ? 7 : 1.6, dt);
+    parallax[0] = ease(parallax[0], tParX, 4, dt);
+    parallax[1] = ease(parallax[1], tParY, 4, dt);
+    power = ease(power, engaged ? 1 : 0.45, 2.5, dt);
+
+    // Engaged or scrolling → every frame; idle drift → 30 fps is plenty.
+    const active = engaged || Math.abs(vel) > 0.05 || Math.abs(power - 0.45) > 0.01;
+    if (!active && now - lastRender < 33) return;
+    const frameMs = now - lastRender;
+    lastRender = now;
+
+    program.uniforms.uLight.value = light;
+    program.uniforms.uParallax.value = parallax;
+    program.uniforms.uPower.value = power;
+    program.uniforms.uTime.value = t;
     program.uniforms.uVel.value = vel * 0.04;
     renderer.render({ scene: mesh });
 
@@ -178,8 +253,8 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
     }
 
     // Governor: sustained slow frames while active → lower the resolution once, then give up on WebGL.
-    if (active && lastFrame) {
-      ema = ema * 0.9 + (now - lastFrame) * 0.1;
+    if (active && frameMs < 200) {
+      ema = ema * 0.9 + frameMs * 0.1;
       slow = ema > 22 ? slow + 1 : 0;
       if (slow >= 45) {
         slow = 0;
@@ -193,7 +268,6 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
         }
       }
     }
-    lastFrame = active ? now : 0;
   }
 
   canvas.addEventListener('webglcontextlost', (e) => {
@@ -203,7 +277,6 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
   const ro = new ResizeObserver(resize);
   const io = new IntersectionObserver((entries) => {
     visible = entries[0]?.isIntersecting ?? true;
-    dirty = true;
   });
 
   host.append(canvas);
@@ -211,5 +284,6 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
   ro.observe(host);
   io.observe(host);
   window.addEventListener('pointermove', onMove, { passive: true });
+  document.documentElement.addEventListener('pointerleave', onLeave);
   ticker.add(frame);
 }

@@ -33,7 +33,7 @@ const total = String(projects.length).padStart(2, '0');
     </div>
   </div>
 
-  <ol class="works__track" data-slider-track tabindex="0" aria-label={t.works.label}>
+  <ol class="works__track" data-cursor="drag" data-slider-track tabindex="0" aria-label={t.works.label}>
     {
       projects.map((p, i) => {
         const award = p.linkedAchievementSlug ? achievementBySlug.get(p.linkedAchievementSlug) : undefined;
@@ -135,6 +135,10 @@ const total = String(projects.length).padStart(2, '0');
     scroll-padding-inline: var(--page-margin);
     scrollbar-width: none;
     overscroll-behavior-x: contain;
+  }
+  .works__track:global(.is-dragging) {
+    scroll-snap-type: none;
+    user-select: none;
   }
   .works__track::-webkit-scrollbar {
     display: none;

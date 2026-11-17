@@ -391,7 +391,20 @@ html[data-tier="static"] .marquee__track {
   animation: none;
 }
 
-/* Custom cursor (desktop, mid/high tier only). PRD FR-CURSOR. */
+/* Custom cursor (desktop, mid/high tier). The dot sits exactly under the pointer; the ring trails,
+   stretches with speed, snaps around buttons and turns into a light over the portrait. PRD FR-CURSOR. */
+html[data-cursor="on"],
+html[data-cursor="on"] a,
+html[data-cursor="on"] button,
+html[data-cursor="on"] summary,
+html[data-cursor="on"] label {
+  cursor: none;
+}
+html[data-cursor="on"] input,
+html[data-cursor="on"] textarea,
+html[data-cursor="on"] select {
+  cursor: auto;
+}
 .cursor {
   position: fixed;
   inset: 0 auto auto 0;
@@ -404,60 +417,149 @@ html[data-tier="static"] .marquee__track {
 .cursor.is-on {
   opacity: 1;
 }
-.cursor.is-hidden {
-  opacity: 0;
-}
 .cursor__dot,
-.cursor__ring {
+.cursor__ring,
+.cursor__ripple {
   position: absolute;
   top: 0;
   left: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
+  will-change: transform;
 }
 .cursor__dot {
   width: 8px;
   height: 8px;
   margin: -4px;
+  border-radius: 50%;
   background: #fff;
+  transition:
+    scale var(--dur-base) var(--ease-spring),
+    opacity var(--dur-fast) ease;
 }
 .cursor__ring {
+  display: grid;
+  place-items: center;
   width: 36px;
   height: 36px;
-  margin: -18px;
-  border: 1px solid #fff;
+  border: 1.5px solid #fff;
+  border-radius: 18px;
   transition:
-    width var(--dur-base) var(--ease-spring),
-    height var(--dur-base) var(--ease-spring),
-    margin var(--dur-base) var(--ease-spring),
-    background-color var(--dur-fast) ease;
+    background-color var(--dur-base) ease,
+    border-color var(--dur-base) ease,
+    box-shadow var(--dur-slow) ease,
+    opacity var(--dur-base) ease;
 }
-.cursor__ring b {
+.cursor__label {
   font-family: var(--font-mono);
-  font-size: 0.625rem;
-  font-weight: 500;
+  font-size: 0.6875rem;
+  font-weight: 600;
   letter-spacing: 0.08em;
   color: #000;
+  opacity: 0;
+  scale: 0.6;
+  transition:
+    opacity var(--dur-fast) ease,
+    scale var(--dur-base) var(--ease-spring);
 }
-.cursor[data-state="link"] .cursor__ring {
-  width: 56px;
-  height: 56px;
-  margin: -28px;
+.cursor__ripple {
+  width: 44px;
+  height: 44px;
+  margin: -22px;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
 }
-.cursor[data-state="view"] .cursor__ring,
-.cursor[data-state="drag"] .cursor__ring {
-  width: 76px;
-  height: 76px;
-  margin: -38px;
-  background: #fff;
+.cursor[data-state="link"] .cursor__dot {
+  scale: 0.5;
 }
+.cursor[data-state="snap"] .cursor__dot,
 .cursor[data-state="view"] .cursor__dot,
 .cursor[data-state="drag"] .cursor__dot {
   opacity: 0;
 }
-.cursor.is-down .cursor__ring {
-  scale: 0.9;
+.cursor[data-state="snap"] .cursor__ring {
+  border-color: rgb(255 255 255 / 0.85);
+}
+.cursor[data-state="view"] .cursor__ring,
+.cursor[data-state="drag"] .cursor__ring {
+  background: #fff;
+}
+.cursor[data-state="view"] .cursor__label,
+.cursor[data-state="drag"] .cursor__label {
+  opacity: 1;
+  scale: 1;
+}
+.cursor[data-state="text"] .cursor__ring {
+  opacity: 0;
+}
+/* Over the hero the cursor is the light that falls on the portrait. */
+.cursor[data-state="light"] {
+  mix-blend-mode: screen;
+}
+.cursor[data-state="light"] .cursor__ring {
+  border-color: rgb(212 255 63 / 0.55);
+  background: radial-gradient(circle, rgb(212 255 63 / 0.3), rgb(212 255 63 / 0.06) 60%, transparent 72%);
+  box-shadow: 0 0 46px 12px rgb(212 255 63 / 0.16);
+}
+.cursor[data-state="light"] .cursor__dot {
+  background: var(--volt-300);
+}
+.cursor.is-down .cursor__dot {
+  scale: 1.8;
+}
+
+/* One reveal language for the whole site: headings wipe up from a mask, everything else rises. */
+html.js .title[data-reveal]:not(.is-in) {
+  opacity: 1;
+  transform: translateY(0.35em);
+  clip-path: inset(0 0 100% 0);
+}
+.title[data-reveal] {
+  clip-path: inset(-0.1em -0.1em -0.15em -0.1em);
+  transition:
+    clip-path var(--dur-slower) var(--ease-out-expo),
+    transform var(--dur-slower) var(--ease-out-expo);
+}
+
+/* Sub-pages enter the same way the home sections do. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not([data-tier="static"]) .page__wrap > * {
+    animation: hero-fade 800ms var(--ease-out-expo) both;
+    animation-delay: calc(60ms * var(--n, 1));
+  }
+  html.js:not([data-tier="static"]) .page__wrap > :nth-child(2) {
+    --n: 2;
+  }
+  html.js:not([data-tier="static"]) .page__wrap > :nth-child(3) {
+    --n: 3;
+  }
+  html.js:not([data-tier="static"]) .page__wrap > :nth-child(4) {
+    --n: 4;
+  }
+  html.js:not([data-tier="static"]) .page__wrap > :nth-child(n + 5) {
+    --n: 5;
+  }
+
+  /* Page-to-page: native cross-document view transitions (no JS; ignored where unsupported). */
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root) {
+    animation: vt-out 240ms var(--ease-in-out) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 460ms var(--ease-out-expo) both;
+  }
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
 }
 
 @media print {

@@ -311,10 +311,14 @@ document.addEventListener('click', (e) => {
   const el = (e.target as HTMLElement).closest?.<HTMLElement>('[data-sound], [data-track]');
   if (!el) return;
   const kinds = el.dataset.sound ?? '';
-  if (kinds.includes('nav')) cue('nav_link');
+  if (kinds.includes('whoosh')) cue('card_open');
+  else if (kinds.includes('nav')) cue('nav_link');
   else if (kinds.includes('click')) cue('click_soft');
   if (el.dataset.track) track(el.dataset.track);
 });
+
+// QA hook: with ?debug in the URL, sound cues can be triggered from the console.
+if (new URLSearchParams(location.search).has('debug')) (window as unknown as { __dp?: unknown }).__dp = { cue };
 
 /* ------------------------------------------ lazy layers (PRD §8.1: L2, L3, L4) */
 const hasHome = root.hasAttribute('data-home');

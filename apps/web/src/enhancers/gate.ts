@@ -2,7 +2,7 @@
  * Boot gate (PRD §5.2): asks for sound consent, never blocks for long, dismissible in one action.
  * The page underneath is real HTML; it is only made inert while the gate is open.
  */
-import { cue, local, root, session } from '../lib/bus.ts';
+import { local, root, session } from '../lib/bus.ts';
 
 export type GateChoice = { sound: boolean };
 
@@ -21,7 +21,6 @@ function finish(choice: GateChoice, origin?: HTMLElement): void {
   }
   root.dataset.gate = 'closing';
   window.dispatchEvent(new CustomEvent<GateChoice>('dp:gate-done', { detail: choice }));
-  if (choice.sound) cue('boot_stinger');
   window.setTimeout(() => {
     root.removeAttribute('data-gate');
     root.removeAttribute('data-gate-ready');

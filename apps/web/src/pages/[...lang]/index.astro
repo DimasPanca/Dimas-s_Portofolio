@@ -1,7 +1,6 @@
 ---
 import About from '../../components/About.astro';
 import Achievements from '../../components/Achievements.astro';
-import Badge from '../../components/Badge.astro';
 import Contact from '../../components/Contact.astro';
 import Gallery from '../../components/Gallery.astro';
 import Gate from '../../components/Gate.astro';
@@ -26,5 +25,4 @@ const locale = localeFromParam(Astro.params.lang);
   <Skills locale={locale} />
   <Gallery locale={locale} />
   <Contact locale={locale} />
-  <Badge locale={locale} />
 </Base>
