@@ -15,7 +15,8 @@
       "!pnpm-lock.yaml",
       "!docs/PRD.md",
       "!apps/web/public",
-      "!tools/audio/raw"
+      "!tools/audio/raw",
+      "!apps/admin/public"
     ]
   },
   "formatter": {
@@ -38,7 +39,8 @@
         "noDescendingSpecificity": "off"
       },
       "suspicious": {
-        "noExplicitAny": "error"
+        "noExplicitAny": "error",
+        "noUndeclaredEnvVars": "off"
       },
       "complexity": {
         "noImportantStyles": "off"

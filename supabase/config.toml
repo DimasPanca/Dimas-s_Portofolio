@@ -1,0 +1,30 @@
+# Supabase project configuration (PRD §9.7). Apply with the Supabase CLI: `supabase link` then `supabase db push`
+# and `supabase functions deploy`. Replace the URLs below with the real site and admin origins before `supabase config push`.
+
+[auth]
+site_url = "https://dimas-panca-admin.vercel.app"
+additional_redirect_urls = ["https://dimas-panca-admin.vercel.app", "http://localhost:5174"]
+# Only the owner account exists; nobody can sign up.
+enable_signup = false
+
+[auth.email]
+enable_signup = false
+otp_length = 6
+otp_expiry = 600
+
+[auth.mfa]
+max_enrolled_factors = 3
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+# The contact form and the event counter are public; publishing checks the user's token itself.
+[functions.contact]
+verify_jwt = false
+
+[functions.track]
+verify_jwt = false
+
+[functions.trigger-deploy]
+verify_jwt = false

@@ -7,20 +7,32 @@ import { ContentSnapshot, type MediaRef } from '@portfolio/schema';
 
 type Row = Record<string, unknown>;
 
-/** snake_case → camelCase for one row. */
+const toCamel = (key: string) => key.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase());
+const toSnake = (key: string) => key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
+
+/** snake_case → camelCase for one row (top-level keys only; JSON columns keep their own keys). */
 export function camelize(row: Row): Row {
   const out: Row = {};
-  for (const [k, v] of Object.entries(row)) {
-    out[k.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase())] = v;
-  }
+  for (const [k, v] of Object.entries(row)) out[toCamel(k)] = v;
   return out;
 }
 
-const strip = (row: Row, ...keys: string[]): Row => {
-  const copy = { ...row };
-  for (const k of keys) delete copy[k];
-  return copy;
-};
+/** camelCase → snake_case for one row (top-level keys only). */
+export function snakeize(row: Row): Row {
+  const out: Row = {};
+  for (const [k, v] of Object.entries(row)) out[toSnake(k)] = v;
+  return out;
+}
+
+/** Database row → snapshot item: camelCase keys, bookkeeping columns and nulls removed (defaults apply). */
+export function fromRow(row: Row, rename: Record<string, string> = {}): Row {
+  const out: Row = {};
+  for (const [k, v] of Object.entries(camelize(row))) {
+    if (v === null || k === 'createdAt' || k === 'updatedAt' || k === 'publishedAt') continue;
+    out[rename[k] ?? k] = v;
+  }
+  return out;
+}
 
 /** Build a snapshot from the seed file. Only `published` rows are kept. */
 export async function loadSeed(path: string): Promise<ContentSnapshot> {
@@ -43,7 +55,7 @@ export async function loadSeed(path: string): Promise<ContentSnapshot> {
 
 export type SupabaseSource = { url: string; publishableKey: string; fetchImpl?: typeof fetch };
 
-/** Build a snapshot from Supabase. RLS guarantees anon only sees published rows. */
+/** Build a snapshot from Supabase. RLS guarantees the anonymous key only sees published rows. */
 export async function loadSupabase({
   url,
   publishableKey,
@@ -68,17 +80,14 @@ export async function loadSupabase({
     get('skills'),
     get('gallery_items'),
   ]);
-  const settingsRow = settingsRows[0];
-  if (!settingsRow) throw new Error('Supabase site_settings is empty — run `pnpm db:seed` first.');
+  const settings = settingsRows[0];
+  if (!settings) throw new Error('Supabase site_settings is empty — run `pnpm db:seed` first.');
 
-  const projectSlugById = new Map(projects.map((p) => [p.id as string, p.slug as string]));
-  const achievementSlugById = new Map(achievements.map((a) => [a.id as string, a.slug as string]));
-  const dropNulls = (row: Row): Row => Object.fromEntries(Object.entries(row).filter(([, v]) => v !== null));
-
+  const publicUrl = (bucket: string, path: string) => `${base}/storage/v1/object/public/${bucket}/${path}`;
   const mediaMap: Record<string, MediaRef> = {};
   for (const m of media) {
     mediaMap[m.id as string] = {
-      url: `${base}/storage/v1/object/public/media/${m.path as string}`,
+      url: publicUrl('media', m.path as string),
       width: m.width as number,
       height: m.height as number,
       ...(m.blurhash ? { blurhash: m.blurhash as string } : {}),
@@ -86,54 +95,28 @@ export async function loadSupabase({
     };
   }
 
-  const meta = ['createdAt', 'updatedAt', 'publishedAt'];
-  const s = camelize(settingsRow);
   return ContentSnapshot.parse({
     version: 1,
     generatedAt: new Date().toISOString(),
     source: 'supabase',
     settings: {
-      ...(s.general as Row),
-      profile: s.profile,
-      hero: s.hero,
-      availability: s.availability,
-      credo: s.credo ?? undefined,
-      socials: s.socials,
-      contact: s.contact,
-      seo: s.seo,
-      cvPath: s.cvPath ?? null,
+      ...((settings.general as Row | null) ?? {}),
+      profile: settings.profile,
+      hero: settings.hero,
+      availability: settings.availability,
+      credo: settings.credo ?? undefined,
+      socials: settings.socials,
+      contact: settings.contact,
+      seo: settings.seo,
+      cvPath: settings.cv_path ? publicUrl('docs', settings.cv_path as string) : null,
     },
-    achievements: achievements
-      .map((r) => {
-        const c = camelize(r);
-        return dropNulls({
-          ...strip(c, 'projectId', ...meta),
-          rankTier: c.rankTier ?? null,
-          scope: c.scope ?? null,
-          projectSlug: c.projectId ? projectSlugById.get(c.projectId as string) : undefined,
-        });
-      })
-      .map((r) => ({ rankTier: null, ...r })),
-    experiences: experiences.map((r) => {
-      const c = camelize(r);
-      return dropNulls({
-        ...strip(c, 'projectId', ...meta),
-        projectSlug: c.projectId ? projectSlugById.get(c.projectId as string) : undefined,
-      });
-    }),
-    education: education.map((r) => dropNulls(strip(camelize(r), ...meta))),
-    projects: projects.map((r) => dropNulls(strip(camelize(r), ...meta))),
-    skills: skills.map((r) => {
-      const c = camelize(r);
-      return dropNulls({ ...strip(c, 'groupKey', ...meta), group: c.groupKey });
-    }),
-    gallery: gallery.map((r) => {
-      const c = camelize(r);
-      return dropNulls({
-        ...strip(c, 'achievementId', ...meta),
-        achievementSlug: c.achievementId ? achievementSlugById.get(c.achievementId as string) : undefined,
-      });
-    }),
+    // rankTier is required-but-nullable, so it is restored after nulls are dropped.
+    achievements: achievements.map((r) => ({ rankTier: null, ...fromRow(r) })),
+    experiences: experiences.map((r) => fromRow(r)),
+    education: education.map((r) => fromRow(r)),
+    projects: projects.map((r) => fromRow(r)),
+    skills: skills.map((r) => fromRow(r, { groupKey: 'group' })),
+    gallery: gallery.map((r) => fromRow(r)),
     media: mediaMap,
   });
 }
@@ -147,4 +130,65 @@ export async function loadContent(opts: LoadOptions): Promise<ContentSnapshot> {
     return loadSupabase(opts.supabase);
   }
   return loadSeed(opts.seedPath);
+}
+
+/* -------------------------------------------------------------- seed → database rows */
+
+/** Removes editorial helper keys (`_note`, nested `needsReview`/`note`) that are not part of the model. */
+function clean(value: unknown, depth = 0): unknown {
+  if (Array.isArray(value)) return value.map((v) => clean(v, depth + 1));
+  if (value && typeof value === 'object') {
+    const out: Row = {};
+    for (const [k, v] of Object.entries(value as Row)) {
+      if (k.startsWith('_')) continue;
+      if (depth > 0 && (k === 'needsReview' || k === 'note')) continue;
+      out[k] = clean(v, depth + 1);
+    }
+    return out;
+  }
+  return value;
+}
+
+export type SeedRows = { table: string; rows: Row[] }[];
+
+/** Maps the seed file to database rows (snake_case columns), ready for an upsert on `slug`. */
+export function seedToRows(seed: Record<string, unknown>, extras: { whatsappNumber?: string | null } = {}): SeedRows {
+  const rows = (items: unknown, rename: Record<string, string> = {}) =>
+    (items as Row[]).map((item) => {
+      const row = snakeize(clean(item) as Row);
+      for (const [from, to] of Object.entries(rename)) {
+        if (from in row) {
+          row[to] = row[from];
+          delete row[from];
+        }
+      }
+      return row;
+    });
+  const s = clean(seed.settings) as Row;
+  const contact = { ...(s.contact as Row) };
+  if (extras.whatsappNumber) contact.whatsappNumber = extras.whatsappNumber;
+  return [
+    {
+      table: 'site_settings',
+      rows: [
+        {
+          id: 1,
+          general: { defaultLocale: s.defaultLocale ?? 'en', locales: s.locales ?? ['en', 'id'] },
+          profile: s.profile,
+          hero: s.hero,
+          availability: s.availability ?? null,
+          credo: s.credo ?? null,
+          socials: s.socials ?? [],
+          contact,
+          seo: s.seo ?? {},
+        },
+      ],
+    },
+    { table: 'projects', rows: rows(seed.projects) },
+    { table: 'achievements', rows: rows(seed.achievements) },
+    { table: 'experiences', rows: rows(seed.experiences) },
+    { table: 'education', rows: rows(seed.education) },
+    { table: 'skills', rows: rows(seed.skills, { group: 'group_key' }) },
+    { table: 'gallery_items', rows: rows(seed.gallery) },
+  ];
 }
