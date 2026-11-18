@@ -3,4 +3,4 @@ Allow: /
 Disallow: /thanks
 Disallow: /id/thanks
 
-Sitemap: https://dimas-panca.vercel.app/sitemap-index.xml
+Sitemap: https://dimas-portofolio.my.id/sitemap-index.xml

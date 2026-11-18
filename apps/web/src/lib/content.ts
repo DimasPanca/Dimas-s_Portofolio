@@ -52,7 +52,7 @@ export const whatsappHref =
     : null;
 
 export const env = {
-  siteUrl: (import.meta.env.PUBLIC_SITE_URL as string | undefined) || 'https://dimas-panca.vercel.app',
+  siteUrl: (import.meta.env.PUBLIC_SITE_URL as string | undefined) || 'https://dimas-portofolio.my.id',
   contactUrl: (import.meta.env.PUBLIC_CONTACT_FUNCTION_URL as string | undefined) || '',
   trackUrl: (import.meta.env.PUBLIC_TRACK_FUNCTION_URL as string | undefined) || '',
   turnstileKey: (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined) || '',

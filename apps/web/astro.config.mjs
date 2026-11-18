@@ -2,7 +2,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 
-const site = process.env.PUBLIC_SITE_URL || 'https://dimas-panca.vercel.app';
+const site = process.env.PUBLIC_SITE_URL || 'https://dimas-portofolio.my.id';
 
 export default defineConfig({
   site,
