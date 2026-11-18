@@ -16,7 +16,7 @@ interface Props {
   description?: string;
   ogImage?: string;
   noindex?: boolean;
-  /** Only the home page shows the boot gate. */
+  /** Only the home page shows the loading screen. */
   home?: boolean;
   /** Extra JSON-LD objects for this page. */
   jsonLd?: Record<string, unknown>[];
@@ -135,12 +135,9 @@ const ld = home ? [person, website, ...jsonLd] : jsonLd;
         var q = new URLSearchParams(location.search);
         var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (reduce || get(localStorage, 'dp:lite') === '1' || q.get('tier') === 'static') d.dataset.tier = 'static';
-        var audio = null;
-        try {
-          audio = JSON.parse(get(localStorage, 'dp:audio') || 'null');
-        } catch (e) {}
+        // The loading screen shows once per session, on the home page only (?intro=0 skips it).
         var seen = get(sessionStorage, 'dp:gate') === '1';
-        var skip = q.get('mute') === '1' || seen || (audio && audio.remember);
+        var skip = q.get('intro') === '0' || q.get('mute') === '1' || seen;
         if (d.hasAttribute('data-home') && !skip) d.dataset.gate = 'open';
       })();
     </script>
@@ -164,6 +161,11 @@ const ld = home ? [person, website, ...jsonLd] : jsonLd;
 <style is:global>
   main:focus {
     outline: none;
+  }
+  /* Nothing inside main may widen the layout viewport on phones (mobile browsers zoom out to fit
+     overflowing content even when body clips it). */
+  main {
+    overflow-x: clip;
   }
   .toasts {
     position: fixed;

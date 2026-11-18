@@ -2,6 +2,9 @@
 
 export type Tier = 'static' | 'low' | 'mid' | 'high';
 export type CueId =
+  | 'load_start'
+  | 'load_tick'
+  | 'load_ready'
   | 'boot_stinger'
   | 'hover_tick'
   | 'click_soft'

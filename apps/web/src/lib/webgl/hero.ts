@@ -188,12 +188,26 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
   const onLeave = () => {
     engaged = false;
   };
+  // Touch: the rim light follows the finger while it is on the hero (also while scrolling), then
+  // drifts back to its orbit when the finger lifts.
+  const onTouch = (e: TouchEvent) => {
+    const p = e.touches[0];
+    if (!p) return;
+    px = p.clientX;
+    py = p.clientY;
+    const z = zone.getBoundingClientRect();
+    engaged = py >= z.top && py <= z.bottom;
+  };
 
   const dispose = () => {
     if (disposed) return;
     disposed = true;
     ticker.remove(frame);
     window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('touchstart', onTouch);
+    window.removeEventListener('touchmove', onTouch);
+    window.removeEventListener('touchend', onLeave);
+    window.removeEventListener('touchcancel', onLeave);
     document.documentElement.removeEventListener('pointerleave', onLeave);
     ro.disconnect();
     io.disconnect();
@@ -284,6 +298,10 @@ export async function initHeroGL({ tier, velocity, ticker }: Options): Promise<v
   ro.observe(host);
   io.observe(host);
   window.addEventListener('pointermove', onMove, { passive: true });
+  window.addEventListener('touchstart', onTouch, { passive: true });
+  window.addEventListener('touchmove', onTouch, { passive: true });
+  window.addEventListener('touchend', onLeave, { passive: true });
+  window.addEventListener('touchcancel', onLeave, { passive: true });
   document.documentElement.addEventListener('pointerleave', onLeave);
   ticker.add(frame);
 }

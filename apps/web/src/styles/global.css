@@ -350,6 +350,21 @@ html.js [data-reveal]:not(.is-in) {
   html.js:not([data-tier="static"]):not([data-gate="open"]) [data-portrait] {
     animation: hero-portrait 1400ms var(--ease-out-expo) both;
   }
+  /* Coming out of the loading screen the intro waits for the curtain, so the name rises as it is
+     uncovered. "closing" and "done" share the delays, so nothing restarts when the loader finishes. */
+  html.js:not([data-tier="static"])[data-gate="closing"] [data-hero-word],
+  html.js:not([data-tier="static"])[data-gate="done"] [data-hero-word] {
+    animation-delay: calc(var(--i, 0) * 90ms + 640ms);
+  }
+  html.js:not([data-tier="static"])[data-gate="closing"] [data-hero-fade],
+  html.js:not([data-tier="static"])[data-gate="done"] [data-hero-fade] {
+    animation-delay: 1000ms;
+  }
+  html.js:not([data-tier="static"])[data-gate="closing"] [data-portrait],
+  html.js:not([data-tier="static"])[data-gate="done"] [data-portrait] {
+    animation-duration: 1800ms;
+    animation-delay: 300ms;
+  }
 }
 @keyframes hero-rise {
   from {

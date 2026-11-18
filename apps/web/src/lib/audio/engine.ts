@@ -24,6 +24,9 @@ const rnd = (min: number, max: number) => min + Math.random() * (max - min);
 
 export function createEngine(ctx: AudioContext): Engine {
   /* ------------------------------------------------------------------ routing */
+  // Phone speakers: almost nothing below ~150 Hz and a dip in the presence range, so on touch
+  // devices the lows are trimmed (no wasted headroom, no rattle) and the 2-3 kHz body is lifted.
+  const phone = matchMedia('(pointer: coarse)').matches;
   const master = ctx.createGain();
   master.gain.value = 0;
   const limiter = ctx.createDynamicsCompressor();
@@ -32,7 +35,20 @@ export function createEngine(ctx: AudioContext): Engine {
   limiter.ratio.value = 4;
   limiter.attack.value = 0.004;
   limiter.release.value = 0.25;
-  master.connect(limiter).connect(ctx.destination);
+  if (phone) {
+    const low = ctx.createBiquadFilter();
+    low.type = 'highpass';
+    low.frequency.value = 140;
+    low.Q.value = 0.6;
+    const presence = ctx.createBiquadFilter();
+    presence.type = 'peaking';
+    presence.frequency.value = 2600;
+    presence.Q.value = 0.8;
+    presence.gain.value = 3.5;
+    master.connect(low).connect(presence).connect(limiter);
+  } else master.connect(limiter);
+  limiter.connect(ctx.destination);
+  const LEVEL = phone ? 1.05 : 0.9;
   const analyser = ctx.createAnalyser();
   analyser.fftSize = 64;
   master.connect(analyser);
@@ -41,7 +57,7 @@ export function createEngine(ctx: AudioContext): Engine {
   // One shared room. The impulse is generated: decaying noise, darkened so the tail is warm, not hissy.
   const room = ctx.createConvolver();
   {
-    const seconds = 3.2;
+    const seconds = phone ? 2.4 : 3.2; // a shorter room is lighter on phone CPUs
     const length = Math.ceil(ctx.sampleRate * seconds);
     const impulse = ctx.createBuffer(2, length, ctx.sampleRate);
     for (let c = 0; c < 2; c++) {
@@ -207,6 +223,9 @@ export function createEngine(ctx: AudioContext): Engine {
   }
 
   /* ------------------------------------------------------------------ cues */
+  let loadStep = 0;
+  /** Loading ticks climb D4 → D5, one note per letter of the wordmark. */
+  const LOAD_NOTES = [293.66, 329.63, 369.99, 440, 493.88, 587.33];
   let hoverStep = 5;
   let lastHover = 0;
   let lastAir = 0;
@@ -289,11 +308,42 @@ export function createEngine(ctx: AudioContext): Engine {
       pop(230, 170, 0.1, 0.14);
       pop(210, 150, 0.12, 0.12, 0.13);
     },
-    // Opening: a breath of wind, then a slow rising arpeggio that hands over to the music.
+    // Loading begins (only heard when the visitor tapped during it): a slow breath and a warm fifth.
+    load_start() {
+      loadStep = 0;
+      whoosh({ dur: 2.4, gain: 0.04, from: 220, to: 900, q: 0.6, pan: [-0.4, 0.4] });
+      tone(music, 146.83 * 2, 0, { gain: 0.035, ring: 3.2, attack: 0.5, bright: 0.06, pan: -0.15 });
+      tone(music, 220, 0.25, { gain: 0.03, ring: 3.2, attack: 0.5, bright: 0.06, pan: 0.15 });
+    },
+    // Each letter that fills: a small glass note, one step higher every time.
+    load_tick() {
+      const f = LOAD_NOTES[Math.min(loadStep, LOAD_NOTES.length - 1)] ?? 440;
+      loadStep++;
+      tone(ui, f * 2, 0, { gain: 0.05, ring: 0.9, attack: 0.006, pan: -0.3 + loadStep * 0.1, bright: 0.16 });
+      pop(1100, 700, 0.04, 0.05);
+    },
+    // 100%: a soft two-note bell says "ready" without demanding attention.
+    load_ready() {
+      whoosh({ dur: 0.9, gain: 0.025, from: 1400, to: 4200, q: 1.4 });
+      tone(ui, 880, 0, { gain: 0.05, ring: 1.6, pan: -0.15, bright: 0.12 });
+      tone(ui, 1174.66, 0.12, { gain: 0.045, ring: 2.2, pan: 0.15, bright: 0.12 });
+    },
+    // Enter: timed with the curtain. A felt "press" on the click, the wind of the curtain lifting
+    // (starts at 0.26 s, lasts 1 s), then a rising chord that hands over to the music.
     boot_stinger() {
-      whoosh({ dur: 1.5, gain: 0.085, from: 260, to: 1700, q: 0.6, pan: [-0.6, 0.6] });
-      [293.66, 440, 587.33, 739.99].forEach((f, i) => {
-        tone(music, f, 0.55 + i * 0.16, { gain: 0.07, ring: 3.2, attack: 0.03, pan: -0.3 + i * 0.2 });
+      loadStep = 0;
+      pop(150, 52, 0.4, 0.22);
+      pop(1300, 800, 0.03, 0.06);
+      whoosh({ dur: 1.35, gain: 0.1, from: 200, to: 2600, q: 0.55, at: 0.12, pan: [-0.7, 0.7] });
+      whoosh({ dur: 1.1, gain: 0.035, from: 900, to: 5200, q: 1.1, at: 0.4, pan: [0.5, -0.5] });
+      [146.83, 293.66, 440, 587.33, 739.99, 880].forEach((f, i) => {
+        tone(music, f, 0.78 + i * 0.13, {
+          gain: i === 0 ? 0.05 : 0.065,
+          ring: i === 0 ? 5 : 3.4,
+          attack: 0.03,
+          pan: -0.35 + i * 0.14,
+          bright: 0.14,
+        });
       });
     },
   };
@@ -308,7 +358,7 @@ export function createEngine(ctx: AudioContext): Engine {
     const t = ctx.currentTime;
     master.gain.cancelScheduledValues(t);
     master.gain.setValueAtTime(master.gain.value, t);
-    master.gain.linearRampToValueAtTime(on ? 0.9 : 0, t + (on ? 0.25 : 0.4));
+    master.gain.linearRampToValueAtTime(on ? LEVEL : 0, t + (on ? 0.25 : 0.4));
     if (on) {
       if (ctx.state === 'suspended') void ctx.resume();
       scheduleMusic(true);

@@ -18,11 +18,11 @@
     "home": "Beranda"
   },
   "gate": {
-    "title": "Selamat datang",
-    "withSound": "Masuk dengan suara",
-    "withoutSound": "Masuk tanpa suara",
-    "remember": "Ingat pilihan saya",
-    "hint": "Scroll atau tekan Esc untuk melewati",
+    "title": "Memuat",
+    "portfolio": "Portofolio",
+    "enterClick": "Klik untuk masuk",
+    "enterTap": "Ketuk untuk masuk",
+    "hint": "Suara aktif — bisa dimatikan kapan saja dari bar atas",
     "tapSound": "Ketuk untuk menyalakan suara",
     "boot": [
       "memuat dimas.sys",

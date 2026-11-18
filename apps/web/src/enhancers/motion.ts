@@ -33,7 +33,7 @@ export function initMotion(): void {
     window.addEventListener('dp:scroll-lock', (e) =>
       (e as CustomEvent<boolean>).detail ? lenis?.stop() : lenis?.start(),
     );
-    if (root.dataset.gate) {
+    if (root.dataset.gate === 'open') {
       lenis.stop();
       window.addEventListener('dp:gate-done', () => lenis?.start(), { once: true });
     }

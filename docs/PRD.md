@@ -1,7 +1,7 @@
 # Product Requirements Document — Dimas Panca Pamungkas Portfolio
 
 > **Codename:** `SYSTEMS ONLINE`
-> **Version:** 1.3 · **Date:** 2026-11-16 · **Owner / Author of record:** Dimas Panca Pamungkas
+> **Version:** 1.4 · **Date:** 2026-11-19 · **Owner / Author of record:** Dimas Panca Pamungkas
 > **Audience of this document:** the implementer (an AI agent or an engineer) who will generate the whole product from this file and the files it points to.
 > **Status:** Ready for implementation. Anything not stated here is a decision for the implementer *within the hard rules in §0.3*.
 
@@ -490,7 +490,7 @@ Dimas asked to **combine both**: the *content* is formal and precise; the *inter
 | Moment | EN (default) | ID |
 |---|---|---|
 | Boot log | `> booting dimas.sys …… ok` | `> memuat dimas.sys …… ok` |
-| Gate buttons | Enter with sound / Enter without sound | Masuk dengan suara / Masuk tanpa suara |
+| Loader enter | Click to enter / Tap to enter | Klik untuk masuk / Ketuk untuk masuk |
 | Achievement unlock toast | Achievement unlocked — 1st Place · FAPERTA FAIR 2026 | Pencapaian terbuka — Juara 1 · FAPERTA FAIR 2026 |
 | Email copied | Copied. Go ahead, paste it. | Tersalin. Silakan tempel. |
 | Form sent | Message sent. I'll get back to you soon. | Pesan terkirim. Saya akan segera membalas. |
@@ -525,18 +525,18 @@ Section order on `/` (HUD index in brackets; labels are English by default — I
 
 ### 5.2 Global UI
 
-#### FR-GATE — boot gate (P0) · R0
+#### FR-GATE — loading screen (P0) · R0 (revised v1.4, reference: basement.studio loader)
 
 | Aspect | Spec |
 |---|---|
-| Presence | Full-screen overlay (`role="dialog"`, `aria-modal`), rendered in static HTML (no flash). Page content underneath is present in the DOM but `inert` until dismissed (crawlers still read it). |
-| Stage 1 (≤ 1.2 s, skippable) | Mono boot log types line by line, values **derived from data**: `> booting dimas.sys …… ok` · `> profile · Informatics · UNTIRTA …… ok` · `> mounting achievements …… {N} found` · `> compiling projects …… ok` · `> signal …… online`. A counter 000→100 is tied to *real* readiness (fonts + hero image decoded + critical JS), minimum display 900 ms. |
-| Stage 2 | Monogram "DP." morph + two large buttons: **"Enter with sound" / "Enter without sound"** (ID: *Masuk dengan suara / Masuk tanpa suara*). Optional checkbox "Remember my choice" (ID: *Ingat pilihan saya*). |
-| Keyboard / skip | `Tab` order: with-sound → without-sound. `Esc`, wheel, touch-move or any scroll key ⇒ treated as *without sound* + dismiss (HR/recruiter friendliness, R6). `?mute=1` skips the gate entirely, sound off. |
-| Returning visitor | Same session → gate not shown. New session + "remembered" choice → gate skipped; if the choice was *with sound*, ambient waits for the first gesture and an unobtrusive chip "Tap to turn sound on" (ID: *Ketuk untuk menyalakan suara*) appears (autoplay policy). |
-| Exit | Clip-path circle expands from the pressed button (700–900 ms, `--ease-out-expo`); hero intro timeline starts at 40 % overlap. *With sound* plays `boot_stinger`. |
-| Fallbacks | No-JS: gate hidden via `<noscript>` CSS. Reduced motion: no typing/morph; fade 200 ms. |
-| AC | Gate can be dismissed in **≤ 1 action**; total time-to-content ≤ 2.4 s on a mid-range phone; no CLS; LCP measured with and without `?mute=1`. |
+| Presence | Full-screen overlay (`role="dialog"`, `aria-modal`), shown **once per session** on the home page only. Page content underneath is in the DOM but `inert` until entry (crawlers still read it). |
+| Loading (silent) | Runs immediately, no choice: hand-drawn line loops (2D canvas, 7–10 curves) trace themselves in; the wordmark **"DIMAS."** (Anton) fills letter by letter from an outline; a mono status line cycles through the data-derived boot log (`booting dimas.sys — ok` … `mounting achievements — {N} found` …); a big `000–100 %` counter + hairline bar. Progress follows real readiness (fonts + hero portrait), floor 2.6 s, cap 7 s. Desktop: a crosshair with coordinates follows the pointer. |
+| Ready | At 100 % the wordmark turns volt, a soft "ready" bell plays (if audio is unlocked) and a single pill **"Click to enter" / "Tap to enter"** (ID: *Klik / Ketuk untuk masuk*) appears with "Sound on — mute it anytime from the top bar". Clicking anywhere on the screen enters. |
+| Sound | Browsers block audio before a gesture, so loading is silent unless the visitor taps during it — that tap unlocks audio and the remaining letters tick (`load_start`, `load_tick` ×letter, `load_ready`). Entering is the gesture that turns sound on and plays `boot_stinger` timed to the curtain. An explicit mute from the nav toggle (`dp:audio`) is respected. |
+| Skip | `Esc` enters at any time; wheel / touch-move enter once loading is done (silently, as they are not audio gestures). `?intro=0` (or legacy `?mute=1`) skips the screen. |
+| Exit | Content "charges" (letters flash volt, loops whirl outwards), then two curtains lift — ink panel first, volt band 140 ms later (1 s, `cubic-bezier(.76,0,.24,1)`). The hero intro is delayed to rise as the curtain uncovers it; `data-gate` goes `open → closing → done`. |
+| Fallbacks | No-JS: never rendered. Static tier / reduced motion: no canvas or crosshair, short fade. |
+| AC | Enter in **1 action**; never longer than 7 s before the enter control; no CLS; no horizontal overflow at 320 px. |
 
 #### FR-NAV — floating pill navbar (P0) · R2, R3, R0
 
@@ -727,7 +727,7 @@ Prefer **native cross-document View Transitions** (`@view-transition { navigatio
 
 ### 7.1 Principles
 
-1. **Consent first** (HR-6): nothing plays before a gesture; the gate captures it.
+1. **Consent first** (HR-6): nothing plays before a gesture; entering from the loading screen (or tapping during it) is that gesture.
 2. **Subtle, tactile, cohesive:** short transient blips + one ambient bed; everything tonal is tuned to the bed's key (**D**). Noise-like cues (clicks, whooshes) are key-agnostic.
 3. **Never fatiguing:** round-robin variants, ±4 % pitch jitter, hover throttle, polyphony ≤ 6, SFX master ≈ −12 dB under peak.
 4. **Meaningful:** each cue maps to an interaction type (R0's taxonomy): hover, click, toggle, menu, section, unlock, copy, send, error.
@@ -1770,4 +1770,4 @@ Add the `Content-Security-Policy` from §9.7 to the first block. Audio files mus
 
 ---
 
-*End of PRD v1.3.*
+*End of PRD v1.4.*

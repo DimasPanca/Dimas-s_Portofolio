@@ -18,11 +18,11 @@
     "home": "Home"
   },
   "gate": {
-    "title": "Welcome",
-    "withSound": "Enter with sound",
-    "withoutSound": "Enter without sound",
-    "remember": "Remember my choice",
-    "hint": "Scroll or press Esc to skip",
+    "title": "Loading",
+    "portfolio": "Portfolio",
+    "enterClick": "Click to enter",
+    "enterTap": "Tap to enter",
+    "hint": "Sound on — mute it anytime from the top bar",
     "tapSound": "Tap to turn sound on",
     "boot": [
       "booting dimas.sys",

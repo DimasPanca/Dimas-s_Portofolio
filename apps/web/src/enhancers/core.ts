@@ -148,17 +148,24 @@ const revealTargets = $$('[data-reveal]');
 if (revealTargets.length) {
   if (getTier() === 'static') for (const el of revealTargets) el.classList.add('is-in');
   else {
+    // Titles start fully clipped (zero visible area), which IntersectionObserver treats as never
+    // intersecting, so they are watched through their parent instead.
+    const owners = new Map<Element, HTMLElement[]>();
+    for (const el of revealTargets) {
+      const watch = el.classList.contains('title') && el.parentElement ? el.parentElement : el;
+      owners.set(watch, [...(owners.get(watch) ?? []), el]);
+    }
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
-          entry.target.classList.add('is-in');
+          for (const el of owners.get(entry.target) ?? []) el.classList.add('is-in');
           io.unobserve(entry.target);
         }
       },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.05 },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0 },
     );
-    for (const el of revealTargets) io.observe(el);
+    for (const watch of owners.keys()) io.observe(watch);
   }
 }
 
