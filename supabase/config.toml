@@ -1,5 +1,5 @@
-# Supabase project configuration (PRD §9.7). Apply with the Supabase CLI: `supabase link` then `supabase db push`
-# and `supabase functions deploy`. Replace the URLs below with the real site and admin origins before `supabase config push`.
+# Supabase project configuration (PRD §9.7). Apply with the Supabase CLI: `supabase link`, `supabase db push`,
+# `supabase functions deploy` and `supabase config push`. The admin URL below must match the admin's Vercel domain.
 
 [auth]
 site_url = "https://dimas-panca-admin.vercel.app"
@@ -8,7 +8,9 @@ additional_redirect_urls = ["https://dimas-panca-admin.vercel.app", "http://loca
 enable_signup = false
 
 [auth.email]
-enable_signup = false
+# Keep the email provider ON: it carries the one-time sign-in code. New sign-ups are blocked by
+# auth.enable_signup above, so only the pre-created owner account can ever receive a code.
+enabled = true
 otp_length = 6
 otp_expiry = 600
 
