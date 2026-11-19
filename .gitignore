@@ -36,3 +36,7 @@ Thumbs.db
 # --- local python tooling ---
 .venv/
 __pycache__/
+
+# Supabase CLI local state
+supabase/.temp/
+supabase/.branches/
